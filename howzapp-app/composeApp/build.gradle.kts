@@ -36,7 +36,8 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
 
             implementation(projects.core.di)
-            implementation(projects.feature.chat.di)
+            implementation(projects.core.designsystem)
+            implementation(projects.feature.chat.api)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
