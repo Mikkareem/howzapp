@@ -22,6 +22,9 @@ class CmpLibraryConventionPlugin: Plugin<Project> {
                 "commonMainImplementation"(composeDependencies.foundation)
                 "commonMainImplementation"(composeDependencies.material3)
                 "debugImplementation"(composeDependencies.uiTooling)
+
+                "commonMainImplementation"(composeDependencies.components.uiToolingPreview)
+                "androidMainImplementation"(composeDependencies.preview)
             }
         }
     }
