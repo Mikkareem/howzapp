@@ -36,7 +36,7 @@ interface ChatDao {
 
     @Transaction
     @Query("SELECT * FROM view__chat_info_of_the_chats WHERE chatId = :chatId")
-    fun observeChatDetailsById(chatId: String): Flow<ChatDetails>
+    fun observeChatDetailsById(chatId: String): Flow<ChatDetails?>
 
     @Transaction
     @Query("SELECT * FROM view__chat_info_of_the_chats")

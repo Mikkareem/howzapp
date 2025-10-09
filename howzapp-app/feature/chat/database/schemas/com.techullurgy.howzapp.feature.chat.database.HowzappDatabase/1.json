@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "70d8b68e8232f0c5e6a4b31a09abde59",
+    "identityHash": "e5756a3c00905839624a7a979c3dbbd0",
     "entities": [
       {
         "tableName": "ChatEntity",
@@ -297,7 +297,7 @@
       },
       {
         "viewName": "view__chat_info_of_the_chats",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.chatId,\n                (\n                    CASE WHEN json_extract(c.type, '$.type') = 'DIRECT_CHAT'\n                        THEN cp.username\n                        ELSE json_extract(c.type, '$.title')\n                    END\n                ) AS chatTitle,\n                (\n                    CASE WHEN json_extract(c.type, '$.type') = 'DIRECT_CHAT'\n                        THEN cp.profilePictureUrl\n                        ELSE json_extract(c.type, '$.profileUrl')\n                    END\n                ) AS pictureUrl,\n                c.type AS chatType,\n                cp2.userId AS originator_userId,\n                cp2.onlineStatus AS originator_onlineStatus,\n                cp2.username AS originator_username,\n                cp2.profilePictureUrl AS originator_profilePictureUrl\n        FROM ChatEntity c\n        LEFT JOIN ChatParticipantEntity cp\n            ON json_extract(c.type, '$.type') = 'DIRECT_CHAT'\n            AND cp.userId = json_extract(c.type, '$.participantId')\n        JOIN ChatParticipantEntity cp2 ON cp2.userId = c.originator\n        JOIN ChatParticipantCrossRef cpcr2 ON cpcr2.chatId = c.chatId AND cpcr2.userId = cp2.userId"
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.chatId,\n                c.type AS chatType,\n                cp2.userId AS originator_userId,\n                cp2.onlineStatus AS originator_onlineStatus,\n                cp2.username AS originator_username,\n                cp2.profilePictureUrl AS originator_profilePictureUrl\n        FROM ChatEntity c\n        LEFT JOIN ChatParticipantEntity cp\n            ON json_extract(c.type, '$.type') = 'DIRECT_CHAT'\n            AND cp.userId = json_extract(c.type, '$.participantId')\n        JOIN ChatParticipantEntity cp2 ON cp2.userId = c.originator\n        JOIN ChatParticipantCrossRef cpcr2 ON cpcr2.chatId = c.chatId AND cpcr2.userId = cp2.userId"
       },
       {
         "viewName": "view__last_message_of_the_chat",
@@ -318,7 +318,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '70d8b68e8232f0c5e6a4b31a09abde59')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e5756a3c00905839624a7a979c3dbbd0')"
     ]
   }
 }

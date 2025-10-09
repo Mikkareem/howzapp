@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.map
 internal class DefaultChatLocalRepository(
     private val database: HowzappDatabase
 ): ChatLocalRepository {
-    override fun observeChatDetailsById(chatId: String): Flow<Chat> {
-        return database.chatDao.observeChatDetailsById(chatId).map { it.toDomain() }
+    override fun observeChatDetailsById(chatId: String): Flow<Chat?> {
+        return database.chatDao.observeChatDetailsById(chatId).map { it?.toDomain() }
     }
 
     override fun observeChatInfoWithLastMessage(): Flow<List<ChatInfoWithLastMessage>> {
@@ -54,18 +54,6 @@ internal class DefaultChatLocalRepository(
                 chat.chatMessages.forEach {
                     updateMessage(it)
                 }
-
-//                chat.chatMessages.map { it.toEntity() }.forEach {
-//                    database.chatDao.upsertMessage(it)
-//                }
-//
-//                chat.chatMessages.map {
-//                    it.toStatusEntity()
-//                }.forEach {
-//                    it?.let { status ->
-//                        database.chatDao.upsertMessageStatus(status)
-//                    }
-//                }
             }
         }
     }

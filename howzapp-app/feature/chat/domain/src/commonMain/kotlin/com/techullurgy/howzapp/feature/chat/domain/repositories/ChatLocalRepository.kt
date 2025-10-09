@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatLocalRepository {
     fun observeChatInfoWithLastMessage(): Flow<List<ChatInfoWithLastMessage>>
-    fun observeChatDetailsById(chatId: String): Flow<Chat>
+    fun observeChatDetailsById(chatId: String): Flow<Chat?>
 
     suspend fun syncChats(chats: List<Chat>)
     suspend fun updateMessage(message: ChatMessage)

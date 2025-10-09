@@ -6,6 +6,7 @@ import com.techullurgy.howzapp.feature.chat.data.repositories.DefaultChatLocalRe
 import com.techullurgy.howzapp.feature.chat.data.repositories.DefaultChatNetworkRepository
 import com.techullurgy.howzapp.feature.chat.data.services.DefaultChatSynchronizer
 import com.techullurgy.howzapp.feature.chat.database.di.chatDatabaseModule
+import com.techullurgy.howzapp.feature.chat.domain.di.chatDomainModule
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatLocalRepository
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatNetworkRepository
 import com.techullurgy.howzapp.feature.chat.domain.services.ChatSynchronizer
@@ -18,7 +19,7 @@ import org.koin.dsl.module
 internal expect val platformModule: Module
 
 val chatDataModule = module {
-    includes(chatDatabaseModule, platformModule)
+    includes(chatDomainModule, chatDatabaseModule, platformModule)
     singleOf(::DefaultChatNetworkRepository) bind ChatNetworkRepository::class
     singleOf(::DefaultChatLocalRepository) bind ChatLocalRepository::class
     singleOf(::DefaultChatSynchronizer) bind ChatSynchronizer::class

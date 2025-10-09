@@ -50,8 +50,22 @@ internal fun MessageBox(
 }
 
 internal data class MessageSheet(
+    val messageId: String,
     val sender: ChatParticipant,
     val isCurrentUser: Boolean,
     val isPictureShowable: Boolean,
     val message: Message
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is MessageSheet) return false
+
+        if (message != other.message) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return message.hashCode()
+    }
+}

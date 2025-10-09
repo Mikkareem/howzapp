@@ -48,7 +48,7 @@ class BasicDataTest: KoinTest {
         println(chat)
 
         assertEquals(1, chats.size)
-        assertEquals("c123", chat.chatInfo.chatId)
+        assertEquals("c123", chat?.chatInfo?.chatId)
     }
 }
 
@@ -56,8 +56,6 @@ private val chats = listOf(
     Chat(
         chatInfo = ChatInfo(
             chatId = "c123",
-            chatTitle = "Important Chat",
-            chatProfilePicture = "",
             chatType = ChatType.Group("Important Chat", ""),
             originator = ChatParticipant(userId = "u123", "Irsath")
         ),

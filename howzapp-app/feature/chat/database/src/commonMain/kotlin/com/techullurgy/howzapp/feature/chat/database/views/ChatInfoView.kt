@@ -13,18 +13,6 @@ import kotlinx.serialization.Serializable
     viewName = "view__chat_info_of_the_chats",
     value = """
         SELECT c.chatId,
-                (
-                    CASE WHEN json_extract(c.type, '$.$DISCRIMINATOR_COLUMN') = '${ChatTypeConstants.DISCRIMINATOR_DIRECT_CHAT}'
-                        THEN cp.username
-                        ELSE json_extract(c.type, '$.title')
-                    END
-                ) AS chatTitle,
-                (
-                    CASE WHEN json_extract(c.type, '$.$DISCRIMINATOR_COLUMN') = '${ChatTypeConstants.DISCRIMINATOR_DIRECT_CHAT}'
-                        THEN cp.profilePictureUrl
-                        ELSE json_extract(c.type, '$.profileUrl')
-                    END
-                ) AS pictureUrl,
                 c.type AS chatType,
                 cp2.userId AS originator_userId,
                 cp2.onlineStatus AS originator_onlineStatus,
@@ -40,8 +28,6 @@ import kotlinx.serialization.Serializable
 )
 data class ChatInfoView(
     val chatId: String,
-    val chatTitle: String,
-    val pictureUrl: String,
     val chatType: SerializableChatType,
     @Embedded(prefix = "originator_") val originator: ChatParticipantEntity
 )

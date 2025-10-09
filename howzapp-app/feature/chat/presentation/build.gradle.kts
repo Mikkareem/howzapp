@@ -13,6 +13,7 @@ kotlin {
             implementation(libs.coil.okhttp)
 
             implementation(projects.core.designsystem)
+            implementation(projects.core.domain)
             implementation(projects.feature.chat.domain)
 
         }

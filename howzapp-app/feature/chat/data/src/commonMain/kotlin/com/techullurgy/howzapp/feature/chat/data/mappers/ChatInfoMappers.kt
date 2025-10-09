@@ -8,9 +8,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.ChatInfoWithLastMessag
 
 fun ChatInfoView.toDomain() = ChatInfo(
     chatType = chatType.toDomain(),
-    chatTitle = chatTitle,
     chatId = chatId,
-    chatProfilePicture = pictureUrl,
     originator = originator.toDomain()
 )
 
