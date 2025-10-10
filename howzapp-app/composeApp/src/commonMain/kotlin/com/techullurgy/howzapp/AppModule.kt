@@ -1,12 +1,10 @@
 package com.techullurgy.howzapp
 
-import com.techullurgy.howzapp.core.di.coreModule
-import com.techullurgy.howzapp.feature.chat.api.di.chatModule
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
 
-val appModule = module {
-    includes(
-        coreModule,
-        chatModule
-    )
-}
+@Module
+@Configuration
+@ComponentScan("com.techullurgy.howzapp")
+class AppModule

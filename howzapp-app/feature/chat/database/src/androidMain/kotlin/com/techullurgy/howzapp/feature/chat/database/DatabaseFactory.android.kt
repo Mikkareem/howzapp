@@ -7,10 +7,6 @@ import androidx.room.RoomDatabase
 actual open class DatabaseFactory(
     private val context: Context?
 ) {
-    actual constructor() : this(null) {
-        throw IllegalStateException()
-    }
-
     actual open fun create(): RoomDatabase.Builder<HowzappDatabase> {
         val dbFile = context!!.applicationContext.getDatabasePath(HowzappDatabase.DB_NAME)
 

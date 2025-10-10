@@ -13,7 +13,9 @@ import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatLocalReposit
 import com.techullurgy.howzapp.feature.chat.domain.utils.isDeletable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Single
 
+@Single(binds = [ChatLocalRepository::class])
 internal class DefaultChatLocalRepository(
     private val database: HowzappDatabase
 ): ChatLocalRepository {

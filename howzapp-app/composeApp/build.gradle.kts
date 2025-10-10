@@ -54,10 +54,6 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
-ksp {
-    arg("KOIN_CONFIG_CHECK", "true")
-}
-
 afterEvaluate {
     tasks.named("kspDebugKotlinAndroid") {
         dependsOn(

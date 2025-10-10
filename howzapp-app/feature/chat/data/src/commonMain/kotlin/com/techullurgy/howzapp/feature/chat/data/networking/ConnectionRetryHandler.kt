@@ -1,8 +1,10 @@
 package com.techullurgy.howzapp.feature.chat.data.networking
 
 import kotlinx.coroutines.delay
+import org.koin.core.annotation.Single
 import kotlin.math.pow
 
+@Single
 class ConnectionRetryHandler(
     private val connectionErrorHandler: ConnectionErrorHandler
 ) {

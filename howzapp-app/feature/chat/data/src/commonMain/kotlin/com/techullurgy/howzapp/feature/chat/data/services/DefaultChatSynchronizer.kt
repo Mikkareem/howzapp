@@ -17,7 +17,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import org.koin.core.annotation.Single
 
+@Single(binds = [ChatSynchronizer::class])
 internal class DefaultChatSynchronizer(
     private val chatLocalRepository: ChatLocalRepository,
     private val chatNetworkRepository: ChatNetworkRepository,

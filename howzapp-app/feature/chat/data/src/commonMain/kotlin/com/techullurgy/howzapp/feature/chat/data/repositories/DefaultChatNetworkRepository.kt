@@ -5,7 +5,9 @@ import com.techullurgy.howzapp.core.domain.util.DataError
 import com.techullurgy.howzapp.feature.chat.domain.models.Chat
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatNetworkRepository
+import org.koin.core.annotation.Single
 
+@Single(binds = [ChatNetworkRepository::class])
 internal class DefaultChatNetworkRepository: ChatNetworkRepository {
     override fun sendMessage(message: ChatMessage): AppResult<ChatMessage, DataError> {
         TODO("Not yet implemented")

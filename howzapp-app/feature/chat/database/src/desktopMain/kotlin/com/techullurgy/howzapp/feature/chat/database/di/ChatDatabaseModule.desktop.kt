@@ -1,5 +1,14 @@
 package com.techullurgy.howzapp.feature.chat.database.di
 
-import org.koin.core.module.Module
+import com.techullurgy.howzapp.feature.chat.database.DatabaseFactory
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
+import org.koin.core.scope.Scope
 
-actual val platformModule: Module = TODO("Not yet implemented")
+@Module
+internal actual class PlatformModule {
+    @Single
+    actual fun provideDatabaseFactory(scope: Scope): DatabaseFactory {
+        TODO("Not yet implemented")
+    }
+}

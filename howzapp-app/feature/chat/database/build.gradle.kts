@@ -1,15 +1,11 @@
 plugins {
     alias(applicationLibs.plugins.conventions.kmp.library)
     alias(applicationLibs.plugins.conventions.room)
+    alias(applicationLibs.plugins.conventions.koin.compiler)
 }
 
 kotlin {
     sourceSets {
-
-        commonMain.dependencies {
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
-        }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)

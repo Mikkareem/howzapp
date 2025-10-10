@@ -23,7 +23,6 @@ internal class TestRepository(
     private val sessionStorage: SessionStorage,
     private val chatLocalRepository: ChatLocalRepository
 ) {
-
     init {
         appScope.launch {
             sessionStorage.set(AuthInfo(

@@ -28,8 +28,10 @@ import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.seconds
 
+@Single
 class KtorWebsocketConnector(
     private val client: HttpClient,
     applicationScope: CoroutineScope,

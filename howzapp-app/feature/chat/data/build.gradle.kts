@@ -1,6 +1,7 @@
 
 plugins {
     alias(applicationLibs.plugins.conventions.kmp.library)
+    alias(applicationLibs.plugins.conventions.koin.compiler)
 }
 
 kotlin {
@@ -11,8 +12,6 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
             implementation(libs.ktor.client.websockets)
 
             implementation(projects.core.domain)

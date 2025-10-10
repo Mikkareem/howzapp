@@ -1,6 +1,7 @@
 package com.techullurgy.howzapp.core.data.di
 
-import com.techullurgy.howzapp.core.data.auth.DatastoreSessionStorage
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.techullurgy.howzapp.core.data.networking.ByteArrayUploadClient
 import com.techullurgy.howzapp.core.data.networking.HttpClientFactory
 import com.techullurgy.howzapp.core.domain.auth.SessionStorage
@@ -9,43 +10,69 @@ import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import org.koin.core.module.Module
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Qualifier
+import org.koin.core.annotation.Single
+import org.koin.core.scope.Scope
 
-expect val platformModule: Module
 
-private val coroutineModule = module {
-    single<DispatcherProvider> {
-        DefaultDispatcherProvider()
-    }
-    factory<CoroutineDispatcher>(named(IO_DISPATCHER)) {
-        get<DispatcherProvider>().ioDispatcher
-    }
-    factory<CoroutineDispatcher>(named(DEFAULT_DISPATCHER)) {
-        get<DispatcherProvider>().defaultDispatcher
-    }
-    factory<CoroutineDispatcher>(named(MAIN_DISPATCHER)) {
-        get<DispatcherProvider>().mainDispatcher
-    }
+@Qualifier
+annotation class IoDispatcher
 
-    single<CoroutineScope> {
-        CoroutineScope(
-            SupervisorJob() + get<CoroutineDispatcher>(named(IO_DISPATCHER))
-        )
+@Qualifier
+annotation class DefaultDispatcher
+
+@Qualifier
+annotation class MainDispatcher
+
+@Module
+@Configuration
+internal class CoroutinesModule {
+
+    @Factory
+    @IoDispatcher
+    fun provideIoDispatcher(provider: DispatcherProvider): CoroutineDispatcher =
+        provider.ioDispatcher
+
+    @Factory
+    @DefaultDispatcher
+    fun provideDefaultDispatcher(provider: DispatcherProvider): CoroutineDispatcher =
+        provider.defaultDispatcher
+
+    @Factory
+    @MainDispatcher
+    fun provideMainDispatcher(provider: DispatcherProvider): CoroutineDispatcher =
+        provider.mainDispatcher
+
+    @Single
+    fun provideApplicationScope(
+        @IoDispatcher dispatcher: CoroutineDispatcher
+    ): CoroutineScope {
+        return CoroutineScope(SupervisorJob() + dispatcher)
     }
 }
 
-val coreDataModule = module {
-    includes(platformModule, coroutineModule)
+@Module
+@Configuration
+internal expect class PlatformModule {
+    @Single
+    fun provideDataStore(scope: Scope): DataStore<Preferences>
+}
 
-    single<HttpClient> {
-        HttpClientFactory(get()).create()
+
+@Module(includes = [CoroutinesModule::class, PlatformModule::class])
+@Configuration
+class CoreDataModule {
+
+    @Single
+    fun provideHttpClient(sessionStorage: SessionStorage): HttpClient {
+        return HttpClientFactory(sessionStorage).create()
     }
 
-    single<UploadClient<ByteArray>> {
-        ByteArrayUploadClient(get())
+    @Single
+    fun provideUploadClient(client: HttpClient): UploadClient<ByteArray> {
+        return ByteArrayUploadClient(client)
     }
-
-    single<SessionStorage> { DatastoreSessionStorage(get()) }
 }

@@ -3,17 +3,22 @@ package com.techullurgy.howzapp.feature.chat.database.di
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.techullurgy.howzapp.feature.chat.database.DatabaseFactory
 import com.techullurgy.howzapp.feature.chat.database.HowzappDatabase
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
+import org.koin.core.scope.Scope
 
-expect val platformModule: Module
+@Module
+internal expect class PlatformModule {
+    @Single
+    fun provideDatabaseFactory(scope: Scope): DatabaseFactory
+}
 
-val chatDatabaseModule = module {
-    includes(platformModule)
-    single<HowzappDatabase> {
-        get<DatabaseFactory>()
-            .create()
-            .setDriver(BundledSQLiteDriver())
-            .build()
+@Module(includes = [PlatformModule::class])
+@Configuration
+class ChatDatabaseModule {
+    @Single
+    fun provideHowzappDatabase(factory: DatabaseFactory): HowzappDatabase {
+        return factory.create().setDriver(BundledSQLiteDriver()).build()
     }
 }

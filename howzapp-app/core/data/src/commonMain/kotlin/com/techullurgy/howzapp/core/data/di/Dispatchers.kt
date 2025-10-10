@@ -2,10 +2,7 @@ package com.techullurgy.howzapp.core.data.di
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-
-const val IO_DISPATCHER = "io_dispatcher"
-const val MAIN_DISPATCHER = "main_dispatcher"
-const val DEFAULT_DISPATCHER = "default_dispatcher"
+import org.koin.core.annotation.Single
 
 interface DispatcherProvider {
     val ioDispatcher: CoroutineDispatcher
@@ -13,6 +10,7 @@ interface DispatcherProvider {
     val mainDispatcher: CoroutineDispatcher
 }
 
+@Single
 class DefaultDispatcherProvider: DispatcherProvider {
     override val defaultDispatcher: CoroutineDispatcher
         get() = Dispatchers.Default

@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import org.koin.android.annotation.KoinViewModel
 
+@KoinViewModel
 internal class ConversationViewModel(
     private val key: ConversationKey,
     private val sessionStorage: SessionStorage,
