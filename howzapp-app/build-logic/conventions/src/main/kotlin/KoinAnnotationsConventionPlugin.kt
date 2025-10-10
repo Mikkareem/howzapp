@@ -30,7 +30,7 @@ class KoinAnnotationsConventionPlugin: Plugin<Project> {
                 }
             }
 
-            extensions.getByType<KspExtension>().arg("KOIN_CONFIG_CHECK", "false")
+            extensions.getByType<KspExtension>().arg("KOIN_CONFIG_CHECK", "true")
 
             // Trigger Common Metadata Generation from Native tasks
             tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
