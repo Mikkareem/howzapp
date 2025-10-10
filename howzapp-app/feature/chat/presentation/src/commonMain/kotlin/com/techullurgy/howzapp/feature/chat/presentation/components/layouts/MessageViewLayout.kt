@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageView
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageViewAnchored
 
@@ -27,17 +28,18 @@ sealed interface MessageViewUi {
 internal fun MessageViewLayout(
     view: MessageViewUi,
     message: Message,
+    owner: MessageOwner,
     modifier: Modifier = Modifier
 ) {
     val contents = mutableListOf<@Composable () -> Unit>().apply {
         if(view is MessageViewUi.Anchored) {
             add(view.content)
             add {
-                MessageViewAnchored(message, view.direction)
+                MessageViewAnchored(message, owner, view.direction)
             }
         } else {
             add {
-                MessageView(message)
+                MessageView(message, owner)
             }
         }
     }.toList()

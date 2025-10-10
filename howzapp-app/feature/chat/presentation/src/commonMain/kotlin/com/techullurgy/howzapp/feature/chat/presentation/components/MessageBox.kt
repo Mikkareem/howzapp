@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.LayoutDirection
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
 import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.presentation.components.layouts.MessageViewLayout
 import com.techullurgy.howzapp.feature.chat.presentation.components.layouts.MessageViewUi
 
@@ -45,6 +46,7 @@ internal fun MessageBox(
         MessageViewLayout(
             view = view,
             message = sheet.message,
+            owner = sheet.messageOwner
         )
     }
 }
@@ -52,10 +54,11 @@ internal fun MessageBox(
 internal data class MessageSheet(
     val messageId: String,
     val sender: ChatParticipant,
-    val isCurrentUser: Boolean,
     val isPictureShowable: Boolean,
-    val message: Message
+    val message: Message,
+    val messageOwner: MessageOwner
 ) {
+    val isCurrentUser = messageOwner is MessageOwner.Me
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is MessageSheet) return false

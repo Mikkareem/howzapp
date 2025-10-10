@@ -88,6 +88,37 @@ private val chats = listOf(
                 messageId = "m2_123",
                 content = Message.TextMessage("I'm fine, What about you?"),
                 owner = MessageOwner.Other(sampleChat1.chatParticipants.last(), false)
+            ),
+            sampleChat1.chatMessages.first().copy(
+                messageId = "m3_123",
+                content = Message.ImageMessage("https://<public-url-of-an-image>"),
+                owner = MessageOwner.Other(sampleChat1.chatParticipants.last(), false)
+            ),
+            sampleChat1.chatMessages.first().copy(
+                messageId = "m4_123",
+                content = Message.VideoMessage("https://<public-url-of-an-video>"),
+                owner = MessageOwner.Other(sampleChat1.chatParticipants.last(), false)
+            ),
+            sampleChat1.chatMessages.first().copy(
+                messageId = "m5_123",
+                content = Message.DocumentMessage(
+                    "application.pdf",
+                    "https://<public-url-of-an-document>"
+                ),
+                owner = MessageOwner.Me(sampleChat1.chatParticipants.first(), MessageStatus.SENT)
+            ),
+            sampleChat1.chatMessages.first().copy(
+                messageId = "m6_123",
+                content = Message.AudioMessage("https://<public-url-of-an-document>"),
+                owner = MessageOwner.Me(
+                    sampleChat1.chatParticipants.first(),
+                    MessageStatus.DELIVERED
+                )
+            ),
+            sampleChat1.chatMessages.first().copy(
+                messageId = "m7_123",
+                content = Message.AudioMessage("https://<public-url-of-an-video>"),
+                owner = MessageOwner.Other(sampleChat1.chatParticipants.last(), false)
             )
         )
     )

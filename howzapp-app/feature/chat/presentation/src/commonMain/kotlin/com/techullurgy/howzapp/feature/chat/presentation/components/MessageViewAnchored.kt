@@ -1,21 +1,19 @@
 package com.techullurgy.howzapp.feature.chat.presentation.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 
 @Composable
 internal fun MessageViewAnchored(
     message: Message,
+    owner: MessageOwner,
     arrowDirection: LayoutDirection
 ) {
     Box(
@@ -36,6 +34,6 @@ internal fun MessageViewAnchored(
                 drawPath(path2, Color.Blue)
             }
     ) {
-        MessageView(message)
+        MessageView(message, owner)
     }
 }

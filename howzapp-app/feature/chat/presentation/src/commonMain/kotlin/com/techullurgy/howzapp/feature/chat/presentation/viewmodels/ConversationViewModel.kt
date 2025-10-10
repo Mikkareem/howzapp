@@ -2,7 +2,6 @@ package com.techullurgy.howzapp.feature.chat.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.techullurgy.howzapp.core.domain.auth.SessionStorage
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
 import com.techullurgy.howzapp.feature.chat.domain.models.OnlineStatus
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatRepository
@@ -10,8 +9,8 @@ import com.techullurgy.howzapp.feature.chat.presentation.components.MessageSheet
 import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import org.koin.android.annotation.KoinViewModel
@@ -19,7 +18,6 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 internal class ConversationViewModel(
     private val key: ConversationKey,
-    private val sessionStorage: SessionStorage,
     private val chatRepository: ChatRepository
 ): ViewModel() {
     private val _state = MutableStateFlow(ConversationUiState())
@@ -36,56 +34,53 @@ internal class ConversationViewModel(
 
     private fun observeMessages() {
         chatRepository.observeChatByChatId(key.conversationId)
-            .combine(sessionStorage.observeAuthInfo()) { chat, authInfo ->
-                chat ?: return@combine
+            .onEach { chat ->
+                chat ?: return@onEach
 
-                authInfo?.let {
-                    val currentUserId = it.user.id
+                val title = when (val chatType = chat.chatInfo.chatType) {
+                    is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.username
+                    is ChatType.Group -> chatType.title
+                }
 
-                    val title = when (val chatType = chat.chatInfo.chatType) {
-                        is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.username
-                        is ChatType.Group -> chatType.title
-                    }
+                val profileUrl = when (val chatType = chat.chatInfo.chatType) {
+                    is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.profilePictureUrl
+                    is ChatType.Group -> chatType.profileUrl
+                }
 
-                    val profileUrl = when (val chatType = chat.chatInfo.chatType) {
-                        is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.profilePictureUrl
-                        is ChatType.Group -> chatType.profileUrl
-                    }
-
-                    val subtitle = when (val chatType = chat.chatInfo.chatType) {
-                        is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.onlineStatus.run {
-                            when(this) {
-                                OnlineStatus.IsOnline -> "Online"
-                                OnlineStatus.NoOnlineStatus -> ""
-                                is OnlineStatus.NotInOnline -> "Last seen $lastSeen"
-                            }
+                val subtitle = when (val chatType = chat.chatInfo.chatType) {
+                    is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.onlineStatus.run {
+                        when (this) {
+                            OnlineStatus.IsOnline -> "Online"
+                            OnlineStatus.NoOnlineStatus -> ""
+                            is OnlineStatus.NotInOnline -> "Last seen $lastSeen"
                         }
-                        is ChatType.Group -> "${chat.chatParticipants.count()} Participants"
                     }
 
-                    val msgSheets = chat.chatMessages.mapIndexed { index, msg ->
-                        MessageSheet(
-                            messageId = msg.messageId,
-                            sender = msg.owner.owner,
-                            isCurrentUser = msg.owner.owner.userId == currentUserId,
-                            isPictureShowable = ({
-                                if(index-1 >= 0) {
-                                    chat.chatMessages[index-1].owner.owner.userId != msg.owner.owner.userId
-                                } else {
-                                    true
-                                }
-                            })(),
-                            message = msg.content
-                        )
-                    }
+                    is ChatType.Group -> "${chat.chatParticipants.count()} Participants"
+                }
 
-                    _state.value = _state.value.copy(
-                        title = title,
-                        subtitle = subtitle,
-                        profilePicture = profileUrl,
-                        messageSheets = _state.value.messageSheets.union(msgSheets).toList()
+                val msgSheets = chat.chatMessages.mapIndexed { index, msg ->
+                    MessageSheet(
+                        messageId = msg.messageId,
+                        sender = msg.owner.owner,
+                        messageOwner = msg.owner,
+                        isPictureShowable = ({
+                            if (index - 1 >= 0) {
+                                chat.chatMessages[index - 1].owner.owner.userId != msg.owner.owner.userId
+                            } else {
+                                true
+                            }
+                        })(),
+                        message = msg.content
                     )
                 }
+
+                _state.value = _state.value.copy(
+                    title = title,
+                    subtitle = subtitle,
+                    profilePicture = profileUrl,
+                    messageSheets = _state.value.messageSheets.union(msgSheets).toList()
+                )
             }
             .launchIn(viewModelScope)
     }
