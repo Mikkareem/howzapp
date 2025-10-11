@@ -10,36 +10,25 @@ import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageView
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageViewAnchored
-
-sealed interface MessageViewUi {
-    val direction: LayoutDirection
-
-    data class Anchored(
-        override val direction: LayoutDirection,
-        val content: @Composable () -> Unit
-    ): MessageViewUi
-
-    data class NonAnchored(
-        override val direction: LayoutDirection
-    ): MessageViewUi
-}
+import kotlin.time.Instant
 
 @Composable
 internal fun MessageViewLayout(
     view: MessageViewUi,
     message: Message,
     owner: MessageOwner,
+    timestamp: Instant,
     modifier: Modifier = Modifier
 ) {
     val contents = mutableListOf<@Composable () -> Unit>().apply {
         if(view is MessageViewUi.Anchored) {
             add(view.content)
             add {
-                MessageViewAnchored(message, owner, view.direction)
+                MessageViewAnchored(message, owner, timestamp, view.direction)
             }
         } else {
             add {
-                MessageView(message, owner)
+                MessageView(message, owner, timestamp)
             }
         }
     }.toList()
@@ -93,4 +82,17 @@ internal fun MessageViewLayout(
             }
         }
     }
+}
+
+internal sealed interface MessageViewUi {
+    val direction: LayoutDirection
+
+    data class Anchored(
+        override val direction: LayoutDirection,
+        val content: @Composable () -> Unit
+    ) : MessageViewUi
+
+    data class NonAnchored(
+        override val direction: LayoutDirection
+    ) : MessageViewUi
 }

@@ -27,11 +27,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.core.designsystem.theme.LocalAppColors
+import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
+import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
+import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
+import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.presentation.components.Addition
 import com.techullurgy.howzapp.feature.chat.presentation.components.AdditionBox
 import com.techullurgy.howzapp.feature.chat.presentation.components.InfoBox
 import com.techullurgy.howzapp.feature.chat.presentation.components.InputBox
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageBox
+import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
 import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationUiState
 import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationViewModel
 import howzapp.feature.chat.presentation.generated.resources.Res
@@ -44,8 +50,12 @@ import howzapp.feature.chat.presentation.generated.resources.location
 import howzapp.feature.chat.presentation.generated.resources.sticker
 import howzapp.feature.chat.presentation.generated.resources.video
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.minutes
 
 data class ConversationKey(
     val conversationId: String
@@ -148,14 +158,70 @@ private fun ConversationScreenBottomBar() {
 
 @Preview
 @Composable
-private fun ConversationScreenPreview() {
+private fun ConversationScreenPreview(
+    @PreviewParameter(ConversationUiStatePreviewParameterProvider::class) state: ConversationUiState
+) {
     HowzAppTheme {
-        ConversationScreen(
+        ConversationScreen(state)
+    }
+}
+
+private class ConversationUiStatePreviewParameterProvider :
+    PreviewParameterProvider<ConversationUiState> {
+    private val sampleMessageSheet = MessageSheet(
+        messageId = "m1",
+        sender = ChatParticipant("", ""),
+        isPictureShowable = false,
+        message = Message.TextMessage(""),
+        messageOwner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.SENT),
+        timestamp = Clock.System.now()
+    )
+
+
+    override val values: Sequence<ConversationUiState>
+        get() = sequenceOf(
             ConversationUiState(
                 title = "Irsath Kareem",
                 subtitle = "Online",
-                profilePicture = null
+                messageSheets = listOf(
+                    sampleMessageSheet.copy(
+                        message = Message.ImageMessage(""),
+                        timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
+                    ),
+                    sampleMessageSheet.copy(
+                        message = Message.UploadablePendingMessage(
+                            originalMessage = Message.ImageMessage(""),
+                            uploadId = "",
+                            status = UploadStatus.Progress(28.0)
+                        ),
+                        timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
+                    ),
+                    sampleMessageSheet.copy(
+                        message = Message.UploadablePendingMessage(
+                            originalMessage = Message.AudioMessage(""),
+                            uploadId = "",
+                            status = UploadStatus.Progress(28.0)
+                        ),
+                        timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
+                    ),
+                    sampleMessageSheet.copy(
+                        message = Message.UploadablePendingMessage(
+                            originalMessage = Message.AudioMessage(""),
+                            uploadId = "",
+                            status = UploadStatus.Failed
+                        ),
+                        timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
+                    ),
+
+                    sampleMessageSheet.copy(
+                        message = Message.UploadablePendingMessage(
+                            originalMessage = Message.AudioMessage(""),
+                            uploadId = "",
+                            status = UploadStatus.Success("")
+                        ),
+                        timestamp = sampleMessageSheet.timestamp.minus(3.minutes)
+                    ),
+                )
             )
         )
-    }
 }

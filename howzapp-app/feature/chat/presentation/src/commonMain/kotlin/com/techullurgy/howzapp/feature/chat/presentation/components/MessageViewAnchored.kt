@@ -9,11 +9,13 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.LayoutDirection
 import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
+import kotlin.time.Instant
 
 @Composable
 internal fun MessageViewAnchored(
     message: Message,
     owner: MessageOwner,
+    timestamp: Instant,
     arrowDirection: LayoutDirection
 ) {
     Box(
@@ -34,6 +36,6 @@ internal fun MessageViewAnchored(
                 drawPath(path2, Color.Blue)
             }
     ) {
-        MessageView(message, owner)
+        MessageView(message, owner, timestamp)
     }
 }

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
 import com.techullurgy.howzapp.feature.chat.domain.models.OnlineStatus
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatRepository
-import com.techullurgy.howzapp.feature.chat.presentation.components.MessageSheet
+import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
 import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -71,7 +71,8 @@ internal class ConversationViewModel(
                                 true
                             }
                         })(),
-                        message = msg.content
+                        message = msg.content,
+                        timestamp = msg.timestamp
                     )
                 }
 

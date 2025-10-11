@@ -11,6 +11,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.coil.compose)
             implementation(libs.coil.okhttp)
+            implementation(libs.kotlinx.datetime)
 
             implementation(projects.core.designsystem)
             implementation(projects.core.domain)
