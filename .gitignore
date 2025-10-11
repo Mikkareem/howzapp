@@ -4,3 +4,4 @@
 .gradle
 build
 service-account.json
+local.properties
