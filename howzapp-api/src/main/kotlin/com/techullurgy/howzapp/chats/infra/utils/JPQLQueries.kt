@@ -45,4 +45,17 @@ object JPQLQueries {
         const val PARAM_MEMBER_1 = "member1"
         const val PARAM_MEMBER_2 = "member2"
     }
+
+    object GET_RECEIPTS_FOR_MESSAGE_FOR_USER {
+        const val QUERY = """
+            SELECT r
+            FROM ChatMessageReceiptsEntity r
+            JOIN r.message m
+            JOIN r.user u
+            WHERE m.id = :messageId AND u.id = :userId
+        """
+
+        const val PARAM_USER_ID = "userId"
+        const val PARAM_MESSAGE_ID = "messageId"
+    }
 }

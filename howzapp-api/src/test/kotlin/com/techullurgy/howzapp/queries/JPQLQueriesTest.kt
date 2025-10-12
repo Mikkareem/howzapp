@@ -1,20 +1,20 @@
 package com.techullurgy.howzapp.queries
 
-import com.techullurgy.howzapp.chats.infra.database.entities.ChatMessageEntity
-import com.techullurgy.howzapp.chats.infra.database.entities.ChatMessageStatusEntity
-import com.techullurgy.howzapp.chats.infra.database.entities.MessageStatus
+import com.techullurgy.howzapp.chats.infra.database.entities.*
 import com.techullurgy.howzapp.chats.infra.database.entities.chats.OneToOneChatEntity
 import com.techullurgy.howzapp.chats.infra.database.entities.messages.TextMessageEntity
 import com.techullurgy.howzapp.chats.infra.utils.JPQLQueries
-import com.techullurgy.howzapp.common.types.UserId
 import com.techullurgy.howzapp.common.types.id
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import java.time.Instant
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
+import kotlin.uuid.Uuid
 
 @DataJpaTest
 class JPQLQueriesTest {
@@ -22,43 +22,111 @@ class JPQLQueriesTest {
     @PersistenceContext
     private lateinit var em: EntityManager
 
-    @Test
-    fun `load messages with user status`() {
-        val users = List(4) {
-            UserEntity(UserId.id, "Irsath-$it", "")
+    private lateinit var users: List<UserEntity>
+    private lateinit var chats: List<ChatEntity>
+    private lateinit var messages: List<ChatMessageEntity>
+
+    @BeforeTest
+    fun setup() {
+        users = List(4) {
+            UserEntity(Uuid.id.toString(), "Irsath-$it", "")
         }.also { it.forEach { e -> em.persist(e) } }
 
-        val chats = List(2) {
-            when(it) {
+        chats = List(2) {
+            when (it) {
                 0 -> OneToOneChatEntity(originator = users[0], participant = users[1])
                 1 -> OneToOneChatEntity(originator = users[0], participant = users[2])
                 else -> TODO()
             }
         }.also { it.forEach { e -> em.persist(e) } }
 
-        val messages: List<ChatMessageEntity> = listOf(
-            TextMessageEntity(sender = users[0], belongsToChat = chats[0], text = "Message-00", createdAt = Instant.now().plusSeconds(1)),
-            TextMessageEntity(sender = users[1], belongsToChat = chats[0], text = "Message-11", createdAt = Instant.now().plusSeconds(2)),
-            TextMessageEntity(sender = users[0], belongsToChat = chats[0], text = "Message-30", createdAt = Instant.now().plusSeconds(3)),
-            TextMessageEntity(sender = users[1], belongsToChat = chats[0], text = "Message-41", createdAt = Instant.now().plusSeconds(4)),
-            TextMessageEntity(sender = users[0], belongsToChat = chats[0], text = "Message-50", createdAt = Instant.now().plusSeconds(5)),
-            TextMessageEntity(sender = users[0], belongsToChat = chats[0], text = "Message-60", createdAt = Instant.now().plusSeconds(6)),
+        messages = listOf(
+            TextMessageEntity(
+                sender = users[0],
+                belongsToChat = chats[0],
+                text = "Message-00",
+                createdAt = Instant.now().plusSeconds(1)
+            ),
+            TextMessageEntity(
+                sender = users[1],
+                belongsToChat = chats[0],
+                text = "Message-11",
+                createdAt = Instant.now().plusSeconds(2)
+            ),
+            TextMessageEntity(
+                sender = users[0],
+                belongsToChat = chats[0],
+                text = "Message-30",
+                createdAt = Instant.now().plusSeconds(3)
+            ),
+            TextMessageEntity(
+                sender = users[1],
+                belongsToChat = chats[0],
+                text = "Message-41",
+                createdAt = Instant.now().plusSeconds(4)
+            ),
+            TextMessageEntity(
+                sender = users[0],
+                belongsToChat = chats[0],
+                text = "Message-50",
+                createdAt = Instant.now().plusSeconds(5)
+            ),
+            TextMessageEntity(
+                sender = users[0],
+                belongsToChat = chats[0],
+                text = "Message-60",
+                createdAt = Instant.now().plusSeconds(6)
+            ),
 
-            TextMessageEntity(sender = users[0], belongsToChat = chats[1], text = "Message-00", createdAt = Instant.now().plusSeconds(7)),
-            TextMessageEntity(sender = users[2], belongsToChat = chats[1], text = "Message-12", createdAt = Instant.now().plusSeconds(8)),
-            TextMessageEntity(sender = users[0], belongsToChat = chats[1], text = "Message-30", createdAt = Instant.now().plusSeconds(9)),
-            TextMessageEntity(sender = users[2], belongsToChat = chats[1], text = "Message-42", createdAt = Instant.now().plusSeconds(10)),
-            TextMessageEntity(sender = users[0], belongsToChat = chats[1], text = "Message-50", createdAt = Instant.now().plusSeconds(11)),
-            TextMessageEntity(sender = users[0], belongsToChat = chats[1], text = "Message-60", createdAt = Instant.now().plusSeconds(12)),
+            TextMessageEntity(
+                sender = users[0],
+                belongsToChat = chats[1],
+                text = "Message-00",
+                createdAt = Instant.now().plusSeconds(7)
+            ),
+            TextMessageEntity(
+                sender = users[2],
+                belongsToChat = chats[1],
+                text = "Message-12",
+                createdAt = Instant.now().plusSeconds(8)
+            ),
+            TextMessageEntity(
+                sender = users[0],
+                belongsToChat = chats[1],
+                text = "Message-30",
+                createdAt = Instant.now().plusSeconds(9)
+            ),
+            TextMessageEntity(
+                sender = users[2],
+                belongsToChat = chats[1],
+                text = "Message-42",
+                createdAt = Instant.now().plusSeconds(10)
+            ),
+            TextMessageEntity(
+                sender = users[0],
+                belongsToChat = chats[1],
+                text = "Message-50",
+                createdAt = Instant.now().plusSeconds(11)
+            ),
+            TextMessageEntity(
+                sender = users[0],
+                belongsToChat = chats[1],
+                text = "Message-60",
+                createdAt = Instant.now().plusSeconds(12)
+            ),
         ).also { it.forEach { e -> em.persist(e) } }
 
         messages.map {
             ChatMessageStatusEntity(message = it, sender = it.sender, status = MessageStatus.SENT)
         }.mapIndexed { index, s ->
-            if(index == 5) {
+            if (index == 5) {
                 ChatMessageStatusEntity(message = s.message, sender = s.sender, status = MessageStatus.RECEIVED)
             } else s
         }.also { it.forEach { e -> em.persist(e) } }
+    }
+
+    @Test
+    fun `load messages with user status`() {
 
         val queryResult1 = em.createQuery(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.QUERY, Projection::class.java)
             .setParameter(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.PARAM_USER, users[0])
@@ -101,6 +169,30 @@ class JPQLQueriesTest {
                 if(e.status == null) i else null
             }
         )
+    }
+
+    @Test
+    fun `load multiple receipts for same user, message, chat`() {
+
+        ChatMessageReceiptsEntity("asdjaksh", messages[0], users[0], Receipt.PENDING).also {
+            em.persist(it)
+        }
+        ChatMessageReceiptsEntity("asdgaksh", messages[1], users[0], Receipt.READ).also {
+            em.persist(it)
+        }
+
+        val result =
+            em.createQuery(JPQLQueries.GET_RECEIPTS_FOR_MESSAGE_FOR_USER.QUERY, ChatMessageReceiptsEntity::class.java)
+                .setParameter(JPQLQueries.GET_RECEIPTS_FOR_MESSAGE_FOR_USER.PARAM_USER_ID, users[0].id)
+                .setParameter(JPQLQueries.GET_RECEIPTS_FOR_MESSAGE_FOR_USER.PARAM_MESSAGE_ID, messages[0].id)
+                .resultList
+                .first()
+
+        assertEquals("asdjaksh", result.id)
+        assertEquals(Receipt.PENDING, result.receipt)
+
+//        assertEquals("asdgaksh", result.id)
+//        assertEquals(Receipt.READ, result.receipt)
     }
 }
 

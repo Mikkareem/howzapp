@@ -2,8 +2,7 @@ package com.techullurgy.howzapp.chats.services
 
 import com.techullurgy.howzapp.amqp.RabbitMQConfiguration
 import com.techullurgy.howzapp.chats.events.ChatEvent
-import com.techullurgy.howzapp.common.events.ServerAppEvent
-import com.techullurgy.howzapp.common.events.ServerReceipt
+import com.techullurgy.howzapp.common.events.ServerAppEvent.NotifySyncMessageEvent
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
@@ -22,12 +21,27 @@ class ChatEventHandler(
                     rabbitTemplate.convertAndSend(
                         RabbitMQConfiguration.APP_RECEIPT_EXCHANGE,
                         "",
-                        ServerReceipt(
-                            receiptFor = it.id,
-                            event = ServerAppEvent.ChatNewMessageEvent(event.chatId.toString()),
-                        )
+                        NotifySyncMessageEvent(it)
                     )
                 }
+            }
+
+            is ChatEvent.OnDeliveredMessage -> {
+                val sender = chatService.getSenderOfTheMessage(event.messageId)
+                rabbitTemplate.convertAndSend(
+                    RabbitMQConfiguration.APP_RECEIPT_EXCHANGE,
+                    "",
+                    NotifySyncMessageEvent(sender)
+                )
+            }
+
+            is ChatEvent.OnReadMessage -> {
+                val sender = chatService.getSenderOfTheMessage(event.messageId)
+                rabbitTemplate.convertAndSend(
+                    RabbitMQConfiguration.APP_RECEIPT_EXCHANGE,
+                    "",
+                    NotifySyncMessageEvent(sender)
+                )
             }
         }
     }

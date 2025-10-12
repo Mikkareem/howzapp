@@ -1,15 +1,10 @@
 package com.techullurgy.howzapp.users.api
 
-import com.techullurgy.howzapp.common.types.UserId
-import com.techullurgy.howzapp.common.types.id
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
 import com.techullurgy.howzapp.users.infra.database.repositories.UserRepository
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import kotlin.uuid.Uuid
 
 @RestController
 @RequestMapping("/users")
@@ -21,7 +16,7 @@ class UserController(
     fun createUser(
         @PathVariable("name") name: String,
     ): ResponseEntity<String> {
-        val userId = UserId.id
+        val userId = Uuid.random().toString()
         val entity = UserEntity(userId, name, "")
         userRepository.save(entity)
         return ResponseEntity.ok("Created $userId")
