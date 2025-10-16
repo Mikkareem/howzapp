@@ -1,27 +1,20 @@
-package com.techullurgy.howzapp.uploads
+package com.techullurgy.howzapp.uploads.services
 
 import com.google.auth.oauth2.ServiceAccountCredentials
 import com.google.cloud.storage.Blob
 import com.google.cloud.storage.HttpMethod
 import com.google.cloud.storage.Storage
 import com.google.cloud.storage.StorageOptions
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 import java.io.File
 import java.util.concurrent.TimeUnit
 
 @Service
-class GCSUploaderService {
-
-    @Value($$"${spring.gcp.storage.credentials.path}")
-    private lateinit var credentialsPath: String
-
-    private val logger = LoggerFactory.getLogger(javaClass)
-
+class GCSUploaderService(
+    @param:Value($$"${application.gcp.storage.credentials.path}")
+    private val credentialsPath: String
+) {
     fun getSignedUrl(): String {
         val blobInfo = Blob.newBuilder("howzapp-test", "profile_pictures/profile.png")
             .setContentType("application/octet-stream")
@@ -46,17 +39,5 @@ class GCSUploaderService {
         )
 
         return url.toString()
-    }
-}
-
-@RestController
-@RequestMapping("/file/uploads")
-class FileUploadController(
-    private val gcsUploader: GCSUploaderService
-) {
-
-    @PostMapping
-    fun uploadRequest(): String {
-        return gcsUploader.getSignedUrl()
     }
 }

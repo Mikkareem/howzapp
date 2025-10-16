@@ -4,6 +4,7 @@ import com.techullurgy.howzapp.common.types.ChatId
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 import java.time.Instant
 
 @Entity
@@ -25,13 +26,31 @@ abstract class ChatEntity(
         joinColumns = [JoinColumn(name = "chat_id")],
         inverseJoinColumns = [JoinColumn(name = "user_id")]
     )
-    val participants: List<UserEntity>
-) {
+    val participants: List<UserEntity>,
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     val createdAt: Instant = Instant.now()
+) {
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    lateinit var updatedAt: Instant
 
     @Column(nullable = false, insertable = false, updatable = false)
     var type: String? = null
         protected set
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ChatEntity) return false
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }

@@ -2,16 +2,9 @@ package com.techullurgy.howzapp.chats.infra.database.entities
 
 import com.techullurgy.howzapp.common.types.MessageId
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Index
-import jakarta.persistence.Inheritance
-import jakarta.persistence.InheritanceType
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 import java.time.Instant
 
 @Entity
@@ -38,5 +31,24 @@ abstract class ChatMessageEntity(
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
-    val createdAt: Instant,
-)
+    val createdAt: Instant = Instant.now(),
+
+    val isDeleted: Boolean = false
+) {
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    lateinit var updatedAt: Instant
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ChatMessageEntity) return false
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}

@@ -4,7 +4,13 @@ import com.techullurgy.howzapp.chats.infra.database.entities.ChatMessageEntity
 import com.techullurgy.howzapp.chats.infra.database.entities.messages.*
 import com.techullurgy.howzapp.chats.models.*
 
-fun ChatMessageEntity.toDomain(): ChatMessage {
+fun ChatMessageEntity.toDomain(): Message {
+    if (isDeleted) {
+        return DeletedMessage(
+            id = id
+        )
+    }
+
     return when(this) {
         is DocumentMessageEntity -> DocumentMessage(
             id = id,

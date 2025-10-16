@@ -8,9 +8,3 @@ fun UserEntity.toDomain(): AppUser = AppUser(
     name = name,
     profilePictureUrl = profilePictureUrl
 )
-
-fun AppUser.toEntity(): UserEntity = UserEntity(
-    id = id,
-    name = name,
-    profilePictureUrl = profilePictureUrl
-)

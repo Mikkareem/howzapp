@@ -3,11 +3,14 @@ package com.techullurgy.howzapp.queries
 import com.techullurgy.howzapp.chats.infra.database.entities.*
 import com.techullurgy.howzapp.chats.infra.database.entities.chats.OneToOneChatEntity
 import com.techullurgy.howzapp.chats.infra.database.entities.messages.TextMessageEntity
+import com.techullurgy.howzapp.chats.infra.database.projections.ChatMessageProjection
+import com.techullurgy.howzapp.chats.infra.database.repositories.ChatMessageRepository
 import com.techullurgy.howzapp.chats.infra.utils.JPQLQueries
 import com.techullurgy.howzapp.common.types.id
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import java.time.Instant
 import kotlin.test.BeforeTest
@@ -22,6 +25,9 @@ class JPQLQueriesTest {
     @PersistenceContext
     private lateinit var em: EntityManager
 
+    @Autowired
+    private lateinit var repo: ChatMessageRepository
+
     private lateinit var users: List<UserEntity>
     private lateinit var chats: List<ChatEntity>
     private lateinit var messages: List<ChatMessageEntity>
@@ -29,7 +35,7 @@ class JPQLQueriesTest {
     @BeforeTest
     fun setup() {
         users = List(4) {
-            UserEntity(Uuid.id.toString(), "Irsath-$it", "")
+            UserEntity(Uuid.id.toString(), "Irsath-$it", "", "", "")
         }.also { it.forEach { e -> em.persist(e) } }
 
         chats = List(2) {
@@ -45,74 +51,74 @@ class JPQLQueriesTest {
                 sender = users[0],
                 belongsToChat = chats[0],
                 text = "Message-00",
-                createdAt = Instant.now().plusSeconds(1)
+                createdAt = Instant.now().plusSeconds(1),
             ),
             TextMessageEntity(
                 sender = users[1],
                 belongsToChat = chats[0],
                 text = "Message-11",
-                createdAt = Instant.now().plusSeconds(2)
+                createdAt = Instant.now().plusSeconds(2),
             ),
             TextMessageEntity(
                 sender = users[0],
                 belongsToChat = chats[0],
                 text = "Message-30",
-                createdAt = Instant.now().plusSeconds(3)
+                createdAt = Instant.now().plusSeconds(3),
             ),
             TextMessageEntity(
                 sender = users[1],
                 belongsToChat = chats[0],
                 text = "Message-41",
-                createdAt = Instant.now().plusSeconds(4)
+                createdAt = Instant.now().plusSeconds(4),
             ),
             TextMessageEntity(
                 sender = users[0],
                 belongsToChat = chats[0],
                 text = "Message-50",
-                createdAt = Instant.now().plusSeconds(5)
+                createdAt = Instant.now().plusSeconds(5),
             ),
             TextMessageEntity(
                 sender = users[0],
                 belongsToChat = chats[0],
                 text = "Message-60",
-                createdAt = Instant.now().plusSeconds(6)
+                createdAt = Instant.now().plusSeconds(6),
             ),
 
             TextMessageEntity(
                 sender = users[0],
                 belongsToChat = chats[1],
                 text = "Message-00",
-                createdAt = Instant.now().plusSeconds(7)
+                createdAt = Instant.now().plusSeconds(7),
             ),
             TextMessageEntity(
                 sender = users[2],
                 belongsToChat = chats[1],
                 text = "Message-12",
-                createdAt = Instant.now().plusSeconds(8)
+                createdAt = Instant.now().plusSeconds(8),
             ),
             TextMessageEntity(
                 sender = users[0],
                 belongsToChat = chats[1],
                 text = "Message-30",
-                createdAt = Instant.now().plusSeconds(9)
+                createdAt = Instant.now().plusSeconds(9),
             ),
             TextMessageEntity(
                 sender = users[2],
                 belongsToChat = chats[1],
                 text = "Message-42",
-                createdAt = Instant.now().plusSeconds(10)
+                createdAt = Instant.now().plusSeconds(10),
             ),
             TextMessageEntity(
                 sender = users[0],
                 belongsToChat = chats[1],
                 text = "Message-50",
-                createdAt = Instant.now().plusSeconds(11)
+                createdAt = Instant.now().plusSeconds(11),
             ),
             TextMessageEntity(
                 sender = users[0],
                 belongsToChat = chats[1],
                 text = "Message-60",
-                createdAt = Instant.now().plusSeconds(12)
+                createdAt = Instant.now().plusSeconds(12),
             ),
         ).also { it.forEach { e -> em.persist(e) } }
 
@@ -123,14 +129,20 @@ class JPQLQueriesTest {
                 ChatMessageStatusEntity(message = s.message, sender = s.sender, status = MessageStatus.RECEIVED)
             } else s
         }.also { it.forEach { e -> em.persist(e) } }
+
+        em.flush()
     }
 
     @Test
     fun `load messages with user status`() {
 
-        val queryResult1 = em.createQuery(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.QUERY, Projection::class.java)
+        val queryResult1 =
+            em.createQuery(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.QUERY, ChatMessageProjection::class.java)
             .setParameter(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.PARAM_USER, users[0])
-            .setParameter(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.PARAM_LAST_SYNCED_TIME, Instant.now().minusSeconds(5))
+                .setParameter(
+                    JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.PARAM_MESSAGE_AFTER,
+                    Instant.now().minusSeconds(5)
+                )
             .resultList
 
         // Checking Correct Non-Null Value indices for user0
@@ -149,9 +161,13 @@ class JPQLQueriesTest {
             }
         )
 
-        val queryResult2 = em.createQuery(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.QUERY, Projection::class.java)
+        val queryResult2 =
+            em.createQuery(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.QUERY, ChatMessageProjection::class.java)
             .setParameter(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.PARAM_USER, users[1])
-            .setParameter(JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.PARAM_LAST_SYNCED_TIME, Instant.now().minusSeconds(5))
+                .setParameter(
+                    JPQLQueries.FETCH_NEW_MESSAGES_FOR_USER.PARAM_MESSAGE_AFTER,
+                    Instant.now().minusSeconds(5)
+                )
             .resultList
 
         // for user1
@@ -172,6 +188,18 @@ class JPQLQueriesTest {
     }
 
     @Test
+    fun `load before message in the chat`() {
+        val resultList =
+            em.createQuery(JPQLQueries.LOADING_SLICE_OF_MESSAGES_FOR_CHAT.QUERY, ChatMessageProjection::class.java)
+                .setParameter(JPQLQueries.LOADING_SLICE_OF_MESSAGES_FOR_CHAT.PARAM_CHAT, chats[0].id)
+                .setParameter(JPQLQueries.LOADING_SLICE_OF_MESSAGES_FOR_CHAT.PARAM_REQUESTER, users[1].id)
+                .setParameter(JPQLQueries.LOADING_SLICE_OF_MESSAGES_FOR_CHAT.PARAM_BEFORE_MESSAGE, messages[3].id)
+                .resultList
+
+        assertEquals(3, resultList.size)
+    }
+
+    @Test
     fun `load multiple receipts for same user, message, chat`() {
 
         ChatMessageReceiptsEntity("asdjaksh", messages[0], users[0], Receipt.PENDING).also {
@@ -181,18 +209,20 @@ class JPQLQueriesTest {
             em.persist(it)
         }
 
+        em.flush()
+
         val result =
             em.createQuery(JPQLQueries.GET_RECEIPTS_FOR_MESSAGE_FOR_USER.QUERY, ChatMessageReceiptsEntity::class.java)
                 .setParameter(JPQLQueries.GET_RECEIPTS_FOR_MESSAGE_FOR_USER.PARAM_USER_ID, users[0].id)
-                .setParameter(JPQLQueries.GET_RECEIPTS_FOR_MESSAGE_FOR_USER.PARAM_MESSAGE_ID, messages[0].id)
+                .setParameter(JPQLQueries.GET_RECEIPTS_FOR_MESSAGE_FOR_USER.PARAM_MESSAGE_ID, messages[1].id)
                 .resultList
                 .first()
 
-        assertEquals("asdjaksh", result.id)
-        assertEquals(Receipt.PENDING, result.receipt)
+//        assertEquals("asdjaksh", result.id)
+//        assertEquals(Receipt.PENDING, result.receipt)
 
-//        assertEquals("asdgaksh", result.id)
-//        assertEquals(Receipt.READ, result.receipt)
+        assertEquals("asdgaksh", result.id)
+        assertEquals(Receipt.READ, result.receipt)
     }
 }
 

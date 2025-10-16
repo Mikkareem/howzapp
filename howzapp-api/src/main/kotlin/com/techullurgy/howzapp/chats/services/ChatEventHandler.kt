@@ -11,36 +11,31 @@ import org.springframework.transaction.event.TransactionalEventListener
 @Component
 class ChatEventHandler(
     private val rabbitTemplate: RabbitTemplate,
-    private val chatService: ChatService
 ) {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun handleChatEvent(event: ChatEvent) {
         when (event) {
             is ChatEvent.OnNewMessage -> {
-                chatService.getNotifiableParticipantsForChat(event.chatId, event.fromId).forEach {
-                    rabbitTemplate.convertAndSend(
-                        RabbitMQConfiguration.APP_RECEIPT_EXCHANGE,
-                        "",
-                        NotifySyncMessageEvent(it)
-                    )
-                }
-            }
-
-            is ChatEvent.OnDeliveredMessage -> {
-                val sender = chatService.getSenderOfTheMessage(event.messageId)
                 rabbitTemplate.convertAndSend(
                     RabbitMQConfiguration.APP_RECEIPT_EXCHANGE,
                     "",
-                    NotifySyncMessageEvent(sender)
+                    NotifySyncMessageEvent(event.toId)
+                )
+            }
+
+            is ChatEvent.OnDeliveredMessage -> {
+                rabbitTemplate.convertAndSend(
+                    RabbitMQConfiguration.APP_RECEIPT_EXCHANGE,
+                    "",
+                    NotifySyncMessageEvent(event.toId)
                 )
             }
 
             is ChatEvent.OnReadMessage -> {
-                val sender = chatService.getSenderOfTheMessage(event.messageId)
                 rabbitTemplate.convertAndSend(
                     RabbitMQConfiguration.APP_RECEIPT_EXCHANGE,
                     "",
-                    NotifySyncMessageEvent(sender)
+                    NotifySyncMessageEvent(event.toId)
                 )
             }
         }

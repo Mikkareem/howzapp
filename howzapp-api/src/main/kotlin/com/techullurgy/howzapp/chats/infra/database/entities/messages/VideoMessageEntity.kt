@@ -6,7 +6,6 @@ import com.techullurgy.howzapp.common.types.id
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
-import java.time.Instant
 
 @Entity
 @DiscriminatorValue("MEDIA_VIDEO")
@@ -14,6 +13,5 @@ class VideoMessageEntity(
     id: MessageId = MessageId.id,
     sender: UserEntity,
     belongsToChat: ChatEntity,
-    createdAt: Instant = Instant.now(),
     videoUrl: String,
-): MediaMessageEntity(id, sender, belongsToChat, createdAt, videoUrl)
+) : MediaMessageEntity(id, sender, belongsToChat, videoUrl)

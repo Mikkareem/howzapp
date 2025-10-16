@@ -28,6 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.h2database:h2")
@@ -41,6 +42,14 @@ dependencies {
     // Feign Client
     implementation(platform("org.springframework.cloud:spring-cloud-dependencies:2025.0.0"))
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+
+
+    // JWT
+    val jwt = "0.13.0"
+    implementation("io.jsonwebtoken:jjwt-api:$jwt")
+    implementation("io.jsonwebtoken:jjwt-impl:$jwt")
+
+    testImplementation("io.mockk:mockk:1.14.6")
 }
 
 kotlin {

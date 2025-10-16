@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: Howzapp
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:mem:test-db
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+
+
+application:
+  rabbitmq:
+    enabled: false
+
+  jwt:
+    secret: V0UgQVJFIE5PVCBUSEUgRkFLRSBPTkUgVE8gT0JGVVNDQVRF
+    expiration-minutes: 60
+
+  gcp:
+    storage:
+      credentials:
+        path: "classpath:service-account.json"
+
+  services:
+    events:
+      url: http://localhost:7070
