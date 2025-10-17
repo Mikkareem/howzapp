@@ -2,7 +2,7 @@ package com.techullurgy.howzapp.feature.chat.domain.utils
 
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
-import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
@@ -11,7 +11,7 @@ import kotlin.time.Clock
 
 fun ChatMessage.Companion.newTextMessage(
     chatId: String,
-    content: Message.TextMessage,
+    content: OriginalMessage.TextMessage,
     me: ChatParticipant
 ): ChatMessage {
     return with(me) {
@@ -21,7 +21,7 @@ fun ChatMessage.Companion.newTextMessage(
 
 fun ChatMessage.Companion.newAudioMessage(
     chatId: String,
-    content: Message.AudioMessage,
+    content: OriginalMessage.AudioMessage,
     me: ChatParticipant
 ): ChatMessage {
     return with(me) {
@@ -31,7 +31,7 @@ fun ChatMessage.Companion.newAudioMessage(
 
 fun ChatMessage.Companion.newDocumentMessage(
     chatId: String,
-    content: Message.DocumentMessage,
+    content: OriginalMessage.DocumentMessage,
     me: ChatParticipant
 ): ChatMessage {
     return with(me) {
@@ -41,7 +41,7 @@ fun ChatMessage.Companion.newDocumentMessage(
 
 fun ChatMessage.Companion.newImageMessage(
     chatId: String,
-    content: Message.ImageMessage,
+    content: OriginalMessage.ImageMessage,
     me: ChatParticipant
 ): ChatMessage {
     return with(me) {
@@ -51,7 +51,7 @@ fun ChatMessage.Companion.newImageMessage(
 
 fun ChatMessage.Companion.newVideoMessage(
     chatId: String,
-    content: Message.VideoMessage,
+    content: OriginalMessage.VideoMessage,
     me: ChatParticipant
 ): ChatMessage {
     return with(me) {
@@ -62,23 +62,23 @@ fun ChatMessage.Companion.newVideoMessage(
 context(me: ChatParticipant)
 internal fun ChatMessage.Companion.newMessage(
     chatId: String,
-    content: Message
+    content: OriginalMessage
 ): ChatMessage {
 
-    assert(content !is Message.PendingMessage) {
+    assert(content !is OriginalMessage.PendingMessage) {
         "PendingMessage is not allowed here"
     }
 
-    val pendingContent = if(content is Message.UploadableMessage) {
-        Message.UploadablePendingMessage(
+    val pendingContent = if(content is OriginalMessage.UploadableMessage) {
+        OriginalMessage.UploadablePendingMessage(
             uploadId = "",
             status = UploadStatus.Triggered,
             originalMessage = content,
             isReadyToSync = false
         )
     } else {
-        Message.NonUploadablePendingMessage(
-            originalMessage = content as Message.NonUploadableMessage,
+        OriginalMessage.NonUploadablePendingMessage(
+            originalMessage = content as OriginalMessage.NonUploadableMessage,
             isReadyToSync = true
         )
     }

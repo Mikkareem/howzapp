@@ -1,7 +1,7 @@
 package com.techullurgy.howzapp.feature.chat.domain.utils
 
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
-import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
@@ -18,11 +18,11 @@ fun ChatMessage.markAsRead(): ChatMessage {
 }
 
 fun ChatMessage.isPending(): Boolean {
-    return content is Message.PendingMessage && (owner as? MessageOwner.Me)?.msgStatus == MessageStatus.PENDING
+    return content is OriginalMessage.PendingMessage && (owner as? MessageOwner.Me)?.status == MessageStatus.PENDING
 }
 
 fun ChatMessage.isUploadPending(): Boolean {
-    return isPending() && content is Message.UploadablePendingMessage
+    return isPending() && content is OriginalMessage.UploadablePendingMessage
             && (content.status is UploadStatus.Started || content.status is UploadStatus.Progress)
 }
 
@@ -35,25 +35,25 @@ fun ChatMessage.isDeletable(): Boolean {
 }
 
 fun ChatMessage.markStatusPendingToCreated(): ChatMessage {
-    assert(owner is MessageOwner.Me && content is Message.PendingMessage && owner.msgStatus == MessageStatus.PENDING) {
+    assert(owner is MessageOwner.Me && content is OriginalMessage.PendingMessage && owner.status == MessageStatus.PENDING) {
         "Cannot Mark Pending to Created"
     }
 
-    val content = when(val content = content as Message.PendingMessage) {
-        is Message.NonUploadablePendingMessage -> content.copy(
+    val content = when(val content = content as OriginalMessage.PendingMessage) {
+        is OriginalMessage.NonUploadablePendingMessage -> content.copy(
             isReadyToSync = true
         )
-        is Message.UploadablePendingMessage -> {
+        is OriginalMessage.UploadablePendingMessage -> {
             assert(content.status is UploadStatus.Success) {
                 "Cannot mark the upload as Ready to Sync, because UploadStatus != Success"
             }
             val publicUrl = (content.status as UploadStatus.Success).publicUrl
             content.copy(
                 originalMessage = when(val message = content.originalMessage) {
-                    is Message.AudioMessage -> message.copy(audioUrl = publicUrl)
-                    is Message.DocumentMessage -> message.copy(documentUrl = publicUrl)
-                    is Message.ImageMessage -> message.copy(imageUrl = publicUrl)
-                    is Message.VideoMessage -> message.copy(videoUrl = publicUrl)
+                    is OriginalMessage.AudioMessage -> message.copy(audioUrl = publicUrl)
+                    is OriginalMessage.DocumentMessage -> message.copy(documentUrl = publicUrl)
+                    is OriginalMessage.ImageMessage -> message.copy(imageUrl = publicUrl)
+                    is OriginalMessage.VideoMessage -> message.copy(videoUrl = publicUrl)
                 },
                 isReadyToSync = true
             )
@@ -61,7 +61,7 @@ fun ChatMessage.markStatusPendingToCreated(): ChatMessage {
     }
 
     val owner = (owner as MessageOwner.Me).copy(
-        msgStatus = MessageStatus.CREATED
+        status = MessageStatus.CREATED
     )
 
     return copy(
@@ -73,28 +73,28 @@ fun ChatMessage.markStatusPendingToCreated(): ChatMessage {
 fun ChatMessage.upgradeToSuccessUrl(
     publicUrl: String
 ): ChatMessage {
-    require(content is Message.UploadablePendingMessage)
+    require(content is OriginalMessage.UploadablePendingMessage)
 
     return copy(
         content = content.copy(
             status = UploadStatus.Success(publicUrl),
             originalMessage = when(content.originalMessage) {
-                is Message.AudioMessage -> content.originalMessage.copy(audioUrl = publicUrl)
-                is Message.DocumentMessage -> content.originalMessage.copy(documentUrl = publicUrl)
-                is Message.ImageMessage -> content.originalMessage.copy(imageUrl = publicUrl)
-                is Message.VideoMessage -> content.originalMessage.copy(videoUrl = publicUrl)
+                is OriginalMessage.AudioMessage -> content.originalMessage.copy(audioUrl = publicUrl)
+                is OriginalMessage.DocumentMessage -> content.originalMessage.copy(documentUrl = publicUrl)
+                is OriginalMessage.ImageMessage -> content.originalMessage.copy(imageUrl = publicUrl)
+                is OriginalMessage.VideoMessage -> content.originalMessage.copy(videoUrl = publicUrl)
             }
         )
     )
 }
 
 fun ChatMessage.upgradeToOriginalMessage(): ChatMessage {
-    require(content is Message.PendingMessage)
+    require(content is OriginalMessage.PendingMessage)
 
     require(
         when(content) {
-            is Message.NonUploadablePendingMessage -> content.isReadyToSync
-            is Message.UploadablePendingMessage -> content.isReadyToSync && content.status is UploadStatus.Success
+            is OriginalMessage.NonUploadablePendingMessage -> content.isReadyToSync
+            is OriginalMessage.UploadablePendingMessage -> content.isReadyToSync && content.status is UploadStatus.Success
         }
     )
 
@@ -104,18 +104,18 @@ fun ChatMessage.upgradeToOriginalMessage(): ChatMessage {
 }
 
 fun ChatMessage.markAsReadyToSync(): ChatMessage {
-    require(content is Message.PendingMessage)
+    require(content is OriginalMessage.PendingMessage)
 
     require(
         when(content) {
-            is Message.NonUploadablePendingMessage -> true
-            is Message.UploadablePendingMessage -> content.status is UploadStatus.Success
+            is OriginalMessage.NonUploadablePendingMessage -> true
+            is OriginalMessage.UploadablePendingMessage -> content.status is UploadStatus.Success
         }
     )
 
     val readyToSyncContent = when(content) {
-        is Message.NonUploadablePendingMessage -> content.copy(isReadyToSync = true)
-        is Message.UploadablePendingMessage -> content.copy(isReadyToSync = true)
+        is OriginalMessage.NonUploadablePendingMessage -> content.copy(isReadyToSync = true)
+        is OriginalMessage.UploadablePendingMessage -> content.copy(isReadyToSync = true)
     }
 
     return copy(

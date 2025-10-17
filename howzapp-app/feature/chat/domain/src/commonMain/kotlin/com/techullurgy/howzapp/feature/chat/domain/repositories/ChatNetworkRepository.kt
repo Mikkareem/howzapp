@@ -8,7 +8,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
 interface ChatNetworkRepository {
     fun sendMessage(message: ChatMessage): AppResult<ChatMessage, DataError>
     fun sendReadReceiptToMessage(message: ChatMessage)
-    fun syncChats(): AppResult<List<Chat>, DataError.Remote> // Sync Requests from websockets
+    suspend fun syncChats(): AppResult<List<Chat>, DataError.Remote> // Sync Requests from websockets
 
     fun uploadMessage(
         message: ChatMessage,

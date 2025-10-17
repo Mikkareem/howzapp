@@ -7,13 +7,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.LayoutDirection
-import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import kotlin.time.Instant
 
 @Composable
 internal fun MessageViewAnchored(
-    message: Message,
+    message: OriginalMessage,
     owner: MessageOwner,
     timestamp: Instant,
     arrowDirection: LayoutDirection

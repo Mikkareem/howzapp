@@ -24,10 +24,12 @@ class LoadNewMessagesForUserUsecase(
         val chats = fetchedMessages.groupBy {
             it.message.belongsToChat
         }.map { map ->
-            Chat(
-                map.key.toDomain(),
-                map.value.map { it.toDomain() }
-            )
+            with(userId) {
+                Chat(
+                    map.key.toDomain(),
+                    map.value.map { it.toDomain() }
+                )
+            }
         }
 
         return chats

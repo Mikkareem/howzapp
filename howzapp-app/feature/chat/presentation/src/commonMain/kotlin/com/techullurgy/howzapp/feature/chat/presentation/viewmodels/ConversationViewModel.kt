@@ -3,7 +3,6 @@ package com.techullurgy.howzapp.feature.chat.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
-import com.techullurgy.howzapp.feature.chat.domain.models.OnlineStatus
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatRepository
 import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
 import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationKey
@@ -44,7 +43,7 @@ internal class ConversationViewModel(
 
                 val profileUrl = when (val chatType = chat.chatInfo.chatType) {
                     is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.profilePictureUrl
-                    is ChatType.Group -> chatType.profileUrl
+                    is ChatType.Group -> chatType.pictureUrl
                 }
 
                 val subtitle = when (val chatType = chat.chatInfo.chatType) {

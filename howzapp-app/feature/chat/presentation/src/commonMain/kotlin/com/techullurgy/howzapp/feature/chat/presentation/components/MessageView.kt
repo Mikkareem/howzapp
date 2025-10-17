@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
-import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
@@ -55,7 +55,7 @@ import kotlin.time.Instant
 
 @Composable
 internal fun MessageView(
-    message: Message,
+    message: OriginalMessage,
     owner: MessageOwner,
     timestamp: Instant,
     modifier: Modifier = Modifier,
@@ -91,16 +91,16 @@ internal fun MessageView(
         ) {
             Column {
                 when (message) {
-                    is Message.TextMessage -> TextMessageView(message)
-                    is Message.NonUploadablePendingMessage -> NonUploadablePendingMessageView(
+                    is OriginalMessage.TextMessage -> TextMessageView(message)
+                    is OriginalMessage.NonUploadablePendingMessage -> NonUploadablePendingMessageView(
                         message
                     )
 
-                    is Message.UploadablePendingMessage -> UploadablePendingMessageView(message)
-                    is Message.AudioMessage -> AudioMessageView(message)
-                    is Message.DocumentMessage -> DocumentMessageView(message)
-                    is Message.ImageMessage -> ImageMessageView(message)
-                    is Message.VideoMessage -> VideoMessageView(message)
+                    is OriginalMessage.UploadablePendingMessage -> UploadablePendingMessageView(message)
+                    is OriginalMessage.AudioMessage -> AudioMessageView(message)
+                    is OriginalMessage.DocumentMessage -> DocumentMessageView(message)
+                    is OriginalMessage.ImageMessage -> ImageMessageView(message)
+                    is OriginalMessage.VideoMessage -> VideoMessageView(message)
                 }
 
                 Spacer(Modifier.height(2.dp))
@@ -124,7 +124,7 @@ internal fun MessageView(
                         ) {
                             Text(text = timeString, fontSize = 12.sp, lineHeight = 12.sp)
                             if (owner is MessageOwner.Me) {
-                                when (owner.msgStatus) {
+                                when (owner.status) {
                                     MessageStatus.PENDING,
                                     MessageStatus.CREATED -> {
                                         Icon(
@@ -170,14 +170,14 @@ internal fun MessageView(
 
 @Composable
 private fun TextMessageView(
-    message: Message.TextMessage
+    message: OriginalMessage.TextMessage
 ) {
     Text(message.text)
 }
 
 @Composable
 private fun ImageMessageView(
-    message: Message.ImageMessage
+    message: OriginalMessage.ImageMessage
 ) {
     Box(
         modifier = Modifier.size(250.dp).background(Color.Green)
@@ -188,7 +188,7 @@ private fun ImageMessageView(
 
 @Composable
 private fun AudioMessageView(
-    message: Message.AudioMessage
+    message: OriginalMessage.AudioMessage
 ) {
     Box(
         modifier = Modifier.width(250.dp).height(80.dp).background(Color.Yellow)
@@ -199,7 +199,7 @@ private fun AudioMessageView(
 
 @Composable
 private fun VideoMessageView(
-    message: Message.VideoMessage
+    message: OriginalMessage.VideoMessage
 ) {
     Box(
         modifier = Modifier.size(250.dp).background(Color.Yellow)
@@ -210,7 +210,7 @@ private fun VideoMessageView(
 
 @Composable
 private fun DocumentMessageView(
-    message: Message.DocumentMessage
+    message: OriginalMessage.DocumentMessage
 ) {
     Box(
         modifier = Modifier.width(250.dp).height(80.dp).background(Color.Yellow)
@@ -221,16 +221,16 @@ private fun DocumentMessageView(
 
 @Composable
 private fun NonUploadablePendingMessageView(
-    message: Message.NonUploadablePendingMessage
+    message: OriginalMessage.NonUploadablePendingMessage
 ) {
     when (val originalMessage = message.originalMessage) {
-        is Message.TextMessage -> TextMessageView(originalMessage)
+        is OriginalMessage.TextMessage -> TextMessageView(originalMessage)
     }
 }
 
 @Composable
 private fun UploadablePendingMessageView(
-    message: Message.UploadablePendingMessage
+    message: OriginalMessage.UploadablePendingMessage
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -329,10 +329,10 @@ private fun UploadablePendingMessageView(
         }
 
         when (val originalMessage = message.originalMessage) {
-            is Message.AudioMessage -> AudioMessageView(originalMessage)
-            is Message.DocumentMessage -> DocumentMessageView(originalMessage)
-            is Message.ImageMessage -> ImageMessageView(originalMessage)
-            is Message.VideoMessage -> VideoMessageView(originalMessage)
+            is OriginalMessage.AudioMessage -> AudioMessageView(originalMessage)
+            is OriginalMessage.DocumentMessage -> DocumentMessageView(originalMessage)
+            is OriginalMessage.ImageMessage -> ImageMessageView(originalMessage)
+            is OriginalMessage.VideoMessage -> VideoMessageView(originalMessage)
         }
     }
 }
@@ -352,7 +352,7 @@ private fun MessageViewPreview(
 }
 
 private data class MessageViewData(
-    val message: Message,
+    val message: OriginalMessage,
     val owner: MessageOwner,
     val timestamp: Instant
 )
@@ -361,12 +361,12 @@ private class MessageViewPreviewParameterProvider : PreviewParameterProvider<Mes
     override val values: Sequence<MessageViewData>
         get() = sequenceOf(
             MessageViewData(
-                message = Message.TextMessage("Hello People, How are you?"),
+                message = OriginalMessage.TextMessage("Hello People, How are you?"),
                 owner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.DELIVERED),
                 timestamp = Clock.System.now()
             ),
             MessageViewData(
-                message = Message.ImageMessage("Hello People, How are you?"),
+                message = OriginalMessage.ImageMessage("Hello People, How are you?"),
                 owner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.DELIVERED),
                 timestamp = Clock.System.now().minus(34.minutes)
             )

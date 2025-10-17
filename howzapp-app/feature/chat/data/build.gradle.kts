@@ -6,7 +6,6 @@ plugins {
 
 kotlin {
     sourceSets {
-
         androidMain.dependencies {
             implementation(libs.androidx.lifecycle.process)
         }
@@ -15,6 +14,7 @@ kotlin {
             implementation(libs.ktor.client.websockets)
 
             implementation(projects.core.domain)
+            implementation(projects.core.data)
             implementation(projects.feature.chat.domain)
             implementation(projects.feature.chat.database)
         }

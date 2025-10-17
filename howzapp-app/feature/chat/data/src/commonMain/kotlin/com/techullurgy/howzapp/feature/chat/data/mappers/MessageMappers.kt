@@ -1,44 +1,40 @@
 package com.techullurgy.howzapp.feature.chat.data.mappers
 
 import com.techullurgy.howzapp.feature.chat.database.models.SerializableMessage
-import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.database.models.SerializablePendingMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 
-fun SerializableMessage.toDomain(): Message {
+fun SerializableMessage.toDomain(): OriginalMessage {
     return when(this) {
-        is SerializableMessage.TextMessage -> Message.TextMessage(text)
-        is SerializableMessage.NonUploadablePendingMessage -> Message.NonUploadablePendingMessage(
-            originalMessage.toDomain() as Message.NonUploadableMessage,
-            isReadyToSync
-        )
-        is SerializableMessage.UploadablePendingMessage -> Message.UploadablePendingMessage(
-            uploadId,
-            uploadStatus.toDomain(),
-            originalMessage as Message.UploadableMessage,
-            isReadyToSync
-        )
-        is SerializableMessage.AudioMessage -> Message.AudioMessage(audioUrl, optionalText)
-        is SerializableMessage.DocumentMessage -> Message.DocumentMessage(documentName, documentUrl, optionalText)
-        is SerializableMessage.ImageMessage -> Message.ImageMessage(imageUrl, optionalText)
-        is SerializableMessage.VideoMessage -> Message.VideoMessage(videoUrl, optionalText)
+        is SerializableMessage.TextMessage -> OriginalMessage.TextMessage(text)
+        is SerializableMessage.AudioMessage -> OriginalMessage.AudioMessage(audioUrl, optionalText)
+        is SerializableMessage.DocumentMessage -> OriginalMessage.DocumentMessage(documentName, documentUrl, optionalText)
+        is SerializableMessage.ImageMessage -> OriginalMessage.ImageMessage(imageUrl, optionalText)
+        is SerializableMessage.VideoMessage -> OriginalMessage.VideoMessage(videoUrl, optionalText)
     }
 }
 
-fun Message.toSerializable(): SerializableMessage {
+fun OriginalMessage.toSerializable(): SerializableMessage {
     return when(this) {
-        is Message.TextMessage -> SerializableMessage.TextMessage(text)
-        is Message.NonUploadablePendingMessage -> SerializableMessage.NonUploadablePendingMessage(
-            originalMessage.toSerializable() as SerializableMessage.NonUploadableMessage,
-            isReadyToSync
-        )
-        is Message.UploadablePendingMessage -> SerializableMessage.UploadablePendingMessage(
-            uploadId,
-            originalMessage as SerializableMessage.UploadableMessage,
-            status.toSerializable(),
-            isReadyToSync
-        )
-        is Message.AudioMessage -> SerializableMessage.AudioMessage(audioUrl, optionalText)
-        is Message.DocumentMessage -> SerializableMessage.DocumentMessage(documentName, documentUrl, optionalText)
-        is Message.ImageMessage -> SerializableMessage.ImageMessage(imageUrl, optionalText)
-        is Message.VideoMessage -> SerializableMessage.VideoMessage(videoUrl, optionalText)
+        is OriginalMessage.TextMessage -> SerializableMessage.TextMessage(text)
+        is OriginalMessage.AudioMessage -> SerializableMessage.AudioMessage(audioUrl, optionalText)
+        is OriginalMessage.DocumentMessage -> SerializableMessage.DocumentMessage(documentName, documentUrl, optionalText)
+        is OriginalMessage.ImageMessage -> SerializableMessage.ImageMessage(imageUrl, optionalText)
+        is OriginalMessage.VideoMessage -> SerializableMessage.VideoMessage(videoUrl, optionalText)
+    }
+}
+
+fun SerializablePendingMessage.toDomain(): PendingMessage {
+    return when(this) {
+        is SerializablePendingMessage.NonUploadablePendingMessage -> PendingMessage.NonUploadablePendingMessage(originalMessage.toDomain())
+        is SerializablePendingMessage.UploadablePendingMessage -> PendingMessage.UploadablePendingMessage(uploadId,uploadStatus.toDomain(), originalMessage.toDomain())
+    }
+}
+
+fun PendingMessage.toDomain(): SerializablePendingMessage {
+    return when(this) {
+        is PendingMessage.NonUploadablePendingMessage -> SerializablePendingMessage.NonUploadablePendingMessage(originalMessage.toSerializable())
+        is PendingMessage.UploadablePendingMessage -> SerializablePendingMessage.UploadablePendingMessage(uploadId, status.toSerializable(), originalMessage.toSerializable())
     }
 }

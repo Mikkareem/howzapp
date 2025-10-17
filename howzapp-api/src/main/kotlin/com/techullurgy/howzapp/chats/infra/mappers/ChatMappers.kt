@@ -6,19 +6,21 @@ import com.techullurgy.howzapp.chats.infra.database.entities.chats.OneToOneChatE
 import com.techullurgy.howzapp.chats.models.ChatType
 import com.techullurgy.howzapp.chats.models.GroupChat
 import com.techullurgy.howzapp.chats.models.OneToOneChat
+import com.techullurgy.howzapp.common.types.UserId
 import com.techullurgy.howzapp.users.infra.mappers.toDomain
 
+context(me: UserId)
 fun ChatEntity.toDomain(): ChatType {
     return when(this) {
         is OneToOneChatEntity -> OneToOneChat(
             id = id,
-            originator = originator.toDomain(),
-            participant = participants.map { it.toDomain() }.first { it != originator.toDomain() }
+            participant1 = participants.filter { it.id == me }.map { it.toDomain() }.first(),
+            participant2 = participants.filter { it.id != me }.map { it.toDomain() }.first()
         )
         is GroupChatEntity -> GroupChat(
             id = id,
             originator = originator.toDomain(),
-            participants = participants.map { it.toDomain() }.filter { it != originator.toDomain() },
+            participants = participants.map { it.toDomain() },
             title = title,
             profilePictureUrl = profilePictureUrl
         )

@@ -38,9 +38,10 @@ suspend inline fun <reified Request, reified Response: Any> HttpClient.post(
     }
 }
 
-suspend inline fun <reified Response: Any> HttpClient.get(
+suspend inline fun <reified Request, reified Response: Any> HttpClient.get(
     route: String,
     queryParams: Map<String, Any> = mapOf(),
+    body: Request? = null,
     crossinline builder: HttpRequestBuilder.() -> Unit = {}
 ): AppResult<Response, DataError.Remote> {
     return safeCall {
@@ -48,6 +49,9 @@ suspend inline fun <reified Response: Any> HttpClient.get(
             url(constructRoute(route))
             queryParams.forEach { (key, value) ->
                 parameter(key, value)
+            }
+            body?.let {
+                setBody(it)
             }
             builder()
         }

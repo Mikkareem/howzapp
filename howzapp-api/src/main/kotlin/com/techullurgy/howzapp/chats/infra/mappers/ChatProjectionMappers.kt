@@ -6,6 +6,8 @@ import com.techullurgy.howzapp.users.infra.mappers.toDomain
 
 fun ChatMessageProjection.toDomain(): ChatMessage {
     return ChatMessage(
+        messageId = message.id,
+        chatId = message.belongsToChat.id,
         message = message.toDomain(),
         sender = message.sender.toDomain(),
         status = status?.status,

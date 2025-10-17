@@ -1,0 +1,50 @@
+package com.techullurgy.howzapp.feature.chat.database.entities
+
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import androidx.room.Relation
+import com.techullurgy.howzapp.feature.chat.database.models.SerializableMessage
+
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = ChatEntity::class,
+            parentColumns = ["chatId"],
+            childColumns = ["chatId"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = ChatParticipantEntity::class,
+            parentColumns = ["userId"],
+            childColumns = ["senderId"],
+            onUpdate = ForeignKey.CASCADE
+        )
+    ],
+)
+data class MessageEntity(
+    @PrimaryKey val messageId: String,
+    val chatId: String,
+    val senderId: String,
+    val message: SerializableMessage,
+    val timestamp: Long
+)
+
+data class MessageRelation(
+    @Embedded val message: MessageEntity,
+
+    @Relation(
+        parentColumn = "senderId",
+        entityColumn = "userId",
+    )
+    val sender: ChatParticipantEntity,
+
+    @Relation(
+        parentColumn = "messageId",
+        entityColumn = "messageId",
+        entity = StatusEntity::class
+    )
+    val status: StatusRelation,
+)

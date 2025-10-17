@@ -8,55 +8,29 @@ import kotlinx.serialization.Serializable
 sealed interface SerializableMessage {
 
     @Serializable
-    sealed interface UploadableMessage: SerializableMessage
-    @Serializable
-    sealed interface NonUploadableMessage: SerializableMessage
-
-    @Serializable
-    sealed interface PendingMessage: SerializableMessage {
-        val isReadyToSync: Boolean
-    }
-
-    @Serializable
-    @SerialName(MessageConstants.DISCRIMINATOR_UPLOADABLE_PENDING_MESSAGE)
-    data class UploadablePendingMessage(
-        val uploadId: String,
-        val originalMessage: UploadableMessage,
-        val uploadStatus: SerializableUploadStatus,
-        override val isReadyToSync: Boolean
-    ): PendingMessage
-
-    @Serializable
-    @SerialName(MessageConstants.DISCRIMINATOR_NON_UPLOADABLE_PENDING_MESSAGE)
-    data class NonUploadablePendingMessage(
-        val originalMessage: NonUploadableMessage,
-        override val isReadyToSync: Boolean
-    ): PendingMessage
-
-    @Serializable
     @SerialName(MessageConstants.DISCRIMINATOR_TEXT_MESSAGE)
-    data class TextMessage(val text: String): NonUploadableMessage
+    data class TextMessage(val text: String): SerializableMessage
 
     @Serializable
     @SerialName(MessageConstants.DISCRIMINATOR_IMAGE_MESSAGE)
     data class ImageMessage(
         val imageUrl: String,
         val optionalText: String? = null
-    ): UploadableMessage
+    ): SerializableMessage
 
     @Serializable
     @SerialName(MessageConstants.DISCRIMINATOR_VIDEO_MESSAGE)
     data class VideoMessage(
         val videoUrl: String,
         val optionalText: String? = null
-    ): UploadableMessage
+    ): SerializableMessage
 
     @Serializable
     @SerialName(MessageConstants.DISCRIMINATOR_AUDIO_MESSAGE)
     data class AudioMessage(
         val audioUrl: String,
         val optionalText: String? = null
-    ): UploadableMessage
+    ): SerializableMessage
 
     @Serializable
     @SerialName(MessageConstants.DISCRIMINATOR_DOCUMENT_MESSAGE)
@@ -64,5 +38,5 @@ sealed interface SerializableMessage {
         val documentName: String,
         val documentUrl: String,
         val optionalText: String? = null
-    ): UploadableMessage
+    ): SerializableMessage
 }

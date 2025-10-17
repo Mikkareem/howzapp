@@ -4,7 +4,6 @@ data class ChatParticipant(
     val userId: String,
     val username: String,
     val profilePictureUrl: String? = null,
-    val onlineStatus: OnlineStatus = OnlineStatus.NoOnlineStatus
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

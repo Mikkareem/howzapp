@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.core.designsystem.theme.LocalAppColors
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
-import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
@@ -172,7 +172,7 @@ private class ConversationUiStatePreviewParameterProvider :
         messageId = "m1",
         sender = ChatParticipant("", ""),
         isPictureShowable = false,
-        message = Message.TextMessage(""),
+        message = OriginalMessage.TextMessage(""),
         messageOwner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.SENT),
         timestamp = Clock.System.now()
     )
@@ -185,28 +185,28 @@ private class ConversationUiStatePreviewParameterProvider :
                 subtitle = "Online",
                 messageSheets = listOf(
                     sampleMessageSheet.copy(
-                        message = Message.ImageMessage(""),
+                        message = OriginalMessage.ImageMessage(""),
                         timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
                     ),
                     sampleMessageSheet.copy(
-                        message = Message.UploadablePendingMessage(
-                            originalMessage = Message.ImageMessage(""),
+                        message = OriginalMessage.UploadablePendingMessage(
+                            originalMessage = OriginalMessage.ImageMessage(""),
                             uploadId = "",
                             status = UploadStatus.Progress(28.0)
                         ),
                         timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
                     ),
                     sampleMessageSheet.copy(
-                        message = Message.UploadablePendingMessage(
-                            originalMessage = Message.AudioMessage(""),
+                        message = OriginalMessage.UploadablePendingMessage(
+                            originalMessage = OriginalMessage.AudioMessage(""),
                             uploadId = "",
                             status = UploadStatus.Progress(28.0)
                         ),
                         timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
                     ),
                     sampleMessageSheet.copy(
-                        message = Message.UploadablePendingMessage(
-                            originalMessage = Message.AudioMessage(""),
+                        message = OriginalMessage.UploadablePendingMessage(
+                            originalMessage = OriginalMessage.AudioMessage(""),
                             uploadId = "",
                             status = UploadStatus.Failed
                         ),
@@ -214,8 +214,8 @@ private class ConversationUiStatePreviewParameterProvider :
                     ),
 
                     sampleMessageSheet.copy(
-                        message = Message.UploadablePendingMessage(
-                            originalMessage = Message.AudioMessage(""),
+                        message = OriginalMessage.UploadablePendingMessage(
+                            originalMessage = OriginalMessage.AudioMessage(""),
                             uploadId = "",
                             status = UploadStatus.Success("")
                         ),

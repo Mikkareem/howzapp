@@ -4,11 +4,8 @@ import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import com.techullurgy.howzapp.feature.chat.database.HowzappDatabase
 import com.techullurgy.howzapp.feature.chat.database.entities.ChatEntity
-import com.techullurgy.howzapp.feature.chat.database.entities.ChatMessageEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.ChatParticipantEntity
-import com.techullurgy.howzapp.feature.chat.database.models.SerializableChatType
 import com.techullurgy.howzapp.feature.chat.database.models.SerializableMessage
-import com.techullurgy.howzapp.feature.chat.database.models.SerializableOnlineStatus
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json

@@ -9,7 +9,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.ChatInfo
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
-import com.techullurgy.howzapp.feature.chat.domain.models.Message
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatLocalRepository
@@ -63,12 +63,12 @@ private val chats = listOf(
             ChatMessage(
                 messageId = "m123",
                 chatId = "c123",
-                content = Message.NonUploadablePendingMessage(
-                    Message.TextMessage("Hi, How are you?"),
+                content = OriginalMessage.NonUploadablePendingMessage(
+                    OriginalMessage.TextMessage("Hi, How are you?"),
                 ),
                 owner = MessageOwner.Me(
                     owner = ChatParticipant(userId = "u123", "Irsath"),
-                    msgStatus = MessageStatus.DELIVERED
+                    status = MessageStatus.DELIVERED
                 ),
                 timestamp = Clock.System.now()
             )

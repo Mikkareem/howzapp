@@ -7,12 +7,10 @@ fun ChatParticipantEntity.toDomain() = ChatParticipant(
     userId = userId,
     username = username,
     profilePictureUrl = profilePictureUrl,
-    onlineStatus = onlineStatus.toDomain()
 )
 
 fun ChatParticipant.toEntity() = ChatParticipantEntity(
     userId = userId,
     username = username,
     profilePictureUrl = profilePictureUrl,
-    onlineStatus = onlineStatus.toSerializable()
 )

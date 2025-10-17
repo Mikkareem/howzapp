@@ -1,0 +1,9 @@
+package com.techullurgy.howzapp.feature.chat.data.dto.requests
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+internal data class LoadChatMessagesRequest(
+    val chatId: String,
+    val beforeMessage: String
+)

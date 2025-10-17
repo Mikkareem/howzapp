@@ -3,7 +3,6 @@ package com.techullurgy.howzapp.feature.chat.domain.models
 data class Chat(
     val chatInfo: ChatInfo,
     val chatMessages: List<ChatMessage>,
-    val chatParticipants: List<ChatParticipant>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

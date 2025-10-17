@@ -3,5 +3,4 @@ package com.techullurgy.howzapp.feature.chat.domain.models
 data class ChatInfo(
     val chatId: String,
     val chatType: ChatType,
-    val originator: ChatParticipant
 )
