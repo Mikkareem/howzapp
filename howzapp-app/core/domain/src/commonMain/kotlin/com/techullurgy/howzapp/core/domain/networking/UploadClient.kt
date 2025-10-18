@@ -30,11 +30,11 @@ abstract class UploadClient<T> {
         source: T,
         sourceLength: Long,
         cancelObservationFlow: Flow<Boolean>,
-        onCancelled: (String) -> Unit,
-        onStarted: (String) -> Unit,
-        onSuccess: (String, String) -> Unit,
-        onFailure: (String, Throwable?) -> Unit,
-        onProgress: (String, Double) -> Unit
+        onCancelled: suspend (String) -> Unit,
+        onStarted: suspend (String) -> Unit,
+        onSuccess: suspend (String, String) -> Unit,
+        onFailure: suspend (String, Throwable?) -> Unit,
+        onProgress: suspend (String, Double) -> Unit
     ) {
         private var job: Job? = null
 

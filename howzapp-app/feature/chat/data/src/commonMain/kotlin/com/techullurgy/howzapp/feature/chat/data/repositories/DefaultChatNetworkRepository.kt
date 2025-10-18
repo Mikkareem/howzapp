@@ -16,7 +16,7 @@ import org.koin.core.annotation.Single
 internal class DefaultChatNetworkRepository(
     private val client: HttpClient
 ): ChatNetworkRepository {
-    override fun sendMessage(message: ChatMessage): AppResult<ChatMessage, DataError> {
+    override fun sendMessage(message: ChatMessage): AppResult<String, DataError> {
         TODO("Not yet implemented")
     }
 
@@ -31,13 +31,6 @@ internal class DefaultChatNetworkRepository(
         ).map {
             emptyList()
         }
-    }
-
-    override fun uploadMessage(
-        message: ChatMessage,
-        onSuccess: suspend (String) -> Unit
-    ): AppResult<String, DataError> {
-        TODO("Not yet implemented")
     }
 
     override fun fetchChatMessages(chatId: String, before: Long?) {

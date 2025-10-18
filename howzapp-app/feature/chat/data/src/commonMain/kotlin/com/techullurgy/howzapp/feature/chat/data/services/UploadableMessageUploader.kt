@@ -8,17 +8,21 @@ import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatLocalRepository
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
+import kotlin.coroutines.coroutineContext
 
 @Single(createdAtStart = true)
-internal class MessageUploader(
+internal class UploadableMessageUploader(
     private val chatLocalRepository: ChatLocalRepository,
     private val applicationScope: CoroutineScope,
     private val uploadClient: UploadClient<ByteArray>
@@ -84,7 +88,14 @@ internal class MessageUploader(
                 chatLocalRepository.deletePendingMessage(uploadId)
             },
             onSuccess = { uploadId, publicUrl ->
-                chatLocalRepository.updateStatusOfUpload(uploadId, UploadStatus.Success(publicUrl))
+                try {
+                    chatLocalRepository.updateUploadablePendingMessageAsReady(uploadId, publicUrl)
+                } catch (_: Exception) {
+                    withContext(NonCancellable) {
+                        chatLocalRepository.updateStatusOfUpload(uploadId, UploadStatus.Failed())
+                    }
+                    coroutineContext.ensureActive()
+                }
             },
             onProgress = { uploadId, progress ->
                 chatLocalRepository.updateStatusOfUpload(uploadId, UploadStatus.Progress(progress))

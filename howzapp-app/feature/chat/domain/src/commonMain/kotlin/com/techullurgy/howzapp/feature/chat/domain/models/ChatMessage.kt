@@ -9,18 +9,5 @@ data class ChatMessage(
     val owner: MessageOwner,
     val timestamp: Instant,
 ) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is ChatMessage) return false
-
-        if (messageId != other.messageId) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return messageId.hashCode()
-    }
-
     companion object
 }

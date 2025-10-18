@@ -37,7 +37,7 @@ private fun ChatRelation.getAllMessages(): List<ChatMessage> {
             pendingMessages.map { it.toDomain() }.sortedByDescending { it.timestamp }
 }
 
-private fun PendingMessageRelation.toDomain(): ChatMessage {
+internal fun PendingMessageRelation.toDomain(): ChatMessage {
     return ChatMessage(
         messageId = pending.pendingId,
         chatId = pending.chatId,
@@ -50,7 +50,7 @@ private fun PendingMessageRelation.toDomain(): ChatMessage {
 private fun PendingMessageRelation.getMessage(): PendingMessage {
     return if(uploadable != null) {
         PendingMessage.UploadablePendingMessage(
-            uploadId = uploadable!!.uploadId,
+            uploadId = uploadable!!.pendingId,
             status = uploadable!!.uploadStatus.toDomain(),
             originalMessage = pending.message.originalMessage.toDomain()
         )

@@ -5,22 +5,22 @@ import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 
 fun SerializableUploadStatus.toDomain(): UploadStatus {
     return when(this) {
-        SerializableUploadStatus.Cancelled -> UploadStatus.Cancelled
-        SerializableUploadStatus.Failed -> UploadStatus.Failed
-        is SerializableUploadStatus.Progress -> UploadStatus.Progress(progressPercentage)
-        SerializableUploadStatus.Started -> UploadStatus.Started
-        is SerializableUploadStatus.Success -> UploadStatus.Success(publicUrl)
-        SerializableUploadStatus.Triggered -> UploadStatus.Triggered
+        is SerializableUploadStatus.Cancelled -> UploadStatus.Cancelled(timestamp)
+        is SerializableUploadStatus.Failed -> UploadStatus.Failed(timestamp)
+        is SerializableUploadStatus.Progress -> UploadStatus.Progress(progressPercentage, timestamp)
+        is SerializableUploadStatus.Started -> UploadStatus.Started(timestamp)
+        is SerializableUploadStatus.Success -> UploadStatus.Success(publicUrl, timestamp)
+        is SerializableUploadStatus.Triggered -> UploadStatus.Triggered(timestamp)
     }
 }
 
 fun UploadStatus.toSerializable(): SerializableUploadStatus {
     return when(this) {
-        UploadStatus.Cancelled -> SerializableUploadStatus.Cancelled
-        UploadStatus.Failed -> SerializableUploadStatus.Failed
-        is UploadStatus.Progress -> SerializableUploadStatus.Progress(progressPercentage)
-        UploadStatus.Started -> SerializableUploadStatus.Started
-        is UploadStatus.Success -> SerializableUploadStatus.Success(publicUrl)
-        UploadStatus.Triggered -> SerializableUploadStatus.Triggered
+        is UploadStatus.Cancelled -> SerializableUploadStatus.Cancelled(timestamp)
+        is UploadStatus.Failed -> SerializableUploadStatus.Failed(timestamp)
+        is UploadStatus.Progress -> SerializableUploadStatus.Progress(progressPercentage, timestamp)
+        is UploadStatus.Started -> SerializableUploadStatus.Started(timestamp)
+        is UploadStatus.Success -> SerializableUploadStatus.Success(publicUrl, timestamp)
+        is UploadStatus.Triggered -> SerializableUploadStatus.Triggered(timestamp)
     }
 }

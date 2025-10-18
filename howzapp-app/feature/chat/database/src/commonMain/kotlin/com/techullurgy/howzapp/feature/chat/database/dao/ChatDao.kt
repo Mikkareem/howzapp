@@ -3,13 +3,14 @@ package com.techullurgy.howzapp.feature.chat.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import com.techullurgy.howzapp.feature.chat.database.entities.ChatEntity
+import com.techullurgy.howzapp.feature.chat.database.entities.ChatRelation
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatDao: BaseDao<ChatEntity> {
     @Query("SELECT * FROM ChatEntity")
-    fun getAllChats(): Flow<List<ChatEntity>>
+    fun getAllChats(): Flow<List<ChatRelation>>
 
     @Query("SELECT * FROM ChatEntity WHERE chatId = :chatId")
-    fun getChatById(chatId: String): Flow<ChatEntity?>
+    fun getChatById(chatId: String): Flow<ChatRelation?>
 }

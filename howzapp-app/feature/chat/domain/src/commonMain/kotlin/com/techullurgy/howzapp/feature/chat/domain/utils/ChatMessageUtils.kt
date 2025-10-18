@@ -5,6 +5,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
 import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
+import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import java.util.UUID
 import kotlin.time.Clock
@@ -64,30 +65,23 @@ internal fun ChatMessage.Companion.newMessage(
     chatId: String,
     content: OriginalMessage
 ): ChatMessage {
-
-    assert(content !is OriginalMessage.PendingMessage) {
-        "PendingMessage is not allowed here"
-    }
-
-    val pendingContent = if(content is OriginalMessage.UploadableMessage) {
-        OriginalMessage.UploadablePendingMessage(
+    val pendingContent = if(content !is OriginalMessage.TextMessage) {
+        PendingMessage.UploadablePendingMessage(
             uploadId = "",
             status = UploadStatus.Triggered,
             originalMessage = content,
-            isReadyToSync = false
         )
     } else {
-        OriginalMessage.NonUploadablePendingMessage(
-            originalMessage = content as OriginalMessage.NonUploadableMessage,
-            isReadyToSync = true
+        PendingMessage.NonUploadablePendingMessage(
+            originalMessage = content,
         )
     }
 
     return ChatMessage(
-        messageId = "local_${UUID.randomUUID()}",
+        messageId = UUID.randomUUID().toString(),
         chatId = chatId,
         content = pendingContent,
-        owner = MessageOwner.Me(me, MessageStatus.PENDING),
+        owner = MessageOwner.Me(me, MessageStatus.SenderStatus.PENDING),
         timestamp = Clock.System.now()
     )
 }

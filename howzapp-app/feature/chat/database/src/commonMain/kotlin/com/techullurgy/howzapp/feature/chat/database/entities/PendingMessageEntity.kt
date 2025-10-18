@@ -51,7 +51,6 @@ data class PendingMessageEntity(
 )
 data class UploadablePendingMessageEntity(
     @PrimaryKey val pendingId: String,
-    val uploadId: String,
     val uploadStatus: SerializableUploadStatus
 )
 
