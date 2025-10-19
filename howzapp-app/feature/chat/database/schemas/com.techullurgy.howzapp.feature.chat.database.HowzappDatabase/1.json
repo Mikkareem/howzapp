@@ -2,11 +2,29 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e5756a3c00905839624a7a979c3dbbd0",
+    "identityHash": "14af7ea7325421852c523cf0a1871dee",
     "entities": [
       {
         "tableName": "ChatEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`chatId` TEXT NOT NULL, `type` TEXT NOT NULL, `originator` TEXT NOT NULL, PRIMARY KEY(`chatId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`chatId` TEXT NOT NULL, PRIMARY KEY(`chatId`))",
+        "fields": [
+          {
+            "fieldPath": "chatId",
+            "columnName": "chatId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "chatId"
+          ]
+        }
+      },
+      {
+        "tableName": "DirectChatEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`chatId` TEXT NOT NULL, `meId` TEXT NOT NULL, `otherId` TEXT NOT NULL, PRIMARY KEY(`chatId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`meId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`otherId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "chatId",
@@ -15,10 +33,92 @@
             "notNull": true
           },
           {
-            "fieldPath": "type",
-            "columnName": "type",
+            "fieldPath": "meId",
+            "columnName": "meId",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "otherId",
+            "columnName": "otherId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "chatId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_DirectChatEntity_otherId_meId",
+            "unique": true,
+            "columnNames": [
+              "otherId",
+              "meId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_DirectChatEntity_otherId_meId` ON `${TABLE_NAME}` (`otherId`, `meId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "ChatEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "chatId"
+            ],
+            "referencedColumns": [
+              "chatId"
+            ]
+          },
+          {
+            "table": "ChatParticipantEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "meId"
+            ],
+            "referencedColumns": [
+              "userId"
+            ]
+          },
+          {
+            "table": "ChatParticipantEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "otherId"
+            ],
+            "referencedColumns": [
+              "userId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "GroupChatEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`chatId` TEXT NOT NULL, `title` TEXT NOT NULL, `pictureUrl` TEXT, `originator` TEXT NOT NULL, PRIMARY KEY(`chatId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`originator`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "chatId",
+            "columnName": "chatId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pictureUrl",
+            "columnName": "pictureUrl",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "originator",
@@ -32,11 +132,144 @@
           "columnNames": [
             "chatId"
           ]
-        }
+        },
+        "foreignKeys": [
+          {
+            "table": "ChatEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "chatId"
+            ],
+            "referencedColumns": [
+              "chatId"
+            ]
+          },
+          {
+            "table": "ChatParticipantEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "originator"
+            ],
+            "referencedColumns": [
+              "userId"
+            ]
+          }
+        ]
       },
       {
-        "tableName": "ChatMessageEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`messageId` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, `isRead` INTEGER NOT NULL, PRIMARY KEY(`messageId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`senderId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "tableName": "PendingMessageEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pendingId` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `isReady` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`pendingId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`senderId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "pendingId",
+            "columnName": "pendingId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chatId",
+            "columnName": "chatId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "senderId",
+            "columnName": "senderId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReady",
+            "columnName": "isReady",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pendingId"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "ChatEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "chatId"
+            ],
+            "referencedColumns": [
+              "chatId"
+            ]
+          },
+          {
+            "table": "ChatParticipantEntity",
+            "onDelete": "NO ACTION",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "senderId"
+            ],
+            "referencedColumns": [
+              "userId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "UploadablePendingMessageEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pendingId` TEXT NOT NULL, `uploadStatus` TEXT NOT NULL, PRIMARY KEY(`pendingId`), FOREIGN KEY(`pendingId`) REFERENCES `PendingMessageEntity`(`pendingId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "pendingId",
+            "columnName": "pendingId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uploadStatus",
+            "columnName": "uploadStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "pendingId"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "PendingMessageEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "pendingId"
+            ],
+            "referencedColumns": [
+              "pendingId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "MessageEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`messageId` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`messageId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`senderId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "messageId",
@@ -67,12 +300,6 @@
             "columnName": "timestamp",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "isRead",
-            "columnName": "isRead",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -81,35 +308,6 @@
             "messageId"
           ]
         },
-        "indices": [
-          {
-            "name": "index_ChatMessageEntity_chatId",
-            "unique": false,
-            "columnNames": [
-              "chatId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_ChatMessageEntity_chatId` ON `${TABLE_NAME}` (`chatId`)"
-          },
-          {
-            "name": "index_ChatMessageEntity_timestamp",
-            "unique": false,
-            "columnNames": [
-              "timestamp"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_ChatMessageEntity_timestamp` ON `${TABLE_NAME}` (`timestamp`)"
-          },
-          {
-            "name": "index_ChatMessageEntity_senderId",
-            "unique": false,
-            "columnNames": [
-              "senderId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_ChatMessageEntity_senderId` ON `${TABLE_NAME}` (`senderId`)"
-          }
-        ],
         "foreignKeys": [
           {
             "table": "ChatEntity",
@@ -125,7 +323,7 @@
           {
             "table": "ChatParticipantEntity",
             "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
+            "onUpdate": "CASCADE",
             "columns": [
               "senderId"
             ],
@@ -136,12 +334,60 @@
         ]
       },
       {
-        "tableName": "ChatMessageStatusEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`messageId` TEXT NOT NULL, `status` TEXT NOT NULL, PRIMARY KEY(`messageId`), FOREIGN KEY(`messageId`) REFERENCES `ChatMessageEntity`(`messageId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "tableName": "StatusEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`statusId` TEXT NOT NULL, `messageId` TEXT NOT NULL, PRIMARY KEY(`statusId`), FOREIGN KEY(`messageId`) REFERENCES `MessageEntity`(`messageId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
+          {
+            "fieldPath": "statusId",
+            "columnName": "statusId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "messageId",
             "columnName": "messageId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "statusId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_StatusEntity_messageId",
+            "unique": false,
+            "columnNames": [
+              "messageId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_StatusEntity_messageId` ON `${TABLE_NAME}` (`messageId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "MessageEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "messageId"
+            ],
+            "referencedColumns": [
+              "messageId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "SenderStatusEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`statusId` TEXT NOT NULL, `status` TEXT NOT NULL, PRIMARY KEY(`statusId`), FOREIGN KEY(`statusId`) REFERENCES `StatusEntity`(`statusId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "statusId",
+            "columnName": "statusId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -155,37 +401,63 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "messageId"
+            "statusId"
           ]
         },
-        "indices": [
-          {
-            "name": "index_ChatMessageStatusEntity_messageId",
-            "unique": false,
-            "columnNames": [
-              "messageId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_ChatMessageStatusEntity_messageId` ON `${TABLE_NAME}` (`messageId`)"
-          }
-        ],
         "foreignKeys": [
           {
-            "table": "ChatMessageEntity",
+            "table": "StatusEntity",
             "onDelete": "CASCADE",
             "onUpdate": "CASCADE",
             "columns": [
-              "messageId"
+              "statusId"
             ],
             "referencedColumns": [
-              "messageId"
+              "statusId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ReceiverStatusEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`statusId` TEXT NOT NULL, `status` TEXT NOT NULL, PRIMARY KEY(`statusId`), FOREIGN KEY(`statusId`) REFERENCES `StatusEntity`(`statusId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "statusId",
+            "columnName": "statusId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "statusId"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "StatusEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "statusId"
+            ],
+            "referencedColumns": [
+              "statusId"
             ]
           }
         ]
       },
       {
         "tableName": "ChatParticipantEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `username` TEXT NOT NULL, `onlineStatus` TEXT NOT NULL, `profilePictureUrl` TEXT, PRIMARY KEY(`userId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `username` TEXT NOT NULL, `profilePictureUrl` TEXT, PRIMARY KEY(`userId`))",
         "fields": [
           {
             "fieldPath": "userId",
@@ -196,12 +468,6 @@
           {
             "fieldPath": "username",
             "columnName": "username",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "onlineStatus",
-            "columnName": "onlineStatus",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -288,37 +554,89 @@
             ]
           }
         ]
-      }
-    ],
-    "views": [
-      {
-        "viewName": "view__full_message",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT  m.messageId, \n                m.chatId,\n                m.message,\n                m.senderId,\n                m.timestamp,\n                m.isRead,\n                s.messageId AS status_messageId,\n                s.status AS status_status,\n                p.userId AS sender_userId,\n                p.username AS sender_username,\n                p.onlineStatus AS sender_onlineStatus,\n                p.profilePictureUrl AS sender_profilePictureUrl\n        FROM ChatMessageEntity m\n        LEFT JOIN ChatMessageStatusEntity s ON s.messageId = m.messageId\n        LEFT JOIN ChatParticipantEntity p ON p.userId = m.senderId"
       },
       {
-        "viewName": "view__chat_info_of_the_chats",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT c.chatId,\n                c.type AS chatType,\n                cp2.userId AS originator_userId,\n                cp2.onlineStatus AS originator_onlineStatus,\n                cp2.username AS originator_username,\n                cp2.profilePictureUrl AS originator_profilePictureUrl\n        FROM ChatEntity c\n        LEFT JOIN ChatParticipantEntity cp\n            ON json_extract(c.type, '$.type') = 'DIRECT_CHAT'\n            AND cp.userId = json_extract(c.type, '$.participantId')\n        JOIN ChatParticipantEntity cp2 ON cp2.userId = c.originator\n        JOIN ChatParticipantCrossRef cpcr2 ON cpcr2.chatId = c.chatId AND cpcr2.userId = cp2.userId"
+        "tableName": "PendingReceiptsEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `receipt` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "receipt",
+            "columnName": "receipt",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
       },
       {
-        "viewName": "view__last_message_of_the_chat",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT m.chatId, \n                m.messageId,\n                m.message AS lastMessage,\n                m1.last_message_timestamp AS lastMessageTimestamp,\n                m1.unread_messages_count AS unreadMessagesCount,\n                s.status AS messageStatus\n        FROM ChatMessageEntity m\n        JOIN (\n            SELECT chatId, MAX(timestamp) AS last_message_timestamp,\n                COUNT(CASE WHEN isRead = false THEN 1 END) AS unread_messages_count\n            FROM ChatMessageEntity\n            GROUP BY chatId\n        ) m1\n            ON m1.chatId = m.chatId AND m1.last_message_timestamp = m.timestamp\n        LEFT JOIN ChatMessageStatusEntity s\n            ON s.messageId = m.messageId"
-      },
-      {
-        "viewName": "view__pending_messages_on_all_the_chats",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT * FROM view__full_message m\n        WHERE\n            json_extract(m.message, '$.type') IN (\n                'NON_UPLOADABLE_PENDING_MESSAGE',\n                'UPLOADABLE_PENDING_MESSAGE'\n            )\n            AND json_extract(m.message, '$.isReadyToSync') = 'true'\n            AND m.status_status = 'PENDING'"
-      },
-      {
-        "viewName": "view__pending_uploads_on_chats_that_are_complete_successfully",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT * FROM view__full_message m\n        WHERE json_extract(m.message, '$.type') = 'UPLOADABLE_PENDING_MESSAGE'\n            AND json_extract(m.message, '$.uploadStatus.type') = 'UPLOAD_SUCCESS'"
-      },
-      {
-        "viewName": "view__pending_uploads_on_chats_that_are_triggered",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT * FROM view__full_message m\n        WHERE json_extract(m.message, '$.type') = 'SerializableMessage.UploadablePendingMessage'\n            AND json_extract(m.message, '$.uploadStatus') = 'SerializableUploadStatus.Triggered'"
+        "tableName": "OnlineUsersEntity",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `isOnline` INTEGER NOT NULL, `lastSeen` INTEGER NOT NULL, PRIMARY KEY(`userId`), FOREIGN KEY(`userId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isOnline",
+            "columnName": "isOnline",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSeen",
+            "columnName": "lastSeen",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "userId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_OnlineUsersEntity_userId",
+            "unique": true,
+            "columnNames": [
+              "userId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_OnlineUsersEntity_userId` ON `${TABLE_NAME}` (`userId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "ChatParticipantEntity",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "userId"
+            ],
+            "referencedColumns": [
+              "userId"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e5756a3c00905839624a7a979c3dbbd0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14af7ea7325421852c523cf0a1871dee')"
     ]
   }
 }

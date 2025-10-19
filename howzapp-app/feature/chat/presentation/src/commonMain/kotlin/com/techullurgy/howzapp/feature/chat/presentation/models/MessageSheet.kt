@@ -1,7 +1,7 @@
 package com.techullurgy.howzapp.feature.chat.presentation.models
 
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
-import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import kotlin.time.Instant
 
@@ -9,7 +9,7 @@ internal data class MessageSheet(
     val messageId: String,
     val sender: ChatParticipant,
     val isPictureShowable: Boolean,
-    val message: OriginalMessage,
+    val message: Message,
     val messageOwner: MessageOwner,
     val timestamp: Instant
 ) {

@@ -68,7 +68,7 @@ internal fun ChatMessage.Companion.newMessage(
     val pendingContent = if(content !is OriginalMessage.TextMessage) {
         PendingMessage.UploadablePendingMessage(
             uploadId = "",
-            status = UploadStatus.Triggered,
+            status = UploadStatus.Triggered(),
             originalMessage = content,
         )
     } else {

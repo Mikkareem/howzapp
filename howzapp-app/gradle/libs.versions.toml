@@ -13,14 +13,14 @@ androidx-testRunner = "1.7.0"
 androidDesugarJdkLibs = "2.1.5"
 androidTools = "31.13.0"
 buildkonfig = "0.17.1"
-composeMultiplatform = "1.9.0"
+composeMultiplatform = "1.9.1"
 junit = "4.13.2"
 kotlin = "2.2.20"
 kotlinx-serialization = "1.9.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
 coil = "3.3.0"
-ktor = "3.3.0"
+ktor = "3.3.1"
 navigation3 = "1.0.0-alpha10"
 lifecycle-navigation3 = "2.10.0-alpha04"
 koin = "4.1.1"
@@ -30,7 +30,7 @@ gms = "4.4.4"
 room = "2.8.2"
 sqlite = "2.6.1"
 datastore = "1.1.7"
-adaptive = "1.2.0-alpha06"
+adaptive = "1.2.0-alpha07"
 firebase-bom = "34.4.0"
 robolectric = "4.16"
 assertk = "0.28.1"
@@ -135,6 +135,7 @@ koin-common = [
 
 ktor-common = [
     "ktor-client-core",
+    "ktor-client-cio",
     "ktor-client-content-negotiation",
     "ktor-serialization-kotlinx-json",
     "ktor-client-auth"

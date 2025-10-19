@@ -12,6 +12,7 @@ import com.techullurgy.howzapp.feature.chat.database.dao.ChatDao
 import com.techullurgy.howzapp.feature.chat.database.dao.DirectChatDao
 import com.techullurgy.howzapp.feature.chat.database.dao.GroupChatDao
 import com.techullurgy.howzapp.feature.chat.database.dao.MessageDao
+import com.techullurgy.howzapp.feature.chat.database.dao.OnlineUsersDao
 import com.techullurgy.howzapp.feature.chat.database.dao.ParticipantsCrossRefDao
 import com.techullurgy.howzapp.feature.chat.database.dao.ParticipantsDao
 import com.techullurgy.howzapp.feature.chat.database.dao.PendingMessageDao
@@ -26,6 +27,7 @@ import com.techullurgy.howzapp.feature.chat.database.entities.ChatParticipantEnt
 import com.techullurgy.howzapp.feature.chat.database.entities.DirectChatEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.GroupChatEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.MessageEntity
+import com.techullurgy.howzapp.feature.chat.database.entities.OnlineUsersEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.PendingMessageEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.PendingReceiptsEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.ReceiverStatusEntity
@@ -46,7 +48,8 @@ import com.techullurgy.howzapp.feature.chat.database.entities.UploadablePendingM
         ReceiverStatusEntity::class,
         ChatParticipantEntity::class,
         ChatParticipantCrossRef::class,
-        PendingReceiptsEntity::class
+        PendingReceiptsEntity::class,
+        OnlineUsersEntity::class
     ],
     version = 1
 )
@@ -70,6 +73,7 @@ abstract class HowzappDatabase: RoomDatabase() {
     abstract val pendingMessageDao: PendingMessageDao
     abstract val uploadablePendingMessageDao: UploadablePendingMessageDao
     abstract val pendingReceiptsDao: PendingReceiptsDao
+    abstract val onlineUsersDao: OnlineUsersDao
 
     companion object {
         const val DB_NAME: String = "howzapp.db"

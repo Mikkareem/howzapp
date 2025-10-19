@@ -8,6 +8,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.lifecycle.process)
+            implementation(libs.mockk.android)
         }
 
         commonMain.dependencies {

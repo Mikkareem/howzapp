@@ -11,6 +11,7 @@ import com.techullurgy.howzapp.feature.chat.database.entities.ChatParticipantEnt
 import com.techullurgy.howzapp.feature.chat.database.entities.DirectChatEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.GroupChatEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.MessageEntity
+import com.techullurgy.howzapp.feature.chat.database.entities.OnlineUsersEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.PendingMessageEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.PendingReceiptsEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.ReceiverStatus
@@ -370,6 +371,30 @@ internal class DefaultChatLocalRepository(
             database.pendingMessageDao.upsert(newPendingMessage)
 
             database.pendingMessageDao.markPendingMessageAsReadyToSync(pendingId)
+        }
+    }
+
+    override suspend fun updateUserAsOnline(userId: String) {
+        database.safeExecute {
+            database.onlineUsersDao.upsert(
+                OnlineUsersEntity(
+                        userId = userId,
+                        isOnline = true,
+                        lastSeen = Clock.System.now().toEpochMilliseconds()
+                    )
+                )
+        }
+    }
+
+    override suspend fun updateUserAsOffline(userId: String) {
+        database.safeExecute {
+            database.onlineUsersDao.upsert(
+                OnlineUsersEntity(
+                    userId = userId,
+                    isOnline = false,
+                    lastSeen = Clock.System.now().toEpochMilliseconds()
+                )
+            )
         }
     }
 }

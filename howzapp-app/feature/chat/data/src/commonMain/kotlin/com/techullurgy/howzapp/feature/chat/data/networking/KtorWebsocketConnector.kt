@@ -2,13 +2,17 @@ package com.techullurgy.howzapp.feature.chat.data.networking
 
 import com.techullurgy.howzapp.core.domain.auth.SessionStorage
 import com.techullurgy.howzapp.feature.chat.data.lifecycle.AppLifecycleObserver
+import com.techullurgy.howzapp.feature.chat.domain.networking.events.IncomingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.ConnectionState
+import com.techullurgy.howzapp.feature.chat.domain.networking.WebsocketConnector
+import com.techullurgy.howzapp.feature.chat.domain.networking.events.OutgoingMessage
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.header
 import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
 import io.ktor.websocket.close
+import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.awaitClose
@@ -25,25 +29,32 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.retryWhen
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Qualifier
 import org.koin.core.annotation.Single
 import kotlin.time.Duration.Companion.seconds
 
-@Single
-class KtorWebsocketConnector(
+@Qualifier
+annotation class WebsocketJson
+
+@Single(binds = [WebsocketConnector::class])
+internal class KtorWebsocketConnector(
     private val client: HttpClient,
     applicationScope: CoroutineScope,
     sessionStorage: SessionStorage,
-    private val json: Json,
+    @param:WebsocketJson private val json: Json,
     private val connectionErrorHandler: ConnectionErrorHandler,
     private val connectionRetryHandler: ConnectionRetryHandler,
     appLifecycleObserver: AppLifecycleObserver,
     connectivityObserver: ConnectivityObserver
-) {
+): WebsocketConnector {
     private val _connectionState = MutableStateFlow(ConnectionState.DISCONNECTED)
-    val connectionState = _connectionState.asStateFlow()
+
+    override val connectionState = _connectionState.asStateFlow()
 
     private var currentSession: WebSocketSession? = null
 
@@ -69,7 +80,7 @@ class KtorWebsocketConnector(
             false
         )
 
-    val messages = combine(
+    override val messages = combine(
         sessionStorage.observeAuthInfo(),
         isConnected,
         isInForeground
@@ -138,12 +149,28 @@ class KtorWebsocketConnector(
                 }
         }
     }
+        .shareIn(
+            scope = applicationScope,
+            started = SharingStarted.Eagerly,
+        )
+
+    override suspend fun sendOutgoingMessage(message: OutgoingMessage) {
+        currentSession?.let {
+            if(it.isActive) {
+                it.send(
+                    Frame.Text(
+                        json.encodeToString(message)
+                    )
+                )
+            }
+        }
+    }
 
     private fun createWebSocketFlow(accessToken: String) = callbackFlow {
         _connectionState.value = ConnectionState.CONNECTING
 
         currentSession = client.webSocketSession(
-            urlString = ""
+            urlString = "/ws"
         ) {
             header("Authorization", "Bearer $accessToken")
         }
@@ -160,7 +187,8 @@ class KtorWebsocketConnector(
                 .collect { frame ->
                     when(frame) {
                         is Frame.Text -> {
-                            send("")
+                            val incomingMessage = json.decodeFromString<IncomingMessage>(frame.readText())
+                            send(incomingMessage)
                         }
 
                         is Frame.Ping -> {

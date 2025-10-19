@@ -28,9 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.core.designsystem.theme.LocalAppColors
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
-import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.presentation.components.Addition
 import com.techullurgy.howzapp.feature.chat.presentation.components.AdditionBox
@@ -66,7 +67,7 @@ fun ConversationScreen(
     key: ConversationKey
 ) {
     val viewModel = koinViewModel<ConversationViewModel> {
-        parametersOf(ConversationKey("c123"))
+        parametersOf(ConversationKey("u1__u2"))
 //        parametersOf(key)
     }
 
@@ -173,7 +174,7 @@ private class ConversationUiStatePreviewParameterProvider :
         sender = ChatParticipant("", ""),
         isPictureShowable = false,
         message = OriginalMessage.TextMessage(""),
-        messageOwner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.SENT),
+        messageOwner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.SenderStatus.SENT),
         timestamp = Clock.System.now()
     )
 
@@ -189,7 +190,7 @@ private class ConversationUiStatePreviewParameterProvider :
                         timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
                     ),
                     sampleMessageSheet.copy(
-                        message = OriginalMessage.UploadablePendingMessage(
+                        message = PendingMessage.UploadablePendingMessage(
                             originalMessage = OriginalMessage.ImageMessage(""),
                             uploadId = "",
                             status = UploadStatus.Progress(28.0)
@@ -197,7 +198,7 @@ private class ConversationUiStatePreviewParameterProvider :
                         timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
                     ),
                     sampleMessageSheet.copy(
-                        message = OriginalMessage.UploadablePendingMessage(
+                        message = PendingMessage.UploadablePendingMessage(
                             originalMessage = OriginalMessage.AudioMessage(""),
                             uploadId = "",
                             status = UploadStatus.Progress(28.0)
@@ -205,16 +206,16 @@ private class ConversationUiStatePreviewParameterProvider :
                         timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
                     ),
                     sampleMessageSheet.copy(
-                        message = OriginalMessage.UploadablePendingMessage(
+                        message = PendingMessage.UploadablePendingMessage(
                             originalMessage = OriginalMessage.AudioMessage(""),
                             uploadId = "",
-                            status = UploadStatus.Failed
+                            status = UploadStatus.Failed()
                         ),
                         timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
                     ),
 
                     sampleMessageSheet.copy(
-                        message = OriginalMessage.UploadablePendingMessage(
+                        message = PendingMessage.UploadablePendingMessage(
                             originalMessage = OriginalMessage.AudioMessage(""),
                             uploadId = "",
                             status = UploadStatus.Success("")

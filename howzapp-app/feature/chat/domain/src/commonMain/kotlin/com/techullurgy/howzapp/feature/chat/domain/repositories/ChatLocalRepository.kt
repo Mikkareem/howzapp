@@ -34,4 +34,8 @@ interface ChatLocalRepository {
     suspend fun updateStatusOfUpload(uploadId: String, status: UploadStatus)
 
     suspend fun updateUploadablePendingMessageAsReady(pendingId: String, publicUrl: String)
+
+    suspend fun updateUserAsOnline(userId: String)
+
+    suspend fun updateUserAsOffline(userId: String)
 }

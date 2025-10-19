@@ -38,8 +38,9 @@ data class MessageRelation(
     @Relation(
         parentColumn = "senderId",
         entityColumn = "userId",
+        entity = ChatParticipantEntity::class
     )
-    val sender: ChatParticipantEntity,
+    val sender: ChatParticipantRelation,
 
     @Relation(
         parentColumn = "messageId",

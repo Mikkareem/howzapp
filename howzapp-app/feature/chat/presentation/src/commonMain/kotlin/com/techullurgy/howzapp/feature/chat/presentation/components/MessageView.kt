@@ -34,9 +34,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
-import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.presentation.utils.toUIString
 import howzapp.feature.chat.presentation.generated.resources.Res
@@ -55,7 +57,7 @@ import kotlin.time.Instant
 
 @Composable
 internal fun MessageView(
-    message: OriginalMessage,
+    message: Message,
     owner: MessageOwner,
     timestamp: Instant,
     modifier: Modifier = Modifier,
@@ -92,11 +94,8 @@ internal fun MessageView(
             Column {
                 when (message) {
                     is OriginalMessage.TextMessage -> TextMessageView(message)
-                    is OriginalMessage.NonUploadablePendingMessage -> NonUploadablePendingMessageView(
-                        message
-                    )
-
-                    is OriginalMessage.UploadablePendingMessage -> UploadablePendingMessageView(message)
+                    is PendingMessage.NonUploadablePendingMessage -> NonUploadablePendingMessageView(message)
+                    is PendingMessage.UploadablePendingMessage -> UploadablePendingMessageView(message)
                     is OriginalMessage.AudioMessage -> AudioMessageView(message)
                     is OriginalMessage.DocumentMessage -> DocumentMessageView(message)
                     is OriginalMessage.ImageMessage -> ImageMessageView(message)
@@ -125,8 +124,7 @@ internal fun MessageView(
                             Text(text = timeString, fontSize = 12.sp, lineHeight = 12.sp)
                             if (owner is MessageOwner.Me) {
                                 when (owner.status) {
-                                    MessageStatus.PENDING,
-                                    MessageStatus.CREATED -> {
+                                    MessageStatus.SenderStatus.PENDING -> {
                                         Icon(
                                             painter = painterResource(Res.drawable.pending),
                                             contentDescription = null,
@@ -134,7 +132,7 @@ internal fun MessageView(
                                         )
                                     }
 
-                                    MessageStatus.SENT -> {
+                                    MessageStatus.SenderStatus.SENT -> {
                                         Icon(
                                             painter = painterResource(Res.drawable.sent),
                                             contentDescription = null,
@@ -142,7 +140,7 @@ internal fun MessageView(
                                         )
                                     }
 
-                                    MessageStatus.DELIVERED -> {
+                                    MessageStatus.SenderStatus.DELIVERED -> {
                                         Icon(
                                             painter = painterResource(Res.drawable.done_all),
                                             contentDescription = null,
@@ -150,7 +148,7 @@ internal fun MessageView(
                                         )
                                     }
 
-                                    MessageStatus.READ -> {
+                                    MessageStatus.SenderStatus.READ -> {
                                         Icon(
                                             painter = painterResource(Res.drawable.done_all),
                                             contentDescription = null,
@@ -221,23 +219,24 @@ private fun DocumentMessageView(
 
 @Composable
 private fun NonUploadablePendingMessageView(
-    message: OriginalMessage.NonUploadablePendingMessage
+    message: PendingMessage.NonUploadablePendingMessage
 ) {
     when (val originalMessage = message.originalMessage) {
         is OriginalMessage.TextMessage -> TextMessageView(originalMessage)
+        else -> TODO()
     }
 }
 
 @Composable
 private fun UploadablePendingMessageView(
-    message: OriginalMessage.UploadablePendingMessage
+    message: PendingMessage.UploadablePendingMessage
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         when (message.status) {
-            UploadStatus.Failed -> {
+            is UploadStatus.Failed -> {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -273,7 +272,7 @@ private fun UploadablePendingMessageView(
                 }
             }
 
-            UploadStatus.Started -> {
+            is UploadStatus.Started -> {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -308,7 +307,7 @@ private fun UploadablePendingMessageView(
                 }
             }
 
-            UploadStatus.Triggered -> {
+            is UploadStatus.Triggered -> {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -333,6 +332,7 @@ private fun UploadablePendingMessageView(
             is OriginalMessage.DocumentMessage -> DocumentMessageView(originalMessage)
             is OriginalMessage.ImageMessage -> ImageMessageView(originalMessage)
             is OriginalMessage.VideoMessage -> VideoMessageView(originalMessage)
+            else -> TODO()
         }
     }
 }
@@ -362,12 +362,12 @@ private class MessageViewPreviewParameterProvider : PreviewParameterProvider<Mes
         get() = sequenceOf(
             MessageViewData(
                 message = OriginalMessage.TextMessage("Hello People, How are you?"),
-                owner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.DELIVERED),
+                owner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.SenderStatus.DELIVERED),
                 timestamp = Clock.System.now()
             ),
             MessageViewData(
                 message = OriginalMessage.ImageMessage("Hello People, How are you?"),
-                owner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.DELIVERED),
+                owner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.SenderStatus.DELIVERED),
                 timestamp = Clock.System.now().minus(34.minutes)
             )
         )

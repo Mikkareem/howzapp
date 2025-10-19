@@ -6,7 +6,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageView
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageViewAnchored
@@ -15,7 +15,7 @@ import kotlin.time.Instant
 @Composable
 internal fun MessageViewLayout(
     view: MessageViewUi,
-    message: OriginalMessage,
+    message: Message,
     owner: MessageOwner,
     timestamp: Instant,
     modifier: Modifier = Modifier

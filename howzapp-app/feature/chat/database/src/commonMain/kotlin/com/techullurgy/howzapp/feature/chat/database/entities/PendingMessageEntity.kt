@@ -44,9 +44,6 @@ data class PendingMessageEntity(
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
-    ],
-    indices = [
-        Index("uploadId", unique = true)
     ]
 )
 data class UploadablePendingMessageEntity(
@@ -60,8 +57,9 @@ data class PendingMessageRelation(
     @Relation(
         parentColumn = "senderId",
         entityColumn = "userId",
+        entity = ChatParticipantEntity::class
     )
-    val sender: ChatParticipantEntity,
+    val sender: ChatParticipantRelation,
 
     @Relation(
         parentColumn = "pendingId",

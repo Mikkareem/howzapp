@@ -50,6 +50,17 @@ kotlin {
     }
 }
 
+android {
+    packaging {
+        resources {
+            excludes += arrayOf(
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md"
+            )
+        }
+    }
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
 }

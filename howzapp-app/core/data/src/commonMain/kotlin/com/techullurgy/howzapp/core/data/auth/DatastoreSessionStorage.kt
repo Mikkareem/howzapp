@@ -3,6 +3,7 @@ package com.techullurgy.howzapp.core.data.auth
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.techullurgy.howzapp.core.data.dto.AuthInfoSerializable
 import com.techullurgy.howzapp.core.data.mappers.toDomain
@@ -19,6 +20,7 @@ class DatastoreSessionStorage(
     private val dataStore: DataStore<Preferences>
 ): SessionStorage {
     private val authInfoKey = stringPreferencesKey("AUTH_INFO_KEY")
+    private val lastSyncTimestampKey = longPreferencesKey("LAST_SYNC_TIMESTAMP_KEY")
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -42,6 +44,18 @@ class DatastoreSessionStorage(
         val serialized = json.encodeToString(auth.toSerializable())
         dataStore.edit { prefs ->
             prefs[authInfoKey] = serialized
+        }
+    }
+
+    override fun observeLastSyncTimestamp(): Flow<Long> {
+        return dataStore.data.map { preferences ->
+            preferences[lastSyncTimestampKey] ?: 0L
+        }
+    }
+
+    override suspend fun setLastSyncTimestamp(timestamp: Long) {
+        dataStore.edit { prefs ->
+            prefs[lastSyncTimestampKey] = timestamp
         }
     }
 }

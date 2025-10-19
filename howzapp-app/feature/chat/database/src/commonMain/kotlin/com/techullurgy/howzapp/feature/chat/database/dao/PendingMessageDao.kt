@@ -24,7 +24,7 @@ interface PendingMessageDao: BaseDao<PendingMessageEntity> {
     fun getPendingMessagesThatAreReadyToSync(): Flow<List<PendingMessageRelation>>
 
     @Query("UPDATE PendingMessageEntity SET isReady = true WHERE pendingId = :pendingId")
-    fun markPendingMessageAsReadyToSync(pendingId: String)
+    suspend fun markPendingMessageAsReadyToSync(pendingId: String)
 
     @Transaction
     @Query("""

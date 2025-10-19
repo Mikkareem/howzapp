@@ -37,26 +37,16 @@ internal class ConversationViewModel(
                 chat ?: return@onEach
 
                 val title = when (val chatType = chat.chatInfo.chatType) {
-                    is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.username
+                    is ChatType.Direct -> chatType.other.username
                     is ChatType.Group -> chatType.title
                 }
 
                 val profileUrl = when (val chatType = chat.chatInfo.chatType) {
-                    is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.profilePictureUrl
+                    is ChatType.Direct -> chatType.other.profilePictureUrl
                     is ChatType.Group -> chatType.pictureUrl
                 }
 
-                val subtitle = when (val chatType = chat.chatInfo.chatType) {
-                    is ChatType.Direct -> chat.chatParticipants.first { p -> p.userId == chatType.other }.onlineStatus.run {
-                        when (this) {
-                            OnlineStatus.IsOnline -> "Online"
-                            OnlineStatus.NoOnlineStatus -> ""
-                            is OnlineStatus.NotInOnline -> "Last seen $lastSeen"
-                        }
-                    }
-
-                    is ChatType.Group -> "${chat.chatParticipants.count()} Participants"
-                }
+                val subtitle = "subtitle"
 
                 val msgSheets = chat.chatMessages.mapIndexed { index, msg ->
                     MessageSheet(

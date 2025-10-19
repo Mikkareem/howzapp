@@ -5,4 +5,7 @@ import kotlinx.coroutines.flow.Flow
 interface SessionStorage {
     fun observeAuthInfo(): Flow<AuthInfo?>
     suspend fun set(auth: AuthInfo?)
+
+    fun observeLastSyncTimestamp(): Flow<Long>
+    suspend fun setLastSyncTimestamp(timestamp: Long)
 }

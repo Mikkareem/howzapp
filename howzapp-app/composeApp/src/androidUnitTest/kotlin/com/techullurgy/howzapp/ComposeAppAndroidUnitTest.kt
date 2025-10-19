@@ -1,12 +1,16 @@
 package com.techullurgy.howzapp
 
+import org.koin.core.context.startKoin
+import org.koin.ksp.generated.module
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class ComposeAppAndroidUnitTest {
 
     @Test
     fun example() {
-        assertEquals(3, 1 + 2)
+        val scope = startKoin {
+            AppModule().module
+        }.koin
+
     }
 }

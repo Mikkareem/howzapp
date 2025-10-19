@@ -1,4 +1,4 @@
-package com.techullurgy.howzapp.feature.chat.data.services
+package com.techullurgy.howzapp.feature.chat.domain.services
 
 import com.techullurgy.howzapp.core.domain.networking.UploadClient
 import com.techullurgy.howzapp.core.domain.util.dropDuplicates

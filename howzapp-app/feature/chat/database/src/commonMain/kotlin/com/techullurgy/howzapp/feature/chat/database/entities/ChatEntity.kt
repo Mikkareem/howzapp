@@ -3,6 +3,7 @@ package com.techullurgy.howzapp.feature.chat.database.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.Junction
 import androidx.room.PrimaryKey
 import androidx.room.Relation
@@ -38,6 +39,9 @@ data class ChatEntity(
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         ),
+    ],
+    indices = [
+        Index(value = ["otherId", "meId"], unique = true),
     ]
 )
 data class DirectChatEntity(
@@ -76,33 +80,37 @@ data class DirectChatRelation(
     @Embedded val chat: DirectChatEntity,
 
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "senderId"
+        parentColumn = "meId",
+        entityColumn = "userId",
+        entity = ChatParticipantEntity::class
     )
-    val me: ChatParticipantEntity,
+    val me: ChatParticipantRelation,
 
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "senderId"
+        parentColumn = "otherId",
+        entityColumn = "userId",
+        entity = ChatParticipantEntity::class
     )
-    val other: ChatParticipantEntity
+    val other: ChatParticipantRelation
 )
 
 data class GroupChatRelation(
     @Embedded val chat: GroupChatEntity,
 
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "originator"
+        parentColumn = "originator",
+        entityColumn = "userId",
+        entity = ChatParticipantEntity::class
     )
-    val originator: ChatParticipantEntity,
+    val originator: ChatParticipantRelation,
 
     @Relation(
         parentColumn = "chatId",
         entityColumn = "userId",
+        entity = ChatParticipantEntity::class,
         associateBy = Junction(ChatParticipantCrossRef::class)
     )
-    val participants: List<ChatParticipantEntity>,
+    val participants: List<ChatParticipantRelation>,
 )
 
 data class ChatRelation(
@@ -110,27 +118,29 @@ data class ChatRelation(
 
     @Relation(
         parentColumn = "chatId",
-        entityColumn = "chatId"
+        entityColumn = "chatId",
+        entity = DirectChatEntity::class
     )
     val directChat: DirectChatRelation?,
 
     @Relation(
         parentColumn = "chatId",
-        entityColumn = "chatId"
+        entityColumn = "chatId",
+        entity = GroupChatEntity::class
     )
     val groupChat: GroupChatRelation?,
 
     @Relation(
         parentColumn = "chatId",
         entityColumn = "chatId",
-        entity = ChatEntity::class
+        entity = MessageEntity::class
     )
     val messages: List<MessageRelation>,
 
     @Relation(
         parentColumn = "chatId",
         entityColumn = "chatId",
-        entity = ChatEntity::class
+        entity = PendingMessageEntity::class
     )
     val pendingMessages: List<PendingMessageRelation>,
 )
