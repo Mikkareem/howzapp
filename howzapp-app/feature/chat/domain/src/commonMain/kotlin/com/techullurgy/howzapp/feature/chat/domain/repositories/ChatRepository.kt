@@ -2,16 +2,21 @@ package com.techullurgy.howzapp.feature.chat.domain.repositories
 
 import com.techullurgy.howzapp.feature.chat.domain.models.Chat
 import com.techullurgy.howzapp.feature.chat.domain.models.ConnectionState
+import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEvent
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
-interface ChatRepository {
+abstract class ChatRepository {
+    private val _events = MutableSharedFlow<UserChatEvent>()
+    open val events: Flow<UserChatEvent> = _events.asSharedFlow()
 
-    val connectionState: Flow<ConnectionState>
+    abstract val connectionState: Flow<ConnectionState>
 
-    fun observeChatByChatId(
-        chatId: String
-    ): Flow<Chat?>
+    abstract fun observeChatByChatId(chatId: String): Flow<Chat?>
 
-    fun typingFor(chatId: String)
-    fun recordingAudioFor(chatId: String)
+    abstract fun typingFor(chatId: String)
+    abstract fun recordingAudioFor(chatId: String)
+
+    internal fun newEvent(event: UserChatEvent) { _events.tryEmit(event) }
 }

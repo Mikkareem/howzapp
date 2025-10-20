@@ -3,7 +3,6 @@ package com.techullurgy.howzapp.feature.chat.data.networking
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Single
 
-@Single
 actual class ConnectivityObserver {
     actual val isConnected: Flow<Boolean>
         get() = TODO("Not yet implemented")

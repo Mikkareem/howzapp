@@ -3,6 +3,7 @@ package com.techullurgy.howzapp.feature.chat.database.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.techullurgy.howzapp.feature.chat.database.models.SerializableMessage
@@ -23,6 +24,10 @@ import com.techullurgy.howzapp.feature.chat.database.models.SerializableMessage
             onUpdate = ForeignKey.CASCADE
         )
     ],
+    indices = [
+        Index("chatId"),
+        Index("senderId")
+    ]
 )
 data class MessageEntity(
     @PrimaryKey val messageId: String,

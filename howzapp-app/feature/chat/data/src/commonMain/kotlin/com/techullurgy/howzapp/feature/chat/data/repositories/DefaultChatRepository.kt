@@ -18,7 +18,7 @@ class DefaultChatRepository(
     private val typingNotifier: TypingIndicationNotifier,
     private val recordingAudioNotifier: RecordingAudioIndicationNotifier,
     connector: WebsocketConnector
-) : ChatRepository {
+) : ChatRepository() {
 
     override val connectionState: Flow<ConnectionState> = connector.connectionState
 

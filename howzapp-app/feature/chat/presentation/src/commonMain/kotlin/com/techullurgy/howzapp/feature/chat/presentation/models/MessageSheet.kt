@@ -14,16 +14,17 @@ internal data class MessageSheet(
     val timestamp: Instant
 ) {
     val isCurrentUser = messageOwner is MessageOwner.Me
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is MessageSheet) return false
 
-        if (message != other.message) return false
+        if (messageId != other.messageId) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return message.hashCode()
+        return messageId.hashCode()
     }
 }

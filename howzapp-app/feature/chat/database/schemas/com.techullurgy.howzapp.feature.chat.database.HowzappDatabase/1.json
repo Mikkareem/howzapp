@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "14af7ea7325421852c523cf0a1871dee",
+    "identityHash": "30973e7d5f5277fb5a2a7fa145d614ed",
     "entities": [
       {
         "tableName": "ChatEntity",
@@ -52,6 +52,24 @@
           ]
         },
         "indices": [
+          {
+            "name": "index_DirectChatEntity_meId",
+            "unique": false,
+            "columnNames": [
+              "meId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_DirectChatEntity_meId` ON `${TABLE_NAME}` (`meId`)"
+          },
+          {
+            "name": "index_DirectChatEntity_otherId",
+            "unique": false,
+            "columnNames": [
+              "otherId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_DirectChatEntity_otherId` ON `${TABLE_NAME}` (`otherId`)"
+          },
           {
             "name": "index_DirectChatEntity_otherId_meId",
             "unique": true,
@@ -133,6 +151,17 @@
             "chatId"
           ]
         },
+        "indices": [
+          {
+            "name": "index_GroupChatEntity_originator",
+            "unique": false,
+            "columnNames": [
+              "originator"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_GroupChatEntity_originator` ON `${TABLE_NAME}` (`originator`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "ChatEntity",
@@ -205,6 +234,26 @@
             "pendingId"
           ]
         },
+        "indices": [
+          {
+            "name": "index_PendingMessageEntity_chatId",
+            "unique": false,
+            "columnNames": [
+              "chatId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_PendingMessageEntity_chatId` ON `${TABLE_NAME}` (`chatId`)"
+          },
+          {
+            "name": "index_PendingMessageEntity_senderId",
+            "unique": false,
+            "columnNames": [
+              "senderId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_PendingMessageEntity_senderId` ON `${TABLE_NAME}` (`senderId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "ChatEntity",
@@ -308,6 +357,26 @@
             "messageId"
           ]
         },
+        "indices": [
+          {
+            "name": "index_MessageEntity_chatId",
+            "unique": false,
+            "columnNames": [
+              "chatId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_MessageEntity_chatId` ON `${TABLE_NAME}` (`chatId`)"
+          },
+          {
+            "name": "index_MessageEntity_senderId",
+            "unique": false,
+            "columnNames": [
+              "senderId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_MessageEntity_senderId` ON `${TABLE_NAME}` (`senderId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "ChatEntity",
@@ -636,7 +705,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14af7ea7325421852c523cf0a1871dee')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '30973e7d5f5277fb5a2a7fa145d614ed')"
     ]
   }
 }

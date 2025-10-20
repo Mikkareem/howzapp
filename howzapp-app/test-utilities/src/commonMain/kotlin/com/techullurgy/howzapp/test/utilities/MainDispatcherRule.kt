@@ -13,11 +13,13 @@ class MainDispatcherRule(
 ): TestWatcher() {
     override fun starting(description: Description?) {
         super.starting(description)
+        println("Main set")
         Dispatchers.setMain(testDispatcher)
     }
 
     override fun finished(description: Description?) {
         super.finished(description)
+        println("Main unset")
         Dispatchers.resetMain()
     }
 }

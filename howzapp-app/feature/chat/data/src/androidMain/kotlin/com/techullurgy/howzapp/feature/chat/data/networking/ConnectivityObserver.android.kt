@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.annotation.Single
 
-@Single
 actual class ConnectivityObserver(
     context: Context
 ) {

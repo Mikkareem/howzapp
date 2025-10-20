@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.transform
 @Dao
 interface PendingMessageDao: BaseDao<PendingMessageEntity> {
 
+    @Transaction
     @Query("SELECT * FROM PendingMessageEntity WHERE pendingId = :pendingId")
     suspend fun getPendingMessageById(pendingId: String): PendingMessageRelation?
 

@@ -16,13 +16,12 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.domain)
             implementation(projects.feature.chat.domain)
+        }
 
+        commonTest.dependencies {
+            implementation(projects.testUtilities)
         }
     }
-}
-
-ksp {
-    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 afterEvaluate {

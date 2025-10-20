@@ -1,10 +1,11 @@
 package com.techullurgy.howzapp.feature.chat.api.di
 
+import com.techullurgy.howzapp.feature.chat.data.di.ChatDataModule
 import com.techullurgy.howzapp.feature.chat.data.networking.WebsocketJson
-import com.techullurgy.howzapp.feature.chat.domain.networking.events.IncomingMessage
-import com.techullurgy.howzapp.feature.chat.domain.networking.events.OutgoingMessage
 import com.techullurgy.howzapp.feature.chat.database.di.ChatDatabaseModule
 import com.techullurgy.howzapp.feature.chat.domain.di.ChatTestModule
+import com.techullurgy.howzapp.feature.chat.domain.networking.events.IncomingMessage
+import com.techullurgy.howzapp.feature.chat.domain.networking.events.OutgoingMessage
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -14,7 +15,7 @@ import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
 
-@Module(includes = [ChatDatabaseModule::class])
+@Module(includes = [ChatDatabaseModule::class, ChatDataModule::class])
 @Configuration
 @ComponentScan("com.techullurgy.howzapp.feature.chat")
 class ChatModule {

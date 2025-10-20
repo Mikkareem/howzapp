@@ -41,7 +41,9 @@ data class ChatEntity(
         ),
     ],
     indices = [
-        Index(value = ["otherId", "meId"], unique = true),
+        Index("meId"),
+        Index("otherId"),
+        Index(value = arrayOf("otherId","meId"), unique = true),
     ]
 )
 data class DirectChatEntity(
@@ -66,6 +68,9 @@ data class DirectChatEntity(
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("originator")
     ]
 )
 data class GroupChatEntity(

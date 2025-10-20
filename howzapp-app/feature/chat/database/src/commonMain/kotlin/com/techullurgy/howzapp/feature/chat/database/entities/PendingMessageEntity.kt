@@ -24,6 +24,10 @@ import com.techullurgy.howzapp.feature.chat.database.models.SerializableUploadSt
             childColumns = ["senderId"],
             onUpdate = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index("chatId"),
+        Index("senderId")
     ]
 )
 data class PendingMessageEntity(

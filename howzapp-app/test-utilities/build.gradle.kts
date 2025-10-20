@@ -18,6 +18,7 @@ kotlin {
             api(libs.koin.test.junit4)
 
             api(libs.assertk)
+            api(libs.mockk)
 
             implementation(projects.core.data)
         }

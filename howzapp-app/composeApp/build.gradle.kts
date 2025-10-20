@@ -47,6 +47,12 @@ kotlin {
         androidInstrumentedTest.dependencies {
             implementation(libs.mockk.android)
         }
+
+        androidUnitTest.dependencies {
+            implementation(libs.mockk.android)
+
+            implementation(projects.testUtilities)
+        }
     }
 }
 

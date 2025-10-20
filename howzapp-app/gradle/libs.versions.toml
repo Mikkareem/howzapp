@@ -101,6 +101,7 @@ firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 
 # Build Tools

@@ -8,11 +8,18 @@ import org.koin.ksp.generated.startKoin
 @KoinApplication(
     configurations = ["default", "test"]
 )
+object ProductionApp
+
+@KoinApplication(
+    configurations = ["default"]
+)
+object DevelopmentApp
+
 class HowzappApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        startKoin {
+        DevelopmentApp.startKoin {
             androidContext(this@HowzappApplication)
         }
     }
