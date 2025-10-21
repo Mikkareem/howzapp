@@ -13,7 +13,7 @@ import org.koin.core.annotation.Single
 import kotlin.coroutines.coroutineContext
 
 @Single(createdAtStart = true)
-internal class OnlineStatusOfUsersUpdater(
+internal class UserPresenceObserver(
     connector: WebsocketConnector,
     applicationScope: CoroutineScope,
     repository: ChatLocalRepository,

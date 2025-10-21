@@ -12,3 +12,11 @@ internal actual class PlatformModule {
         TODO("Not yet implemented")
     }
 }
+
+@Module
+internal actual class PlatformTestModule {
+    @Single
+    actual fun provideDatabaseFactory(scope: Scope): DatabaseFactory {
+        TODO("Not yet implemented")
+    }
+}

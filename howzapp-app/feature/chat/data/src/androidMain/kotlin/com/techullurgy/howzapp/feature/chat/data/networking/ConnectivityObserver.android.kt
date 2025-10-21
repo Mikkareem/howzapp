@@ -9,12 +9,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.annotation.Single
 
-actual class ConnectivityObserver(
+actual class PlatformConnectivityObserver(
     context: Context
-) {
+): ConnectivityObserver {
     private val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
 
-    actual val isConnected: Flow<Boolean> = callbackFlow {
+    override val isConnected: Flow<Boolean> = callbackFlow {
         connectivityManager.activeNetwork?.let { network ->
             connectivityManager.getNetworkCapabilities(network)?.hasCapability(
                 NetworkCapabilities.NET_CAPABILITY_VALIDATED

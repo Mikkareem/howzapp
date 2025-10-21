@@ -6,12 +6,12 @@ import org.koin.core.annotation.KoinApplication
 import org.koin.ksp.generated.startKoin
 
 @KoinApplication(
-    configurations = ["default", "test"]
+    configurations = ["default"]
 )
 object ProductionApp
 
 @KoinApplication(
-    configurations = ["default"]
+    configurations = ["default", "test"]
 )
 object DevelopmentApp
 
@@ -19,7 +19,7 @@ class HowzappApplication: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        DevelopmentApp.startKoin {
+        ProductionApp.startKoin {
             androidContext(this@HowzappApplication)
         }
     }

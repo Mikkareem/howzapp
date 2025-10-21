@@ -10,6 +10,7 @@ import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
@@ -28,7 +29,6 @@ annotation class DefaultDispatcher
 annotation class MainDispatcher
 
 @Module
-@Configuration
 internal class CoroutinesModule {
 
     @Factory
@@ -55,7 +55,6 @@ internal class CoroutinesModule {
 }
 
 @Module
-@Configuration
 internal expect class PlatformModule {
     @Single
     fun provideDataStore(scope: Scope): DataStore<Preferences>
@@ -63,7 +62,7 @@ internal expect class PlatformModule {
 
 
 @Module(includes = [CoroutinesModule::class, PlatformModule::class])
-@Configuration
+@ComponentScan
 class CoreDataModule {
 
     @Single

@@ -50,8 +50,10 @@ kotlin {
 
         androidUnitTest.dependencies {
             implementation(libs.mockk.android)
+            implementation(libs.robolectric)
 
             implementation(projects.testUtilities)
+            implementation(projects.feature.chat.test)
         }
     }
 }
