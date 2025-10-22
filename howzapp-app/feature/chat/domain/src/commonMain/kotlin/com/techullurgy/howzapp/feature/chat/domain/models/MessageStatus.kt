@@ -6,6 +6,6 @@ sealed interface MessageStatus {
     }
 
     enum class ReceiverStatus: MessageStatus {
-        READ, UNREAD
+        PENDING, READ, UNREAD
     }
 }

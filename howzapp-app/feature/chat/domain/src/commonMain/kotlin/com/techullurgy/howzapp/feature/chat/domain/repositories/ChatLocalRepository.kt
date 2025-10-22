@@ -6,6 +6,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.Chat
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatPreview
 import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.PendingReceipt
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import kotlinx.coroutines.flow.Flow
 
@@ -23,6 +24,8 @@ interface ChatLocalRepository {
     // This will cancel ongoing upload (if any), and delete the message
     fun observeUploadableMessagesThatAreCancelled(): Flow<List<ChatMessage>>
 
+    fun observePendingReceipts(): Flow<List<PendingReceipt>>
+
     suspend fun deletePendingMessage(pendingId: String)
 
     suspend fun syncChats(chats: List<Chat>): AppResult<Unit, DataError.Local>
@@ -35,7 +38,7 @@ interface ChatLocalRepository {
 
     suspend fun updateUploadablePendingMessageAsReady(pendingId: String, publicUrl: String)
 
-    suspend fun updateUserAsOnline(userId: String)
+    suspend fun updateUserOnlineStatus(userId: String, isOnline: Boolean)
 
-    suspend fun updateUserAsOffline(userId: String)
+    suspend fun updatePendingReceiptAsCompleted(id: Long)
 }

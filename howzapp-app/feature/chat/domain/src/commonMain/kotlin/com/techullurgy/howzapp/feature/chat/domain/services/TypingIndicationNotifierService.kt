@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import org.koin.core.annotation.Single
 
 @Single(createdAtStart = true)
-class TypingIndicationNotifier(
+class TypingIndicationNotifierService(
     private val connector: WebsocketConnector,
     applicationScope: CoroutineScope
 ) {

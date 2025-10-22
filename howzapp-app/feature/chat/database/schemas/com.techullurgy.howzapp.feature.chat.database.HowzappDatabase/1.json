@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "30973e7d5f5277fb5a2a7fa145d614ed",
+    "identityHash": "650b574de6b4b4eaf1ba4ead682d01d0",
     "entities": [
       {
         "tableName": "ChatEntity",
@@ -626,7 +626,7 @@
       },
       {
         "tableName": "PendingReceiptsEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `receipt` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `receipt` TEXT NOT NULL, `isPending` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -638,6 +638,12 @@
             "fieldPath": "receipt",
             "columnName": "receipt",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isPending",
+            "columnName": "isPending",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -705,7 +711,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '30973e7d5f5277fb5a2a7fa145d614ed')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '650b574de6b4b4eaf1ba4ead682d01d0')"
     ]
   }
 }

@@ -4,24 +4,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
 import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEventType
-import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatRepository
+import com.techullurgy.howzapp.feature.chat.domain.usecases.GetConversationByIdUsecase
+import com.techullurgy.howzapp.feature.chat.domain.usecases.GetUserChatEventsByChatIdUsecase
 import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
 import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationKey
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.transformLatest
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class ConversationViewModel(
     private val key: ConversationKey,
-    private val chatRepository: ChatRepository
+    private val getConversationById: GetConversationByIdUsecase,
+    getUserChatEventsByChatId: GetUserChatEventsByChatIdUsecase
 ): ViewModel() {
     private val _state = MutableStateFlow(ConversationUiState())
 
@@ -35,13 +34,7 @@ internal class ConversationViewModel(
             initialValue = _state.value
         )
 
-    private val _userChatEvents = chatRepository.events
-        .filter { it.chatId == key.conversationId }
-        .transformLatest {
-            emit(it)
-            delay(5000)
-            emit(null)
-        }
+    private val _userChatEvents = getUserChatEventsByChatId(key.conversationId)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -50,7 +43,7 @@ internal class ConversationViewModel(
 
     private fun observeMessages() {
         combine(
-            chatRepository.observeChatByChatId(key.conversationId),
+            getConversationById(key.conversationId),
             _userChatEvents
         ) { chat, chatEvent ->
             chat ?: return@combine
@@ -85,7 +78,7 @@ internal class ConversationViewModel(
                     is ChatType.Group -> {
                         val username = chatType.participants.first { it.userId == chatEvent.userId }.username
 
-                        username + when(chatEvent.eventType) {
+                        "$username: " + when(chatEvent.eventType) {
                             UserChatEventType.TYPING -> "typing..."
                             UserChatEventType.RECORDING_AUDIO -> "recording audio..."
                         }

@@ -38,7 +38,7 @@ private fun ChatMessageDto.toDomain(): ChatMessage {
 
     val senderStatus = status?.toDomain()
     val receiverStatus = when(receipt) {
-        ReceiptDto.PENDING -> MessageStatus.ReceiverStatus.UNREAD
+        ReceiptDto.PENDING -> MessageStatus.ReceiverStatus.PENDING
         ReceiptDto.DELIVERED -> MessageStatus.ReceiverStatus.UNREAD
         ReceiptDto.READ -> MessageStatus.ReceiverStatus.READ
         null -> null

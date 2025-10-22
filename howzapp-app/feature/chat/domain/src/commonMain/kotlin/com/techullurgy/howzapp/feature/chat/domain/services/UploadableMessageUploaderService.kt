@@ -22,7 +22,7 @@ import org.koin.core.annotation.Single
 import kotlin.coroutines.coroutineContext
 
 @Single(createdAtStart = true)
-internal class UploadableMessageUploader(
+internal class UploadableMessageUploaderService(
     private val chatLocalRepository: ChatLocalRepository,
     private val applicationScope: CoroutineScope,
     private val uploadClient: UploadClient<ByteArray>

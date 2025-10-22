@@ -19,3 +19,20 @@ fun ReceiverStatus.toDomain(): MessageStatus.ReceiverStatus {
         ReceiverStatus.UNREAD -> MessageStatus.ReceiverStatus.UNREAD
     }
 }
+
+fun MessageStatus.ReceiverStatus.toSerializable(): ReceiverStatus {
+    return when(this) {
+        MessageStatus.ReceiverStatus.PENDING -> ReceiverStatus.UNREAD
+        MessageStatus.ReceiverStatus.READ -> ReceiverStatus.READ
+        MessageStatus.ReceiverStatus.UNREAD -> ReceiverStatus.UNREAD
+    }
+}
+
+fun MessageStatus.SenderStatus.toSerializable(): SenderStatus {
+    return when(this) {
+        MessageStatus.SenderStatus.PENDING -> SenderStatus.PENDING
+        MessageStatus.SenderStatus.READ -> SenderStatus.READ
+        MessageStatus.SenderStatus.DELIVERED -> SenderStatus.DELIVERED
+        MessageStatus.SenderStatus.SENT -> SenderStatus.SENT
+    }
+}

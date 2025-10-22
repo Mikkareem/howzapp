@@ -3,5 +3,6 @@ package com.techullurgy.howzapp.feature.chat.data.dto.responses
 import com.techullurgy.howzapp.feature.chat.data.dto.models.ChatDto
 
 internal data class SyncResponse(
-    val chats: List<ChatDto>
+    val chats: List<ChatDto>,
+    val lastSyncTimestamp: Long
 )

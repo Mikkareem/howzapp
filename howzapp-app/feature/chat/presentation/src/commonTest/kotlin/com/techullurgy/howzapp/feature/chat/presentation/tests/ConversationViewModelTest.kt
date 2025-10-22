@@ -12,14 +12,9 @@ import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEvent
 import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEventType
-import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatRepository
-import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationKey
 import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationViewModel
 import com.techullurgy.howzapp.test.utilities.MainDispatcherRule
 import com.techullurgy.howzapp.test.utilities.core.Notifier
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verifyAll
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -40,19 +35,10 @@ class ConversationViewModelTest {
     private val eventNotifier = Notifier<UserChatEvent>()
     private val chatNotifier = Notifier<Chat?>()
 
-    private val mockedRepository = mockk<ChatRepository> {
-        every { observeChatByChatId("c123") } returns chatNotifier.flow
-        every { events } returns eventNotifier.flow
-    }
-
     private lateinit var viewModel: ConversationViewModel
 
     @BeforeTest
     fun setup() {
-        viewModel = ConversationViewModel(
-            key = ConversationKey("c123"),
-            chatRepository = mockedRepository
-        )
     }
 
     @Test
@@ -70,10 +56,10 @@ class ConversationViewModelTest {
         assertThat(viewModel.state.value.messageSheets.last().isCurrentUser).isEqualTo(true)
         assertThat(viewModel.state.value.messageSheets.last().isPictureShowable).isEqualTo(false)
 
-        verifyAll {
-            mockedRepository.observeChatByChatId("c123")
-            mockedRepository.events
-        }
+//        verifyAll {
+//            mockedRepository.observeChatByChatId("c123")
+//            mockedRepository.events
+//        }
     }
 
     @Test

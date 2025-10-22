@@ -13,7 +13,7 @@ import org.koin.core.annotation.Single
 import kotlin.coroutines.coroutineContext
 
 @Single(createdAtStart = true)
-internal class UserPresenceObserver(
+internal class UserPresenceObserverService(
     connector: WebsocketConnector,
     applicationScope: CoroutineScope,
     repository: ChatLocalRepository,
@@ -27,14 +27,14 @@ internal class UserPresenceObserver(
                 when(status) {
                     is IncomingMessage.OnlineIndicatorMessage -> {
                         try {
-                            repository.updateUserAsOnline(status.userId)
+                            repository.updateUserOnlineStatus(status.userId, true)
                         } catch (_: Exception) {
                             coroutineContext.ensureActive()
                         }
                     }
                     is IncomingMessage.OfflineIndicatorMessage -> {
                         try {
-                            repository.updateUserAsOffline(status.userId)
+                            repository.updateUserOnlineStatus(status.userId, false)
                         } catch (_: Exception) {
                             coroutineContext.ensureActive()
                         }

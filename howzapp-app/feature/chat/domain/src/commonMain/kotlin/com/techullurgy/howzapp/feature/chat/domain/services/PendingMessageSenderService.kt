@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.onEach
 import org.koin.core.annotation.Single
 
 @Single(createdAtStart = true)
-class PendingMessageSender(
+class PendingMessageSenderService(
     appScope: CoroutineScope,
     chatLocalRepository: ChatLocalRepository,
     chatNetworkRepository: ChatNetworkRepository,

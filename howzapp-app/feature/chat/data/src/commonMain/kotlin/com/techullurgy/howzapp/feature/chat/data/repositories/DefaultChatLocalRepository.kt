@@ -14,7 +14,6 @@ import com.techullurgy.howzapp.feature.chat.database.entities.MessageEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.OnlineUsersEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.PendingMessageEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.PendingReceiptsEntity
-import com.techullurgy.howzapp.feature.chat.database.entities.ReceiverStatus
 import com.techullurgy.howzapp.feature.chat.database.entities.ReceiverStatusEntity
 import com.techullurgy.howzapp.feature.chat.database.entities.SenderStatus
 import com.techullurgy.howzapp.feature.chat.database.entities.SenderStatusEntity
@@ -32,6 +31,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.PendingReceipt
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatLocalRepository
 import kotlinx.coroutines.flow.Flow
@@ -192,6 +192,7 @@ internal class DefaultChatLocalRepository(
 
     override fun observeUploadableMessagesThatAreReadyToUpload(): Flow<List<ChatMessage>> {
         return database.pendingMessageDao.getUploadablePendingMessagesThatAreTriggered()
+            .distinctUntilChanged()
             .map {
                 it.map { p -> p.toDomain() }
             }
@@ -199,9 +200,16 @@ internal class DefaultChatLocalRepository(
 
     override fun observeUploadableMessagesThatAreCancelled(): Flow<List<ChatMessage>> {
         return database.pendingMessageDao.getUploadablePendingMessagesThatAreCancelled()
+            .distinctUntilChanged()
             .map {
                 it.map { p -> p.toDomain() }
             }
+    }
+
+    override fun observePendingReceipts(): Flow<List<PendingReceipt>> {
+        return database.pendingReceiptsDao.observePendingReceipts()
+            .distinctUntilChanged()
+            .map { it.map { k -> k.toDomain() } }
     }
 
     override suspend fun deletePendingMessage(pendingId: String) {
@@ -309,7 +317,7 @@ internal class DefaultChatLocalRepository(
                             database.senderStatusDao.upsert(
                                 SenderStatusEntity(
                                     statusId = status.statusId,
-                                    status = SenderStatus.valueOf(owner.status.name)
+                                    status = owner.status.toSerializable()
                                 )
                             )
                         }
@@ -317,20 +325,22 @@ internal class DefaultChatLocalRepository(
                             database.receiverStatusDao.upsert(
                                 ReceiverStatusEntity(
                                     statusId = status.statusId,
-                                    status = ReceiverStatus.valueOf(owner.status.name)
+                                    status = owner.status.toSerializable()
                                 )
                             )
                         }
                     }
 
-                    database.pendingReceiptsDao.upsert(
-                        PendingReceiptsEntity(
-                            receipt = SerializableReceipt.MessageReceipt(
-                                message = msg.messageId,
-                                receipt = "DELIVERED"
+                    if((msg.owner as? MessageOwner.Other)?.status == MessageStatus.ReceiverStatus.PENDING) {
+                        database.pendingReceiptsDao.upsert(
+                            PendingReceiptsEntity(
+                                receipt = SerializableReceipt.MessageReceipt(
+                                    message = msg.messageId,
+                                    receipt = "DELIVERED"
+                                )
                             )
                         )
-                    )
+                    }
                 }
             }
         }
@@ -374,27 +384,21 @@ internal class DefaultChatLocalRepository(
         }
     }
 
-    override suspend fun updateUserAsOnline(userId: String) {
+    override suspend fun updateUserOnlineStatus(userId: String, isOnline: Boolean) {
         database.safeExecute {
             database.onlineUsersDao.upsert(
                 OnlineUsersEntity(
                         userId = userId,
-                        isOnline = true,
+                        isOnline = isOnline,
                         lastSeen = Clock.System.now().toEpochMilliseconds()
                     )
                 )
         }
     }
 
-    override suspend fun updateUserAsOffline(userId: String) {
+    override suspend fun updatePendingReceiptAsCompleted(id: Long) {
         database.safeExecute {
-            database.onlineUsersDao.upsert(
-                OnlineUsersEntity(
-                    userId = userId,
-                    isOnline = false,
-                    lastSeen = Clock.System.now().toEpochMilliseconds()
-                )
-            )
+            database.pendingReceiptsDao.updateReceiptAsComplete(id)
         }
     }
 }
