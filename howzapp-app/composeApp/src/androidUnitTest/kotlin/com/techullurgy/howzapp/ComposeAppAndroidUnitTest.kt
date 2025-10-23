@@ -1,12 +1,14 @@
 package com.techullurgy.howzapp
 
 import com.techullurgy.howzapp.feature.chat.test.di.chatTestDomainModule
+import kotlinx.coroutines.CoroutineScope
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.koin.android.ext.koin.androidContext
 import org.koin.ksp.generated.configurationModules
 import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
+import org.koin.test.get
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import kotlin.test.Test
@@ -22,6 +24,6 @@ class ComposeAppAndroidUnitTest: KoinTest {
 
     @Test
     fun example() {
-
+        get<CoroutineScope>()
     }
 }

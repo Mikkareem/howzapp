@@ -53,3 +53,8 @@ include(":feature:chat:database")
 include(":feature:chat:data")
 include(":feature:chat:presentation")
 include(":feature:chat:test")
+
+include(":feature:auth:api")
+include(":feature:auth:domain")
+include(":feature:auth:data")
+include(":feature:auth:presentation")

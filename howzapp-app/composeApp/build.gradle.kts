@@ -37,6 +37,7 @@ kotlin {
 
             implementation(projects.core.di)
             implementation(projects.core.designsystem)
+            implementation(projects.feature.auth.api)
             implementation(projects.feature.chat.api)
         }
         commonTest.dependencies {

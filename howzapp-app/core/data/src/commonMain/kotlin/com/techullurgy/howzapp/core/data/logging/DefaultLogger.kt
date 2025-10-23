@@ -1,21 +1,24 @@
 package com.techullurgy.howzapp.core.data.logging
 
+import co.touchlab.kermit.Logger
 import com.techullurgy.howzapp.core.domain.logging.HowzappLogger
+import org.koin.core.annotation.Single
 
-object DefaultLogger: HowzappLogger {
+@Single(binds = [HowzappLogger::class])
+class DefaultLogger : HowzappLogger {
     override fun debug(message: String) {
-//        Log.d("HowzappLogger", message)
+        Logger.d { message }
     }
 
     override fun error(message: String, throwable: Throwable?) {
-//        Log.e("HowzappLogger", message, throwable)
+        Logger.e(throwable) { message }
     }
 
     override fun info(message: String) {
-//        Log.i("HowzappLogger", message)
+        Logger.i { message }
     }
 
     override fun warn(message: String) {
-//        Log.w("HowzappLogger", message)
+        Logger.w { message }
     }
 }

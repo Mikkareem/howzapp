@@ -96,6 +96,10 @@ class AppWebsocketHandler(
             is IncomingMessage.TypingMessage -> {
                 handleTypingMessage(from, incomingMessage)
             }
+
+            is IncomingMessage.ChatsSubscriptionMessage -> {
+                handleChatsSubscription(from, incomingMessage)
+            }
         }
     }
 
@@ -125,9 +129,6 @@ class AppWebsocketHandler(
         )
 
         lock.write { sessions[userId] = userSession }
-
-        // Fetch for chatIds for this user and populate chatSubscribers
-        fetchAndPopulateChats(userId)
     }
 
     private fun handleParticipantSubscription(from: UserId, message: IncomingMessage.ParticipantSubscriptionMessage) {
@@ -135,6 +136,14 @@ class AppWebsocketHandler(
 
         lock.write {
             participantSubscribers.getOrPut(from, defaultValue = { mutableSetOf() }).addAll(participants)
+        }
+    }
+
+    private fun handleChatsSubscription(from: UserId, message: IncomingMessage.ChatsSubscriptionMessage) {
+        val chats = message.chats
+
+        lock.write {
+            chatSubscribers.getOrPut(from, defaultValue = { mutableSetOf() }).addAll(chats)
         }
     }
 
@@ -174,18 +183,6 @@ class AppWebsocketHandler(
             }
         }
     }
-
-    private fun fetchAndPopulateChats(userId: UserId) {
-        val chatIds = listOf<ChatId>() // Network Result
-        val participantIds = listOf<UserId>() // Network Result
-
-        lock.write {
-            chatIds.forEach {
-                chatSubscribers.getOrPut(key = it, defaultValue = { mutableSetOf() }).add(userId)
-            }
-            participantSubscribers.getOrPut(key = userId, defaultValue = { mutableSetOf() }).addAll(participantIds)
-        }
-    }
 }
 
 private data class WebsocketUserSession(
@@ -213,11 +210,13 @@ private data class WebsocketUserSession(
     JsonSubTypes.Type(IncomingMessage.TypingMessage::class, name = "typing"),
     JsonSubTypes.Type(IncomingMessage.RecordingAudioMessage::class, name = "recording_audio"),
     JsonSubTypes.Type(IncomingMessage.ParticipantSubscriptionMessage::class, name = "participant_subscription"),
+    JsonSubTypes.Type(IncomingMessage.ChatsSubscriptionMessage::class, name = "chat_subscription"),
 )
 private sealed interface IncomingMessage {
     data class TypingMessage(val chatId: ChatId) : IncomingMessage
     data class RecordingAudioMessage(val chatId: ChatId) : IncomingMessage
     data class ParticipantSubscriptionMessage(val participants: List<UserId>) : IncomingMessage
+    data class ChatsSubscriptionMessage(val chats: List<ChatId>) : IncomingMessage
 }
 
 @JsonTypeInfo(

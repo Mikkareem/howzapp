@@ -1,5 +1,6 @@
 package com.techullurgy.howzapp.feature.chat.data.dto.models
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,6 +9,7 @@ internal sealed interface ChatTypeDto {
 }
 
 @Serializable
+@SerialName("direct_chat")
 internal data class DirectChatDto(
     override val chatId: String,
     val participant1: UserDto,
@@ -15,6 +17,7 @@ internal data class DirectChatDto(
 ): ChatTypeDto
 
 @Serializable
+@SerialName("group_chat")
 internal data class GroupChatDto(
     override val chatId: String,
     val originator: UserDto,

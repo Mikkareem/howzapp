@@ -1,0 +1,16 @@
+plugins {
+    alias(applicationLibs.plugins.conventions.cmp.library)
+    alias(applicationLibs.plugins.conventions.koin.compiler)
+}
+
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.koin.compose.viewmodel)
+
+            implementation(projects.core.domain)
+            implementation(projects.feature.auth.domain)
+        }
+    }
+}

@@ -16,4 +16,8 @@ sealed interface OutgoingMessage {
     @Serializable
     @SerialName("participant_subscription")
     data class ParticipantSubscriptionMessage(val participants: List<String>) : OutgoingMessage
+
+    @Serializable
+    @SerialName("chat_subscription")
+    data class ChatsSubscriptionMessage(val chats: List<String>) : OutgoingMessage
 }

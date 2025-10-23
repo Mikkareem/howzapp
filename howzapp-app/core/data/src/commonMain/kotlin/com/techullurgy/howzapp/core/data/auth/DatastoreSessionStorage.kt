@@ -5,9 +5,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.techullurgy.howzapp.core.data.dto.AuthInfoSerializable
-import com.techullurgy.howzapp.core.data.mappers.toDomain
-import com.techullurgy.howzapp.core.data.mappers.toSerializable
 import com.techullurgy.howzapp.core.domain.auth.AuthInfo
 import com.techullurgy.howzapp.core.domain.auth.SessionStorage
 import kotlinx.coroutines.flow.Flow
@@ -28,7 +25,7 @@ class DatastoreSessionStorage(
         return dataStore.data.map { preferences ->
             val serializedJson = preferences[authInfoKey]
             serializedJson?.let {
-                json.decodeFromString<AuthInfoSerializable>(it).toDomain()
+                json.decodeFromString<AuthInfo>(it)
             }
         }
     }
@@ -41,7 +38,7 @@ class DatastoreSessionStorage(
             return
         }
 
-        val serialized = json.encodeToString(auth.toSerializable())
+        val serialized = json.encodeToString(auth)
         dataStore.edit { prefs ->
             prefs[authInfoKey] = serialized
         }

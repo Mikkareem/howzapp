@@ -112,17 +112,17 @@ class ChatServiceTests {
 
         assertEquals(
             2,
-            user2Chats.first { it.chatType.id == listOf(user3.id, user2.id).sorted().joinToString("__") }
+            user2Chats.first { it.chatType.chatId == listOf(user3.id, user2.id).sorted().joinToString("__") }
                 .messages.size
         )
 
         assertNull(
-            user2Chats.first { it.chatType.id == listOf(user3.id, user2.id).sorted().joinToString("__") }
+            user2Chats.first { it.chatType.chatId == listOf(user3.id, user2.id).sorted().joinToString("__") }
                 .messages.first { (it.message as TextMessage).text == "Message 2-3" }
                 .receipt
         )
         assertNotNull(
-            user2Chats.first { it.chatType.id == listOf(user3.id, user2.id).sorted().joinToString("__") }
+            user2Chats.first { it.chatType.chatId == listOf(user3.id, user2.id).sorted().joinToString("__") }
                 .messages.first { (it.message as TextMessage).text == "Message 2-3" }
                 .status
         )
@@ -165,10 +165,10 @@ class ChatServiceTests {
         val returnedIds = chatService.loadMessagesFromChatBefore(
             user2.id,
             participants1.sorted().joinToString("__"),
-            chatMessages[5].message.id
-        ).sortedByDescending { it.timestamp }.map { it.message.id.toString() }
+            chatMessages[5].messageId
+        ).sortedByDescending { it.timestamp }.map { it.messageId.toString() }
 
-        val expectedIds = chatMessages.drop(6).take(20).map { it.message.id.toString() }
+        val expectedIds = chatMessages.drop(6).take(20).map { it.messageId.toString() }
 
         assertEquals(expectedIds, returnedIds)
     }
@@ -201,13 +201,13 @@ class ChatServiceTests {
 
         val user2Chats1 = chatService.loadNewMessagesForUser(user2.id, Instant.now().minusSeconds(20))
 
-        val message = user2Chats1.first().messages.first { it.sender.id == user2.id }
+        val message = user2Chats1.first().messages.first { it.sender.userId == user2.id }
 
         assertEquals(MessageStatus.SENT, message.status)
 
         chatService.updateMessageReceipt(
             user1.id,
-            message.message.id,
+            message.messageId,
             Receipt.DELIVERED
         )
 
@@ -217,7 +217,7 @@ class ChatServiceTests {
 
         val user2Chats2 = chatService.loadNewMessagesForUser(user2.id, Instant.now().minusSeconds(20))
 
-        val targetedMessage = user2Chats2.first().messages.first { it.message.id == message.message.id }
+        val targetedMessage = user2Chats2.first().messages.first { it.messageId == message.messageId }
 
         assertEquals(MessageStatus.RECEIVED, targetedMessage.status)
     }
@@ -252,7 +252,7 @@ class ChatServiceTests {
 
         val sorted = user2Chats.first().messages.sortedByDescending { it.timestamp }
 
-        val ids = sorted.take(40).map { it.message.id }
+        val ids = sorted.take(40).map { it.messageId }
 
         val rSorted = chatService.loadMessagesByIdsForUser(user2.id, ids).sortedByDescending { it.timestamp }
 

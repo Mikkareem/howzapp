@@ -26,6 +26,10 @@ interface ChatLocalRepository {
 
     fun observePendingReceipts(): Flow<List<PendingReceipt>>
 
+    fun observeAllParticipants(): Flow<List<String>>
+
+    fun observeAllChats(): Flow<List<String>>
+
     suspend fun deletePendingMessage(pendingId: String)
 
     suspend fun syncChats(chats: List<Chat>): AppResult<Unit, DataError.Local>

@@ -1,6 +1,11 @@
 package com.techullurgy.howzapp.core.data.networking
 
+expect val HOST_URL: String
+
 object UrlConstants {
-    const val BASE_URL_HTTP = "https://chirp.pl-coding.com/api"
-    const val BASE_URL_WS = "wss://chirp.pl-coding.com/ws"
+
+    const val PORT = 8080
+
+    val BASE_URL_HTTP = "http://$HOST_URL:$PORT/api"
+    val BASE_URL_WS = "ws://$HOST_URL:$PORT/ws"
 }

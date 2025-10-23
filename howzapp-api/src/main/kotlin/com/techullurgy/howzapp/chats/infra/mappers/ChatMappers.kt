@@ -5,20 +5,20 @@ import com.techullurgy.howzapp.chats.infra.database.entities.chats.GroupChatEnti
 import com.techullurgy.howzapp.chats.infra.database.entities.chats.OneToOneChatEntity
 import com.techullurgy.howzapp.chats.models.ChatType
 import com.techullurgy.howzapp.chats.models.GroupChat
-import com.techullurgy.howzapp.chats.models.OneToOneChat
+import com.techullurgy.howzapp.chats.models.DirectChat
 import com.techullurgy.howzapp.common.types.UserId
 import com.techullurgy.howzapp.users.infra.mappers.toDomain
 
 context(me: UserId)
 fun ChatEntity.toDomain(): ChatType {
     return when(this) {
-        is OneToOneChatEntity -> OneToOneChat(
-            id = id,
+        is OneToOneChatEntity -> DirectChat(
+            chatId = id,
             participant1 = participants.filter { it.id == me }.map { it.toDomain() }.first(),
             participant2 = participants.filter { it.id != me }.map { it.toDomain() }.first()
         )
         is GroupChatEntity -> GroupChat(
-            id = id,
+            chatId = id,
             originator = originator.toDomain(),
             participants = participants.map { it.toDomain() },
             title = title,

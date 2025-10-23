@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class SyncRequest(
-    val lastSyncTime: Long,
+    val lastSyncTimestamp: Long,
 )

@@ -10,8 +10,6 @@ import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Qualifier
@@ -62,7 +60,6 @@ internal expect class PlatformModule {
 
 
 @Module(includes = [CoroutinesModule::class, PlatformModule::class])
-@ComponentScan
 class CoreDataModule {
 
     @Single

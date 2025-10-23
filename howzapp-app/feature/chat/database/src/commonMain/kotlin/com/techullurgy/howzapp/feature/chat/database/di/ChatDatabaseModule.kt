@@ -1,11 +1,8 @@
 package com.techullurgy.howzapp.feature.chat.database.di
 
-import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.techullurgy.howzapp.feature.chat.database.DatabaseFactory
 import com.techullurgy.howzapp.feature.chat.database.HowzappDatabase
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import org.koin.core.scope.Scope
@@ -23,7 +20,6 @@ internal expect class PlatformTestModule {
 }
 
 @Module(includes = [PlatformModule::class])
-@ComponentScan
 class ChatDatabaseModule {
     @Single
     fun provideHowzappDatabase(factory: DatabaseFactory): HowzappDatabase {

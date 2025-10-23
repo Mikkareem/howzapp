@@ -212,6 +212,22 @@ internal class DefaultChatLocalRepository(
             .map { it.map { k -> k.toDomain() } }
     }
 
+    override fun observeAllParticipants(): Flow<List<String>> {
+        return database.participantsDao.observeAllParticipants()
+            .distinctUntilChanged()
+            .map {
+                it.map { p -> p.userId }
+            }
+    }
+
+    override fun observeAllChats(): Flow<List<String>> {
+        return database.chatDao.getAllChats()
+            .distinctUntilChanged()
+            .map {
+                it.map { c -> c.chat.chatId }
+            }
+    }
+
     override suspend fun deletePendingMessage(pendingId: String) {
         database.safeExecute {
             database.pendingMessageDao.deletePendingMessage(pendingId)

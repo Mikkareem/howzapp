@@ -1,4 +1,4 @@
-package com.techullurgy.howzapp.core.data.dto
+package com.techullurgy.howzapp.feature.auth.data.dto
 
 import kotlinx.serialization.Serializable
 

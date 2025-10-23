@@ -46,7 +46,7 @@ class ChatController(
         )
 
         return ResponseEntity.ok(
-            SyncResponse(chats)
+            SyncResponse(chats, Instant.now().toEpochMilli())
         )
     }
 

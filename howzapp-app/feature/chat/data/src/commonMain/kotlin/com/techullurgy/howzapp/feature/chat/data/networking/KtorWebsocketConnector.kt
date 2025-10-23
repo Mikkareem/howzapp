@@ -1,10 +1,11 @@
 package com.techullurgy.howzapp.feature.chat.data.networking
 
+import com.techullurgy.howzapp.core.data.networking.UrlConstants
 import com.techullurgy.howzapp.core.domain.auth.SessionStorage
 import com.techullurgy.howzapp.feature.chat.data.lifecycle.AppLifecycleObserver
-import com.techullurgy.howzapp.feature.chat.domain.networking.events.IncomingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.ConnectionState
 import com.techullurgy.howzapp.feature.chat.domain.networking.WebsocketConnector
+import com.techullurgy.howzapp.feature.chat.domain.networking.events.IncomingMessage
 import com.techullurgy.howzapp.feature.chat.domain.networking.events.OutgoingMessage
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.websocket.webSocketSession
@@ -170,7 +171,7 @@ internal class KtorWebsocketConnector(
         _connectionState.value = ConnectionState.CONNECTING
 
         currentSession = client.webSocketSession(
-            urlString = "/ws"
+            urlString = "${UrlConstants.BASE_URL_WS}/ws"
         ) {
             header("Authorization", "Bearer $accessToken")
         }

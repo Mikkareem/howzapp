@@ -1,8 +1,6 @@
 package com.techullurgy.howzapp.core.data.networking
 
-import com.techullurgy.howzapp.core.data.dto.AuthInfoSerializable
-import com.techullurgy.howzapp.core.data.dto.requests.AuthRefreshRequest
-import com.techullurgy.howzapp.core.data.mappers.toDomain
+import com.techullurgy.howzapp.core.domain.auth.AuthInfo
 import com.techullurgy.howzapp.core.domain.auth.SessionStorage
 import com.techullurgy.howzapp.core.domain.util.onFailure
 import com.techullurgy.howzapp.core.domain.util.onSuccess
@@ -19,6 +17,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 class HttpClientFactory(
@@ -74,7 +73,7 @@ class HttpClientFactory(
                         }
 
                         var bearerTokens: BearerTokens? = null
-                        client.post<AuthRefreshRequest, AuthInfoSerializable>(
+                        client.post<AuthRefreshRequest, AuthInfo>(
                             route = "/auth/refresh",
                             body = AuthRefreshRequest(
                                 refreshToken = authInfo.refreshToken
@@ -83,7 +82,7 @@ class HttpClientFactory(
                                 markAsRefreshTokenRequest()
                             }
                         ).onSuccess { newAuthInfo ->
-                            sessionStorage.set(newAuthInfo.toDomain())
+                            sessionStorage.set(newAuthInfo)
                             bearerTokens = BearerTokens(
                                 refreshToken = newAuthInfo.refreshToken,
                                 accessToken = newAuthInfo.accessToken
@@ -99,3 +98,8 @@ class HttpClientFactory(
         }
     }
 }
+
+@Serializable
+private data class AuthRefreshRequest(
+    val refreshToken: String
+)

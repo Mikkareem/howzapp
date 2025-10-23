@@ -1,43 +1,47 @@
 package com.techullurgy.howzapp.chats.models
 
-import com.techullurgy.howzapp.common.types.MessageId
-import com.techullurgy.howzapp.common.types.id
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 
-sealed interface Message {
-    val id: MessageId
-}
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
+)
+@JsonSubTypes(
+    JsonSubTypes.Type(TextMessage ::class, name = "text_message"),
+    JsonSubTypes.Type(ImageMessage ::class, name = "image_message"),
+    JsonSubTypes.Type(AudioMessage::class, name = "audio_message"),
+    JsonSubTypes.Type(VideoMessage::class, name = "video_message"),
+    JsonSubTypes.Type(DocumentMessage::class, name = "document_message"),
+    JsonSubTypes.Type(StickerMessage::class, name = "sticker_message"),
+    JsonSubTypes.Type(DeletedMessage::class, name = "deleted_message"),
+)
+sealed interface Message
 
 data class TextMessage(
-    override val id: MessageId = MessageId.id,
     val text: String,
 ) : Message
 
 data class ImageMessage(
-    override val id: MessageId = MessageId.id,
     val imageUrl: String
 ) : Message
 
 data class AudioMessage(
-    override val id: MessageId = MessageId.id,
     val audioUrl: String,
 ) : Message
 
 data class VideoMessage(
-    override val id: MessageId = MessageId.id,
     val videoUrl: String,
 ) : Message
 
 data class DocumentMessage(
-    override val id: MessageId = MessageId.id,
     val documentUrl: String,
     val documentName: String,
 ) : Message
 
 data class StickerMessage(
-    override val id: MessageId = MessageId.id,
     val stickerUrl: String,
 ) : Message
 
-data class DeletedMessage(
-    override val id: MessageId
-) : Message
+data object DeletedMessage: Message

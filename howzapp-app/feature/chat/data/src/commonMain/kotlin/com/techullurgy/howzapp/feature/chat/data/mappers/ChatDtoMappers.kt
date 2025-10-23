@@ -101,7 +101,7 @@ private fun ChatTypeDto.toDomain(): ChatType {
 
 internal fun UserDto.toDomain(): ChatParticipant {
     return ChatParticipant(
-        userId = id,
+        userId = userId,
         username = name,
         profilePictureUrl = profilePictureUrl
     )

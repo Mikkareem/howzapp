@@ -1,6 +1,8 @@
 package com.techullurgy.howzapp.feature.chat.presentation.screens
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,12 +10,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,10 +31,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
+import com.techullurgy.howzapp.core.designsystem.theme.LocalAppColors
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatPreview
@@ -65,7 +72,8 @@ private fun ConversationListScreenImpl(
     onConversationClick: (String) -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .background(LocalAppColors.current.background),
     ) {
         when(val state = state) {
             ConversationListUiState.Loading -> TODO()
@@ -78,7 +86,8 @@ private fun ConversationListScreenImpl(
                             modifier = Modifier
                                 .fillParentMaxWidth()
                                 .clickable { onConversationClick(it.preview.chatId) }
-                                .padding(8.dp)
+                                .padding(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             DisplayPicture(
                                 url = it.preview.picture,
@@ -88,16 +97,30 @@ private fun ConversationListScreenImpl(
                             Column(
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text(it.preview.title)
-
+                                Text(
+                                    text = it.preview.title,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(Modifier.height(8.dp))
                                 AnimatedContent(
                                     targetState = it.subtitleOverride != null
                                 ) { isSubtitleOverridden ->
                                     if(isSubtitleOverridden) {
-                                        Text(it.subtitleOverride!!)
+                                        Text(
+                                            text = it.subtitleOverride!!,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            color = Color.Green
+                                        )
                                     } else {
                                         // TODO: Last Message Content
-                                        Text(it.preview.lastMessage.content.toString())
+                                        Text(
+                                            text = it.preview.lastMessage.content.toString(),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
                                     }
                                 }
                             }
@@ -106,8 +129,16 @@ private fun ConversationListScreenImpl(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(it.preview.unreadCount.toString())
-                                Text(it.preview.lastMessageTimestamp.toUIString())
+                                AnimatedVisibility(
+                                    visible = it.preview.unreadCount > 0
+                                ) {
+                                    Text(it.preview.unreadCount.toString())
+                                }
+                                Text(
+                                    text = it.preview.lastMessageTimestamp.toUIString(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = LocalContentColor.current.copy(alpha = 0.7f)
+                                )
                             }
                         }
                     }
@@ -151,7 +182,7 @@ private fun DisplayPicture(
 private fun ConversationListScreenPreview(
     @PreviewParameter(ConversationListUiStatePreviewParameterProvider::class) state: ConversationListUiState
 ) {
-    HowzAppTheme {
+    HowzAppTheme(false) {
         ConversationListScreenImpl(
             state = state,
             onConversationClick = {}
@@ -227,7 +258,8 @@ private class ConversationListUiStatePreviewParameterProvider : PreviewParameter
                             )
                         ),
                         lastMessageTimestamp = Clock.System.now().minus(3.seconds)
-                    )
+                    ),
+                    subtitleOverride = "recording audio..."
                 )
             )
         )

@@ -1,9 +1,9 @@
-package com.techullurgy.howzapp.core.data.mappers
+package com.techullurgy.howzapp.feature.auth.data.mappers
 
-import com.techullurgy.howzapp.core.data.dto.AuthInfoSerializable
-import com.techullurgy.howzapp.core.data.dto.UserSerializable
 import com.techullurgy.howzapp.core.domain.auth.AuthInfo
 import com.techullurgy.howzapp.core.domain.auth.User
+import com.techullurgy.howzapp.feature.auth.data.dto.AuthInfoSerializable
+import com.techullurgy.howzapp.feature.auth.data.dto.UserSerializable
 
 fun AuthInfoSerializable.toDomain(): AuthInfo {
     return AuthInfo(

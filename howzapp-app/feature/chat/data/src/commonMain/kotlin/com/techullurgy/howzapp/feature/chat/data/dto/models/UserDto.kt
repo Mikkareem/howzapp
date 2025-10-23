@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class UserDto(
-    val id: String,
+    val userId: String,
     val name: String,
     val profilePictureUrl: String
 )
