@@ -67,8 +67,7 @@ fun ConversationScreen(
     key: ConversationKey
 ) {
     val viewModel = koinViewModel<ConversationViewModel> {
-        parametersOf(ConversationKey("u1__u2"))
-//        parametersOf(key)
+        parametersOf(key)
     }
 
     val state by viewModel.state.collectAsState()

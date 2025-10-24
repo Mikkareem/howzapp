@@ -68,27 +68,27 @@ class HttpClientFactory(
 
                         val authInfo = sessionStorage.observeAuthInfo().firstOrNull()
                         if(authInfo?.refreshToken.isNullOrBlank()) {
-                            sessionStorage.set(null)
+                            sessionStorage.setAuthInfo(null)
                             return@refreshTokens null
                         }
 
                         var bearerTokens: BearerTokens? = null
-                        client.post<AuthRefreshRequest, AuthInfo>(
+                        client.post<Map<String, String>, AuthInfo>(
                             route = "/auth/refresh",
-                            body = AuthRefreshRequest(
-                                refreshToken = authInfo.refreshToken
+                            body = mapOf(
+                                "refreshToken" to authInfo.refreshToken
                             ),
                             builder = {
                                 markAsRefreshTokenRequest()
                             }
                         ).onSuccess { newAuthInfo ->
-                            sessionStorage.set(newAuthInfo)
+                            sessionStorage.setAuthInfo(newAuthInfo)
                             bearerTokens = BearerTokens(
                                 refreshToken = newAuthInfo.refreshToken,
                                 accessToken = newAuthInfo.accessToken
                             )
                         }.onFailure {
-                            sessionStorage.set(null)
+                            sessionStorage.setAuthInfo(null)
                         }
 
                         bearerTokens
@@ -98,8 +98,3 @@ class HttpClientFactory(
         }
     }
 }
-
-@Serializable
-private data class AuthRefreshRequest(
-    val refreshToken: String
-)

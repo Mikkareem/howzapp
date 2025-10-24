@@ -12,4 +12,7 @@ interface PendingReceiptsDao: BaseDao<PendingReceiptsEntity> {
 
     @Query("UPDATE PendingReceiptsEntity SET isPending = false WHERE id = :id")
     suspend fun updateReceiptAsComplete(id: Long)
+
+    @Query("DELETE FROM PendingReceiptsEntity")
+    suspend fun deleteAll()
 }

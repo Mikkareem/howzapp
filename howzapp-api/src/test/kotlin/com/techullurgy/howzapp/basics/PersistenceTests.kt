@@ -9,6 +9,7 @@ import com.techullurgy.howzapp.chats.infra.database.repositories.ChatMessageRepo
 import com.techullurgy.howzapp.chats.infra.database.repositories.ChatMessageStatusRepository
 import com.techullurgy.howzapp.chats.infra.database.repositories.ChatRepository
 import com.techullurgy.howzapp.chats.infra.mappers.toDomain
+import com.techullurgy.howzapp.common.types.UserId
 import com.techullurgy.howzapp.common.types.id
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
 import com.techullurgy.howzapp.users.infra.database.repositories.UserRepository
@@ -48,7 +49,7 @@ class PersistenceTests {
     @Test
     fun basicTest() {
         val savedUser = userRepository.saveAndFlush(
-            UserEntity(Uuid.id.toString(), "Irsath", "", "", "")
+            UserEntity(UserId.id, "Irsath", "", "", "")
         )
 
         Thread.sleep(2000)
@@ -96,9 +97,9 @@ class PersistenceTests {
     fun testBasic2() {
         val savedUsers = userRepository.saveAllAndFlush(
             listOf(
-                UserEntity(Uuid.id.toString(), "Irsath", "", "", ""),
-                UserEntity(Uuid.id.toString(), "Kareem", "", "", ""),
-                UserEntity(Uuid.id.toString(), "Faisal", "", "", ""),
+                UserEntity(UserId.id, "Irsath", "", "", ""),
+                UserEntity(UserId.id, "Kareem", "", "", ""),
+                UserEntity(UserId.id, "Faisal", "", "", ""),
             )
         )
 

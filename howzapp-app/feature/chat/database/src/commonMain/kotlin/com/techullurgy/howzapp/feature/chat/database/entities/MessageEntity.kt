@@ -21,6 +21,7 @@ import com.techullurgy.howzapp.feature.chat.database.models.SerializableMessage
             entity = ChatParticipantEntity::class,
             parentColumns = ["userId"],
             childColumns = ["senderId"],
+            onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
     ],

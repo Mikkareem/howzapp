@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.techullurgy.howzapp.feature.chat.database.converters.MessageTypeConverter
 import com.techullurgy.howzapp.feature.chat.database.converters.PendingMessageTypeConverter
-import com.techullurgy.howzapp.feature.chat.database.converters.PendingReceiptTypeConverter
+import com.techullurgy.howzapp.feature.chat.database.converters.ReceiptTypeConverter
 import com.techullurgy.howzapp.feature.chat.database.converters.UploadStatusTypeConverter
 import com.techullurgy.howzapp.feature.chat.database.dao.ChatDao
 import com.techullurgy.howzapp.feature.chat.database.dao.DirectChatDao
@@ -57,7 +57,7 @@ import com.techullurgy.howzapp.feature.chat.database.entities.UploadablePendingM
     MessageTypeConverter::class,
     UploadStatusTypeConverter::class,
     PendingMessageTypeConverter::class,
-    PendingReceiptTypeConverter::class
+    ReceiptTypeConverter::class
 )
 @ConstructedBy(HowzappDatabaseConstructor::class)
 abstract class HowzappDatabase: RoomDatabase() {

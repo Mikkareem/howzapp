@@ -46,6 +46,7 @@ include(":core:di")
 include(":core:domain")
 include(":core:data")
 include(":core:designsystem")
+include(":core:presentation")
 
 include(":feature:chat:api")
 include(":feature:chat:domain")

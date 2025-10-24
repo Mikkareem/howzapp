@@ -8,6 +8,7 @@ import com.techullurgy.howzapp.chats.infra.database.repositories.ChatMessageRepo
 import com.techullurgy.howzapp.chats.models.TextMessage
 import com.techullurgy.howzapp.chats.services.ChatService
 import com.techullurgy.howzapp.common.types.MessageId
+import com.techullurgy.howzapp.common.types.UserId
 import com.techullurgy.howzapp.common.types.id
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
 import io.mockk.mockk
@@ -45,8 +46,8 @@ class ChatServiceTests {
     @Test
     @Transactional
     fun testBasic() {
-        val user1 = UserEntity(Uuid.id.toString(), "Irsath", "", "", "")
-        val user2 = UserEntity(Uuid.id.toString(), "Kareem", "", "", "")
+        val user1 = UserEntity(UserId.id, "Irsath", "", "", "")
+        val user2 = UserEntity(UserId.id, "Kareem", "", "", "")
 
         em.persist(user1)
         em.persist(user2)
@@ -74,9 +75,9 @@ class ChatServiceTests {
     @Test
     @Transactional
     fun testBasic2() {
-        val user1 = UserEntity(Uuid.id.toString(), "Irsath", "", "", "")
-        val user2 = UserEntity(Uuid.id.toString(), "Kareem", "", "", "")
-        val user3 = UserEntity(Uuid.id.toString(), "Riyas", "", "", "")
+        val user1 = UserEntity(UserId.id, "Irsath", "", "", "")
+        val user2 = UserEntity(UserId.id, "Kareem", "", "", "")
+        val user3 = UserEntity(UserId.id, "Riyas", "", "", "")
 
         em.persist(user1)
         em.persist(user2)
@@ -131,9 +132,9 @@ class ChatServiceTests {
     @Test
     @Transactional
     fun testBasic3() {
-        val user1 = UserEntity(Uuid.id.toString(), "Irsath", "", "", "")
-        val user2 = UserEntity(Uuid.id.toString(), "Kareem", "", "", "")
-        val user3 = UserEntity(Uuid.id.toString(), "Riyas", "", "", "")
+        val user1 = UserEntity(UserId.id, "Irsath", "", "", "")
+        val user2 = UserEntity(UserId.id, "Kareem", "", "", "")
+        val user3 = UserEntity(UserId.id, "Riyas", "", "", "")
 
         em.persist(user1)
         em.persist(user2)
@@ -176,9 +177,9 @@ class ChatServiceTests {
     @Test
     @Transactional
     fun testBasic4() {
-        val user1 = UserEntity(Uuid.id.toString(), "Irsath", "", "", "")
-        val user2 = UserEntity(Uuid.id.toString(), "Kareem", "", "", "")
-        val user3 = UserEntity(Uuid.id.toString(), "Riyas", "", "", "")
+        val user1 = UserEntity(UserId.id, "Irsath", "", "", "")
+        val user2 = UserEntity(UserId.id, "Kareem", "", "", "")
+        val user3 = UserEntity(UserId.id, "Riyas", "", "", "")
 
         em.persist(user1)
         em.persist(user2)
@@ -225,9 +226,9 @@ class ChatServiceTests {
     @Test
     @Transactional
     fun testBasic5() {
-        val user1 = UserEntity(Uuid.id.toString(), "Irsath", "", "", "")
-        val user2 = UserEntity(Uuid.id.toString(), "Kareem", "", "", "")
-        val user3 = UserEntity(Uuid.id.toString(), "Riyas", "", "", "")
+        val user1 = UserEntity(UserId.id, "Irsath", "", "", "")
+        val user2 = UserEntity(UserId.id, "Kareem", "", "", "")
+        val user3 = UserEntity(UserId.id, "Riyas", "", "", "")
 
         em.persist(user1)
         em.persist(user2)

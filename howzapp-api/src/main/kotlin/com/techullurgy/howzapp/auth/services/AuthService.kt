@@ -49,7 +49,7 @@ class AuthService(
 
         val savedUser = userRepository.saveAndFlush(
             UserEntity(
-                id = Uuid.id.toString(),
+                id = UserId.id,
                 name = username.trim(),
                 email = trimmedEmail,
                 hashedPassword = passwordEncoder.encode(password)!!,

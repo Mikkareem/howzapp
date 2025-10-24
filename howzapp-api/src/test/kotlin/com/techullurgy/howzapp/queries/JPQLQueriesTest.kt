@@ -6,6 +6,7 @@ import com.techullurgy.howzapp.chats.infra.database.entities.messages.TextMessag
 import com.techullurgy.howzapp.chats.infra.database.projections.ChatMessageProjection
 import com.techullurgy.howzapp.chats.infra.database.repositories.ChatMessageRepository
 import com.techullurgy.howzapp.chats.infra.utils.JPQLQueries
+import com.techullurgy.howzapp.common.types.UserId
 import com.techullurgy.howzapp.common.types.id
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
 import jakarta.persistence.EntityManager
@@ -35,7 +36,7 @@ class JPQLQueriesTest {
     @BeforeTest
     fun setup() {
         users = List(4) {
-            UserEntity(Uuid.id.toString(), "Irsath-$it", "", "", "")
+            UserEntity(UserId.id, "Irsath-$it", "", "", "")
         }.also { it.forEach { e -> em.persist(e) } }
 
         chats = List(2) {

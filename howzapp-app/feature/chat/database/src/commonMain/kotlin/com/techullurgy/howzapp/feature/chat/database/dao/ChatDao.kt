@@ -16,4 +16,7 @@ interface ChatDao: BaseDao<ChatEntity> {
     @Transaction
     @Query("SELECT * FROM ChatEntity WHERE chatId = :chatId")
     fun getChatById(chatId: String): Flow<ChatRelation?>
+
+    @Query("DELETE FROM ChatEntity")
+    suspend fun deleteAll()
 }

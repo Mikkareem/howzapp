@@ -30,7 +30,7 @@ class DatastoreSessionStorage(
         }
     }
 
-    override suspend fun set(auth: AuthInfo?) {
+    override suspend fun setAuthInfo(auth: AuthInfo?) {
         if(auth == null) {
             dataStore.edit {
                 it.remove(authInfoKey)

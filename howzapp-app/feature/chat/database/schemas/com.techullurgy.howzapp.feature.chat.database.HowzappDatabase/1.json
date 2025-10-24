@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "650b574de6b4b4eaf1ba4ead682d01d0",
+    "identityHash": "867faa471d77a23ea6b81ca6380b4bf0",
     "entities": [
       {
         "tableName": "ChatEntity",
@@ -189,7 +189,7 @@
       },
       {
         "tableName": "PendingMessageEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pendingId` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `isReady` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`pendingId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`senderId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pendingId` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `isReady` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`pendingId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`senderId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "pendingId",
@@ -268,7 +268,7 @@
           },
           {
             "table": "ChatParticipantEntity",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "CASCADE",
             "columns": [
               "senderId"
@@ -318,7 +318,7 @@
       },
       {
         "tableName": "MessageEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`messageId` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`messageId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`senderId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`messageId` TEXT NOT NULL, `chatId` TEXT NOT NULL, `senderId` TEXT NOT NULL, `message` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`messageId`), FOREIGN KEY(`chatId`) REFERENCES `ChatEntity`(`chatId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`senderId`) REFERENCES `ChatParticipantEntity`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "messageId",
@@ -391,7 +391,7 @@
           },
           {
             "table": "ChatParticipantEntity",
-            "onDelete": "NO ACTION",
+            "onDelete": "CASCADE",
             "onUpdate": "CASCADE",
             "columns": [
               "senderId"
@@ -711,7 +711,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '650b574de6b4b4eaf1ba4ead682d01d0')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '867faa471d77a23ea6b81ca6380b4bf0')"
     ]
   }
 }

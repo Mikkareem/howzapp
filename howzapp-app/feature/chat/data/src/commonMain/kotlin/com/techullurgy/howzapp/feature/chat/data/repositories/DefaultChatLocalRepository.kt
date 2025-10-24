@@ -417,6 +417,24 @@ internal class DefaultChatLocalRepository(
             database.pendingReceiptsDao.updateReceiptAsComplete(id)
         }
     }
+
+    override suspend fun reset() {
+        database.safeExecute {
+            database.chatDao.deleteAll()
+            database.participantsDao.deleteAll()
+            database.pendingMessageDao.deleteAll()
+            database.pendingReceiptsDao.deleteAll()
+            database.messageDao.deleteAll()
+            database.onlineUsersDao.deleteAll()
+            database.directChatDao.deleteAll()
+            database.groupChatDao.deleteAll()
+            database.statusDao.deleteAll()
+            database.senderStatusDao.deleteAll()
+            database.receiverStatusDao.deleteAll()
+            database.participantsCrossRefDao.deleteAll()
+            database.uploadablePendingMessageDao.deleteAll()
+        }
+    }
 }
 
 private fun randomId(): String {

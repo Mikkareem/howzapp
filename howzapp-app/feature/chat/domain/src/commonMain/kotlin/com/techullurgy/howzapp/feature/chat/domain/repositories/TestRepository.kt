@@ -11,7 +11,6 @@ import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
-import com.techullurgy.howzapp.feature.chat.domain.utils.newTextMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
@@ -24,7 +23,7 @@ internal class TestRepository(
 ) {
     init {
         appScope.launch {
-            sessionStorage.set(AuthInfo(
+            sessionStorage.setAuthInfo(AuthInfo(
                 "",
                 "",
                 User(

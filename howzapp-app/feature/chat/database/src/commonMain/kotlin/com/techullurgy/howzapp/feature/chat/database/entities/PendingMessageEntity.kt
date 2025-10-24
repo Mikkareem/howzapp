@@ -22,7 +22,8 @@ import com.techullurgy.howzapp.feature.chat.database.models.SerializableUploadSt
             entity = ChatParticipantEntity::class,
             parentColumns = ["userId"],
             childColumns = ["senderId"],
-            onUpdate = ForeignKey.CASCADE
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [

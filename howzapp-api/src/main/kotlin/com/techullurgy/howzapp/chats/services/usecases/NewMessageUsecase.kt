@@ -12,13 +12,13 @@ import com.techullurgy.howzapp.chats.infra.database.repositories.ChatMessageStat
 import com.techullurgy.howzapp.chats.infra.database.repositories.ChatRepository
 import com.techullurgy.howzapp.common.types.ChatId
 import com.techullurgy.howzapp.common.types.MessageId
+import com.techullurgy.howzapp.common.types.ReceiptId
 import com.techullurgy.howzapp.common.types.UserId
 import com.techullurgy.howzapp.common.types.id
 import com.techullurgy.howzapp.users.infra.database.entities.UserEntity
 import com.techullurgy.howzapp.users.infra.database.repositories.UserRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
-import kotlin.uuid.Uuid
 
 @Component
 class NewMessageUsecase(
@@ -53,7 +53,7 @@ class NewMessageUsecase(
         getParticipantsForChatExceptSender(desiredChat.id, sender.id).run {
             forEach { participant ->
                 ChatMessageReceiptsEntity(
-                    id = Uuid.id.toString(),
+                    id = ReceiptId.id,
                     message = messageEntity,
                     user = participant,
                     receipt = Receipt.PENDING

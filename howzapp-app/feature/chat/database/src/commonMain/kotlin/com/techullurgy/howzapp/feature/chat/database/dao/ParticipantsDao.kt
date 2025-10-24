@@ -9,4 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface ParticipantsDao : BaseDao<ChatParticipantEntity> {
     @Query("SELECT * FROM ChatParticipantEntity")
     fun observeAllParticipants(): Flow<List<ChatParticipantEntity>>
+
+    @Query("DELETE FROM ChatParticipantEntity")
+    suspend fun deleteAll()
 }

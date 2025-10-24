@@ -11,9 +11,14 @@ fun HowzAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val extendedScheme = if(darkTheme) DarkAppColors else LightAppColors
+    val appColors = if(darkTheme) DarkAppColors else LightAppColors
+    val colorScheme = if(darkTheme) DarkColorScheme else LightColorScheme
+    val extendedScheme = if(darkTheme) DarkExtendedColors else LightExtendedColors
 
-    CompositionLocalProvider(LocalAppColors provides extendedScheme) {
+    CompositionLocalProvider(
+        LocalAppColors provides appColors,
+        LocalExtendedColors provides extendedScheme
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,

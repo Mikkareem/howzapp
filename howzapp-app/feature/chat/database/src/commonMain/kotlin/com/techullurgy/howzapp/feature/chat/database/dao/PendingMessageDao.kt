@@ -27,6 +27,9 @@ interface PendingMessageDao: BaseDao<PendingMessageEntity> {
     @Query("UPDATE PendingMessageEntity SET isReady = true WHERE pendingId = :pendingId")
     suspend fun markPendingMessageAsReadyToSync(pendingId: String)
 
+    @Query("DELETE FROM PendingMessageEntity")
+    suspend fun deleteAll()
+
     @Transaction
     @Query("""
         SELECT p.*

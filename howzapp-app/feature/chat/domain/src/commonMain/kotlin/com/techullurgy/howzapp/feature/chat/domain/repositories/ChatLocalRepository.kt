@@ -45,4 +45,6 @@ interface ChatLocalRepository {
     suspend fun updateUserOnlineStatus(userId: String, isOnline: Boolean)
 
     suspend fun updatePendingReceiptAsCompleted(id: Long)
+
+    suspend fun reset()
 }

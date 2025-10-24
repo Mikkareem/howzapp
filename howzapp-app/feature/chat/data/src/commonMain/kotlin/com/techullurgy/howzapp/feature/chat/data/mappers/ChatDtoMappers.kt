@@ -34,7 +34,7 @@ internal fun ChatDto.toDomain(): Chat {
     )
 }
 
-private fun ChatMessageDto.toDomain(): ChatMessage {
+internal fun ChatMessageDto.toDomain(): ChatMessage {
 
     val senderStatus = status?.toDomain()
     val receiverStatus = when(receipt) {
@@ -105,4 +105,14 @@ internal fun UserDto.toDomain(): ChatParticipant {
         username = name,
         profilePictureUrl = profilePictureUrl
     )
+}
+
+internal fun OriginalMessage.toDto(): MessageDto {
+    return when(this) {
+        is OriginalMessage.AudioMessage -> AudioMessageDto(audioUrl)
+        is OriginalMessage.DocumentMessage -> DocumentMessageDto(documentUrl, documentName)
+        is OriginalMessage.ImageMessage -> ImageMessageDto(imageUrl)
+        is OriginalMessage.TextMessage -> TextMessageDto(text)
+        is OriginalMessage.VideoMessage -> VideoMessageDto(videoUrl)
+    }
 }

@@ -9,4 +9,7 @@ import com.techullurgy.howzapp.feature.chat.database.models.SerializableUploadSt
 interface UploadablePendingMessageDao: BaseDao<UploadablePendingMessageEntity> {
     @Query("UPDATE UploadablePendingMessageEntity SET uploadStatus = :status WHERE pendingId = :uploadId")
     suspend fun updateStatus(uploadId: String, status: SerializableUploadStatus)
+
+    @Query("DELETE FROM UploadablePendingMessageEntity")
+    suspend fun deleteAll()
 }
