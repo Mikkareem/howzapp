@@ -2,19 +2,20 @@ package com.techullurgy.howzapp.feature.chat.data.repositories
 
 import com.techullurgy.howzapp.core.data.networking.get
 import com.techullurgy.howzapp.core.data.networking.post
+import com.techullurgy.howzapp.core.data.networking.put
 import com.techullurgy.howzapp.core.domain.util.AppResult
 import com.techullurgy.howzapp.core.domain.util.DataError
 import com.techullurgy.howzapp.core.domain.util.EmptyResult
 import com.techullurgy.howzapp.core.domain.util.asEmptyResult
 import com.techullurgy.howzapp.core.domain.util.map
-import com.techullurgy.howzapp.feature.chat.data.dto.models.ReceiptDto
-import com.techullurgy.howzapp.feature.chat.data.dto.requests.LoadChatMessagesRequest
-import com.techullurgy.howzapp.feature.chat.data.dto.requests.MessageReceiptRequest
-import com.techullurgy.howzapp.feature.chat.data.dto.requests.NewMessageRequest
-import com.techullurgy.howzapp.feature.chat.data.dto.requests.SyncRequest
-import com.techullurgy.howzapp.feature.chat.data.dto.responses.LoadChatMessagesResponse
-import com.techullurgy.howzapp.feature.chat.data.dto.responses.NewMessageResponse
-import com.techullurgy.howzapp.feature.chat.data.dto.responses.SyncResponse
+import com.techullurgy.howzapp.core.dto.models.ReceiptDto
+import com.techullurgy.howzapp.core.dto.requests.LoadChatMessagesRequest
+import com.techullurgy.howzapp.core.dto.requests.MessageReceiptRequest
+import com.techullurgy.howzapp.core.dto.requests.NewMessageRequest
+import com.techullurgy.howzapp.core.dto.requests.SyncRequest
+import com.techullurgy.howzapp.core.dto.responses.LoadChatMessagesResponse
+import com.techullurgy.howzapp.core.dto.responses.NewMessageResponse
+import com.techullurgy.howzapp.core.dto.responses.SyncResponse
 import com.techullurgy.howzapp.feature.chat.data.mappers.toDomain
 import com.techullurgy.howzapp.feature.chat.data.mappers.toDto
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
@@ -31,7 +32,7 @@ internal class DefaultChatNetworkRepository(
 ): ChatNetworkRepository {
     override suspend fun sendMessage(message: ChatMessage): AppResult<String, DataError> {
         return client.post<NewMessageRequest, NewMessageResponse>(
-            route = "/api/chat/message",
+            route = "/api/chats/message/new",
             body = NewMessageRequest(
                 chatId = message.chatId,
                 localMessageId = message.messageId,
@@ -41,7 +42,7 @@ internal class DefaultChatNetworkRepository(
     }
 
     override suspend fun sendReadReceiptToMessage(messageId: String): EmptyResult<DataError.Remote> {
-        return client.post<MessageReceiptRequest, Unit>(
+        return client.put<MessageReceiptRequest, Unit>(
             route = "/api/chats/receipt",
             body = MessageReceiptRequest(
                 messageId = messageId,
@@ -51,7 +52,7 @@ internal class DefaultChatNetworkRepository(
     }
 
     override suspend fun sendDeliveryReceiptToMessage(messageId: String): EmptyResult<DataError.Remote> {
-        return client.post<MessageReceiptRequest, Unit>(
+        return client.put<MessageReceiptRequest, Unit>(
             route = "/api/chats/receipt",
             body = MessageReceiptRequest(
                 messageId = messageId,

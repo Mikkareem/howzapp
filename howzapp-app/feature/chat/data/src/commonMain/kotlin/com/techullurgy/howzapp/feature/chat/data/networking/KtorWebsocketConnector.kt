@@ -2,6 +2,7 @@ package com.techullurgy.howzapp.feature.chat.data.networking
 
 import com.techullurgy.howzapp.core.data.networking.UrlConstants
 import com.techullurgy.howzapp.core.domain.auth.SessionStorage
+import com.techullurgy.howzapp.core.dto.websocket.WebsocketOutgoingMessage
 import com.techullurgy.howzapp.feature.chat.data.lifecycle.AppLifecycleObserver
 import com.techullurgy.howzapp.feature.chat.domain.models.ConnectionState
 import com.techullurgy.howzapp.feature.chat.domain.networking.WebsocketConnector
@@ -156,11 +157,28 @@ internal class KtorWebsocketConnector(
         )
 
     override suspend fun sendOutgoingMessage(message: OutgoingMessage) {
+
+        val outgoingMessage = when (message) {
+            is OutgoingMessage.ChatsSubscriptionMessage -> WebsocketOutgoingMessage.ChatsSubscriptionMessage(
+                message.chats
+            )
+
+            is OutgoingMessage.ParticipantSubscriptionMessage -> WebsocketOutgoingMessage.ParticipantSubscriptionMessage(
+                message.participants
+            )
+
+            is OutgoingMessage.RecordingAudioMessage -> WebsocketOutgoingMessage.RecordingAudioMessage(
+                message.chatId
+            )
+
+            is OutgoingMessage.TypingMessage -> WebsocketOutgoingMessage.TypingMessage(message.chatId)
+        }
+
         currentSession?.let {
             if(it.isActive) {
                 it.send(
                     Frame.Text(
-                        json.encodeToString(message)
+                        json.encodeToString(outgoingMessage)
                     )
                 )
             }
@@ -189,7 +207,28 @@ internal class KtorWebsocketConnector(
                     when(frame) {
                         is Frame.Text -> {
                             val incomingMessage = json.decodeFromString<IncomingMessage>(frame.readText())
-                            send(incomingMessage)
+
+                            val message = when (incomingMessage) {
+                                IncomingMessage.NotifyMessageSyncMessage -> IncomingMessage.NotifyMessageSyncMessage
+                                is IncomingMessage.OfflineIndicatorMessage -> IncomingMessage.OfflineIndicatorMessage(
+                                    incomingMessage.userId
+                                )
+
+                                is IncomingMessage.OnlineIndicatorMessage -> IncomingMessage.OnlineIndicatorMessage(
+                                    incomingMessage.userId
+                                )
+
+                                is IncomingMessage.RecordingAudioMessage -> IncomingMessage.RecordingAudioMessage(
+                                    incomingMessage.chatId,
+                                    incomingMessage.userId
+                                )
+
+                                is IncomingMessage.TypingMessage -> IncomingMessage.TypingMessage(
+                                    incomingMessage.chatId,
+                                    incomingMessage.userId
+                                )
+                            }
+                            send(message)
                         }
 
                         is Frame.Ping -> {

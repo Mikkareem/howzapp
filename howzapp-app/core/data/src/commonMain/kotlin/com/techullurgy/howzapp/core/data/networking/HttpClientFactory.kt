@@ -17,7 +17,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 class HttpClientFactory(
@@ -74,7 +73,7 @@ class HttpClientFactory(
 
                         var bearerTokens: BearerTokens? = null
                         client.post<Map<String, String>, AuthInfo>(
-                            route = "/auth/refresh",
+                            route = "/api/auth/refresh",
                             body = mapOf(
                                 "refreshToken" to authInfo.refreshToken
                             ),

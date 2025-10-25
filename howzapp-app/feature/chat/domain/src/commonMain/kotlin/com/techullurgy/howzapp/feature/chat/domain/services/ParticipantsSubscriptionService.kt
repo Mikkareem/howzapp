@@ -31,7 +31,7 @@ internal class ParticipantsSubscriptionService(
             authInfo?.let {
                 if (isConnected) {
                     participants
-                        .filter { p -> p != it.user.id }
+                        .filter { p -> p != it.id }
                         .ifEmpty { null }
                 } else null
             }

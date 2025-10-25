@@ -2,7 +2,6 @@ package com.techullurgy.howzapp.feature.chat.domain.repositories
 
 import com.techullurgy.howzapp.core.domain.auth.AuthInfo
 import com.techullurgy.howzapp.core.domain.auth.SessionStorage
-import com.techullurgy.howzapp.core.domain.auth.User
 import com.techullurgy.howzapp.feature.chat.domain.models.Chat
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatInfo
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
@@ -26,13 +25,7 @@ internal class TestRepository(
             sessionStorage.setAuthInfo(AuthInfo(
                 "",
                 "",
-                User(
-                    id = "u1",
-                    email = "",
-                    username = "Irsath-1",
-                    hasVerifiedEmail = false,
-                    profilePictureUrl = ""
-                )
+                "u1"
             ))
             chatLocalRepository.syncChats(chats)
         }

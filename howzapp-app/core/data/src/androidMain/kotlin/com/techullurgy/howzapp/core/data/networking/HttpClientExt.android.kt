@@ -31,7 +31,8 @@ actual suspend fun <T> platformSafeCall(
         AppResult.Failure(DataError.Remote.REQUEST_TIMEOUT)
     } catch(_: SerializationException) {
         AppResult.Failure(DataError.Remote.SERIALIZATION)
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+        e.printStackTrace()
         coroutineContext.ensureActive()
         AppResult.Failure(DataError.Remote.UNKNOWN)
     }

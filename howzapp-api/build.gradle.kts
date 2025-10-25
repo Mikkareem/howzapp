@@ -47,7 +47,8 @@ dependencies {
     // JWT
     val jwt = "0.13.0"
     implementation("io.jsonwebtoken:jjwt-api:$jwt")
-    implementation("io.jsonwebtoken:jjwt-impl:$jwt")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwt")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwt")
 
     testImplementation("io.mockk:mockk:1.14.6")
 }

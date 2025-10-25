@@ -43,6 +43,7 @@ include(":test-utilities")
 include(":composeApp")
 
 include(":core:di")
+include(":core:dto")
 include(":core:domain")
 include(":core:data")
 include(":core:designsystem")

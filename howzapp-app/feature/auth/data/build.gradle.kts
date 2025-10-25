@@ -11,6 +11,7 @@ kotlin {
 
             implementation(projects.core.domain)
             implementation(projects.core.data)
+            implementation(projects.core.dto)
 
             implementation(projects.feature.auth.domain)
         }

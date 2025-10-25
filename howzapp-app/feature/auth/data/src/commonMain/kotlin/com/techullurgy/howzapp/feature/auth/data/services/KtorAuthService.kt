@@ -7,10 +7,10 @@ import com.techullurgy.howzapp.core.domain.util.DataError
 import com.techullurgy.howzapp.core.domain.util.EmptyResult
 import com.techullurgy.howzapp.core.domain.util.map
 import com.techullurgy.howzapp.core.domain.util.onSuccess
-import com.techullurgy.howzapp.feature.auth.data.dto.AuthInfoSerializable
-import com.techullurgy.howzapp.feature.auth.data.dto.requests.AuthLoginRequest
-import com.techullurgy.howzapp.feature.auth.data.dto.requests.AuthRefreshRequest
-import com.techullurgy.howzapp.feature.auth.data.dto.requests.AuthRegisterRequest
+import com.techullurgy.howzapp.core.dto.models.AuthInfoSerializable
+import com.techullurgy.howzapp.core.dto.requests.AuthLoginRequest
+import com.techullurgy.howzapp.core.dto.requests.AuthRefreshRequest
+import com.techullurgy.howzapp.core.dto.requests.AuthRegisterRequest
 import com.techullurgy.howzapp.feature.auth.data.mappers.toDomain
 import com.techullurgy.howzapp.feature.auth.domain.services.AuthService
 import io.ktor.client.HttpClient
@@ -38,7 +38,7 @@ internal class KtorAuthService(
         password: String
     ): AppResult<AuthInfo, DataError.Remote> {
         return httpClient.post<AuthLoginRequest, AuthInfoSerializable>(
-            route = "/auth/login",
+            route = "/api/auth/login",
             body = AuthLoginRequest(
                 email = email,
                 password = password
@@ -48,7 +48,7 @@ internal class KtorAuthService(
 
     override suspend fun logout(refreshToken: String): EmptyResult<DataError.Remote> {
         return httpClient.post<AuthRefreshRequest, Unit>(
-            route = "/auth/logout",
+            route = "/api/auth/logout",
             body = AuthRefreshRequest(refreshToken)
         ).onSuccess {
             httpClient.authProvider<BearerAuthProvider>()?.clearToken()
@@ -61,7 +61,7 @@ internal class KtorAuthService(
         password: String
     ): EmptyResult<DataError.Remote> {
         return httpClient.post(
-            route = "/auth/register",
+            route = "/api/auth/register",
             body = AuthRegisterRequest(
                 email = email,
                 username = username,

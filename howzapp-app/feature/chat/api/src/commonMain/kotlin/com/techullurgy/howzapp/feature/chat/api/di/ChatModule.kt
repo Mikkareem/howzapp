@@ -1,12 +1,12 @@
 package com.techullurgy.howzapp.feature.chat.api.di
 
+import com.techullurgy.howzapp.core.dto.websocket.WebsocketIncomingMessage
+import com.techullurgy.howzapp.core.dto.websocket.WebsocketOutgoingMessage
 import com.techullurgy.howzapp.feature.chat.data.di.ChatDataModule
 import com.techullurgy.howzapp.feature.chat.data.networking.WebsocketJson
 import com.techullurgy.howzapp.feature.chat.database.di.ChatDatabaseModule
 import com.techullurgy.howzapp.feature.chat.database.di.ChatDatabaseTestModule
 import com.techullurgy.howzapp.feature.chat.domain.di.ChatTestModule
-import com.techullurgy.howzapp.feature.chat.domain.networking.events.IncomingMessage
-import com.techullurgy.howzapp.feature.chat.domain.networking.events.OutgoingMessage
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -27,18 +27,46 @@ class ChatModule {
             ignoreUnknownKeys = true
 
             serializersModule = SerializersModule {
-                polymorphic(IncomingMessage::class) {
-                    subclass(IncomingMessage.TypingMessage::class, IncomingMessage.TypingMessage.serializer())
-                    subclass(IncomingMessage.RecordingAudioMessage::class, IncomingMessage.RecordingAudioMessage.serializer())
-                    subclass(IncomingMessage.OnlineIndicatorMessage::class, IncomingMessage.OnlineIndicatorMessage.serializer())
-                    subclass(IncomingMessage.OfflineIndicatorMessage::class, IncomingMessage.OfflineIndicatorMessage.serializer())
-                    subclass(IncomingMessage.NotifyMessageSyncMessage::class, IncomingMessage.NotifyMessageSyncMessage.serializer())
+                polymorphic(WebsocketIncomingMessage::class) {
+                    subclass(
+                        WebsocketIncomingMessage.TypingMessage::class,
+                        WebsocketIncomingMessage.TypingMessage.serializer()
+                    )
+                    subclass(
+                        WebsocketIncomingMessage.RecordingAudioMessage::class,
+                        WebsocketIncomingMessage.RecordingAudioMessage.serializer()
+                    )
+                    subclass(
+                        WebsocketIncomingMessage.OnlineIndicatorMessage::class,
+                        WebsocketIncomingMessage.OnlineIndicatorMessage.serializer()
+                    )
+                    subclass(
+                        WebsocketIncomingMessage.OfflineIndicatorMessage::class,
+                        WebsocketIncomingMessage.OfflineIndicatorMessage.serializer()
+                    )
+                    subclass(
+                        WebsocketIncomingMessage.NotifyMessageSyncMessage::class,
+                        WebsocketIncomingMessage.NotifyMessageSyncMessage.serializer()
+                    )
                 }
 
-                polymorphic(OutgoingMessage::class) {
-                    subclass(OutgoingMessage.TypingMessage::class, OutgoingMessage.TypingMessage.serializer())
-                    subclass(OutgoingMessage.RecordingAudioMessage::class, OutgoingMessage.RecordingAudioMessage.serializer())
-                    subclass(OutgoingMessage.ParticipantSubscriptionMessage::class, OutgoingMessage.ParticipantSubscriptionMessage.serializer())
+                polymorphic(WebsocketOutgoingMessage::class) {
+                    subclass(
+                        WebsocketOutgoingMessage.TypingMessage::class,
+                        WebsocketOutgoingMessage.TypingMessage.serializer()
+                    )
+                    subclass(
+                        WebsocketOutgoingMessage.RecordingAudioMessage::class,
+                        WebsocketOutgoingMessage.RecordingAudioMessage.serializer()
+                    )
+                    subclass(
+                        WebsocketOutgoingMessage.ParticipantSubscriptionMessage::class,
+                        WebsocketOutgoingMessage.ParticipantSubscriptionMessage.serializer()
+                    )
+                    subclass(
+                        WebsocketOutgoingMessage.ChatsSubscriptionMessage::class,
+                        WebsocketOutgoingMessage.ChatsSubscriptionMessage.serializer()
+                    )
                 }
             }
         }
