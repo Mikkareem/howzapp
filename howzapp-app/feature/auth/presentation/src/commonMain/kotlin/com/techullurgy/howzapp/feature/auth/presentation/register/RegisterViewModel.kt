@@ -11,11 +11,11 @@ import com.techullurgy.howzapp.core.presentation.util.toUiText
 import com.techullurgy.howzapp.feature.auth.domain.services.AuthService
 import com.techullurgy.howzapp.feature.auth.presentation.utils.EmailValidator
 import com.techullurgy.howzapp.feature.auth.presentation.utils.PasswordValidator
-import howzapp.feature.auth.presentation.generated.resources.Res
-import howzapp.feature.auth.presentation.generated.resources.error_account_exists
-import howzapp.feature.auth.presentation.generated.resources.error_invalid_email
-import howzapp.feature.auth.presentation.generated.resources.error_invalid_password
-import howzapp.feature.auth.presentation.generated.resources.error_invalid_username
+import howzapp.core.presentation.generated.resources.Res
+import howzapp.core.presentation.generated.resources.error_account_exists
+import howzapp.core.presentation.generated.resources.error_invalid_email
+import howzapp.core.presentation.generated.resources.error_invalid_password
+import howzapp.core.presentation.generated.resources.error_invalid_username
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

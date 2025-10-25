@@ -7,8 +7,9 @@ kotlin {
         androidMain.dependencies {
             api(libs.androidx.testExt.junit)
             api(libs.androidx.testRunner)
+            api(libs.robolectric)
 
-            implementation(libs.koin.android)
+            api(libs.koin.android)
         }
 
         commonMain.dependencies {

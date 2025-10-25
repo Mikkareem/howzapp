@@ -16,9 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.theme.LocalAppColors
-import howzapp.feature.chat.presentation.generated.resources.Res
-import howzapp.feature.chat.presentation.generated.resources.close
-import howzapp.feature.chat.presentation.generated.resources.plus
+import howzapp.core.presentation.generated.resources.Res
+import howzapp.core.presentation.generated.resources.close
+import howzapp.core.presentation.generated.resources.plus
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

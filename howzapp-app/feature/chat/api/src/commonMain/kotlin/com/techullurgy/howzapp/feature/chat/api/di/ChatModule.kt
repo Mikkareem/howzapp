@@ -6,7 +6,6 @@ import com.techullurgy.howzapp.feature.chat.data.di.ChatDataModule
 import com.techullurgy.howzapp.feature.chat.data.networking.WebsocketJson
 import com.techullurgy.howzapp.feature.chat.database.di.ChatDatabaseModule
 import com.techullurgy.howzapp.feature.chat.database.di.ChatDatabaseTestModule
-import com.techullurgy.howzapp.feature.chat.domain.di.ChatTestModule
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -73,6 +72,11 @@ class ChatModule {
     }
 }
 
-@Module(includes = [ChatTestModule::class, ChatDatabaseTestModule::class])
+@Module(
+    includes = [
+//        ChatTestModule::class,
+        ChatDatabaseTestModule::class
+    ]
+)
 @Configuration("test")
 class ChatModuleForTest

@@ -58,10 +58,10 @@ import com.techullurgy.howzapp.feature.chat.presentation.utils.toUIString
 import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ChatPreviewUi
 import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationListUiState
 import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationListViewModel
-import howzapp.feature.chat.presentation.generated.resources.Res
-import howzapp.feature.chat.presentation.generated.resources.done_all
-import howzapp.feature.chat.presentation.generated.resources.pending
-import howzapp.feature.chat.presentation.generated.resources.sent
+import howzapp.core.presentation.generated.resources.Res
+import howzapp.core.presentation.generated.resources.done_all
+import howzapp.core.presentation.generated.resources.pending
+import howzapp.core.presentation.generated.resources.sent
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter

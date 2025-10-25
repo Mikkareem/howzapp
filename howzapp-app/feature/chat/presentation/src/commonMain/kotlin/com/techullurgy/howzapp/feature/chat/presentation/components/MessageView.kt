@@ -41,11 +41,11 @@ import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.presentation.utils.toUIString
-import howzapp.feature.chat.presentation.generated.resources.Res
-import howzapp.feature.chat.presentation.generated.resources.done_all
-import howzapp.feature.chat.presentation.generated.resources.pending
-import howzapp.feature.chat.presentation.generated.resources.plus
-import howzapp.feature.chat.presentation.generated.resources.sent
+import howzapp.core.presentation.generated.resources.Res
+import howzapp.core.presentation.generated.resources.done_all
+import howzapp.core.presentation.generated.resources.pending
+import howzapp.core.presentation.generated.resources.plus
+import howzapp.core.presentation.generated.resources.sent
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview

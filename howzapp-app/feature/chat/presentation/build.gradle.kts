@@ -14,6 +14,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             implementation(projects.core.designsystem)
+            implementation(projects.core.presentation)
             implementation(projects.core.domain)
             implementation(projects.feature.chat.domain)
         }

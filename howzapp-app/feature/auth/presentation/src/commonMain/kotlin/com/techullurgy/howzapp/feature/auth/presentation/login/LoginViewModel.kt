@@ -11,9 +11,9 @@ import com.techullurgy.howzapp.core.presentation.util.UiText
 import com.techullurgy.howzapp.core.presentation.util.toUiText
 import com.techullurgy.howzapp.feature.auth.domain.services.AuthService
 import com.techullurgy.howzapp.feature.auth.presentation.utils.EmailValidator
-import howzapp.feature.auth.presentation.generated.resources.Res
-import howzapp.feature.auth.presentation.generated.resources.error_email_not_verified
-import howzapp.feature.auth.presentation.generated.resources.error_invalid_credentials
+import howzapp.core.presentation.generated.resources.Res
+import howzapp.core.presentation.generated.resources.error_email_not_verified
+import howzapp.core.presentation.generated.resources.error_invalid_credentials
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

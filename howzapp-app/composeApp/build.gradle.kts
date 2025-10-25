@@ -1,3 +1,7 @@
+@file:OptIn(ExperimentalComposeLibrary::class)
+
+import org.jetbrains.compose.ExperimentalComposeLibrary
+
 plugins {
     alias(applicationLibs.plugins.conventions.cmp.application)
     alias(applicationLibs.plugins.conventions.room)
@@ -54,6 +58,7 @@ kotlin {
             implementation(libs.robolectric)
 
             implementation(projects.testUtilities)
+            implementation(projects.core.presentation)
             implementation(projects.feature.chat.test)
         }
     }
@@ -68,10 +73,19 @@ android {
             )
         }
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    androidTestImplementation(libs.androidx.compose.uitest.junit4.android)
+    testImplementation(libs.androidx.compose.uitest.junit4.android)
+    debugImplementation(libs.androidx.compose.uitest.manifest)
 }
 
 afterEvaluate {
