@@ -1,7 +1,3 @@
-@file:OptIn(ExperimentalComposeLibrary::class)
-
-import org.jetbrains.compose.ExperimentalComposeLibrary
-
 plugins {
     alias(applicationLibs.plugins.conventions.cmp.application)
     alias(applicationLibs.plugins.conventions.room)
@@ -56,6 +52,9 @@ kotlin {
         androidUnitTest.dependencies {
             implementation(libs.mockk.android)
             implementation(libs.robolectric)
+
+            implementation(libs.mockwebserver)
+            implementation(libs.bundles.ktor.common)
 
             implementation(projects.testUtilities)
             implementation(projects.core.presentation)
