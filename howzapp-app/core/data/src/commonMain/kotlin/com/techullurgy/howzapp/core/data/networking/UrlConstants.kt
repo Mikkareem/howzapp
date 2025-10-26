@@ -1,11 +1,16 @@
 package com.techullurgy.howzapp.core.data.networking
 
-expect val HOST_URL: String
+import com.techullurgy.howzapp.core.data.di.HostAndPort
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.qualifier.qualifier
 
-object UrlConstants {
+internal expect val HOST_URL: String
 
-    const val PORT = 8080
+object UrlConstants : KoinComponent {
 
-    val BASE_URL_HTTP = "http://$HOST_URL:$PORT"
-    val BASE_URL_WS = "ws://$HOST_URL:$PORT"
+    private val hostUrl by inject<String>(qualifier = qualifier<HostAndPort>())
+
+    val BASE_URL_HTTP = "http://$hostUrl"
+    val BASE_URL_WS = "ws://$hostUrl"
 }

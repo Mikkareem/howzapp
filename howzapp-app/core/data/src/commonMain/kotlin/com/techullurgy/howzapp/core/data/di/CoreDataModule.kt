@@ -3,6 +3,7 @@ package com.techullurgy.howzapp.core.data.di
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.techullurgy.howzapp.core.data.networking.ByteArrayUploadClient
+import com.techullurgy.howzapp.core.data.networking.HOST_URL
 import com.techullurgy.howzapp.core.data.networking.HttpClientFactory
 import com.techullurgy.howzapp.core.domain.auth.SessionStorage
 import com.techullurgy.howzapp.core.domain.networking.UploadClient
@@ -26,6 +27,9 @@ annotation class DefaultDispatcher
 @Qualifier
 annotation class MainDispatcher
 
+@Qualifier
+annotation class HostAndPort
+
 @Module
 internal class CoroutinesModule {
 
@@ -46,9 +50,18 @@ internal class CoroutinesModule {
 
     @Single
     fun provideApplicationScope(
-        @IoDispatcher dispatcher: CoroutineDispatcher
+        @DefaultDispatcher dispatcher: CoroutineDispatcher
     ): CoroutineScope {
         return CoroutineScope(SupervisorJob() + dispatcher)
+    }
+}
+
+@Module
+internal class BaseUrlModule {
+    @Single
+    @HostAndPort
+    fun provideHostAndPort(): String {
+        return "$HOST_URL:8080"
     }
 }
 
@@ -59,7 +72,7 @@ internal expect class PlatformModule {
 }
 
 
-@Module(includes = [CoroutinesModule::class, PlatformModule::class])
+@Module(includes = [CoroutinesModule::class, BaseUrlModule::class, PlatformModule::class])
 class CoreDataModule {
 
     @Single

@@ -54,10 +54,13 @@ kotlin {
             implementation(libs.robolectric)
 
             implementation(libs.mockwebserver)
-            implementation(libs.bundles.ktor.common)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.websockets)
 
             implementation(projects.testUtilities)
             implementation(projects.core.presentation)
+            implementation(projects.core.data)
             implementation(projects.feature.chat.test)
         }
     }
