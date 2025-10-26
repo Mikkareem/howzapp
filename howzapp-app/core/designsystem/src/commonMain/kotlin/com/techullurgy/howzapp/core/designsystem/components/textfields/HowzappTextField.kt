@@ -18,12 +18,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.core.designsystem.theme.extended
+import com.techullurgy.howzapp.core.presentation.util.TestTag
+import com.techullurgy.howzapp.core.presentation.util.testTag
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HowzappTextField(
     state: TextFieldState,
     modifier: Modifier = Modifier,
+    tag: TestTag? = null,
     placeholder: String? = null,
     title: String? = null,
     supportingText: String? = null,
@@ -59,7 +62,7 @@ fun HowzappTextField(
             ),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             interactionSource = interactionSource,
-            modifier = styleModifier,
+            modifier = if (tag != null) styleModifier.testTag(tag) else styleModifier,
             decorator = { innerBox ->
                 Box(
                     modifier = Modifier

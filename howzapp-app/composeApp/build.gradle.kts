@@ -1,7 +1,7 @@
 plugins {
     alias(applicationLibs.plugins.conventions.cmp.application)
-    alias(applicationLibs.plugins.conventions.room)
     alias(applicationLibs.plugins.conventions.koin.compiler)
+    alias(libs.plugins.roborazzi)
 }
 
 kotlin {
@@ -52,15 +52,21 @@ kotlin {
         androidUnitTest.dependencies {
             implementation(libs.mockk.android)
             implementation(libs.robolectric)
+            implementation(libs.roborazzi)
+            implementation(libs.roborazzi.compose)
+            implementation(libs.roborazzi.rule)
 
             implementation(libs.mockwebserver)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.websockets)
+            implementation(libs.kotlinx.serialization.json)
 
             implementation(projects.testUtilities)
             implementation(projects.core.presentation)
+            implementation(projects.core.domain)
             implementation(projects.core.data)
+            implementation(projects.core.dto)
             implementation(projects.feature.chat.test)
         }
     }

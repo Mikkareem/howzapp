@@ -23,6 +23,9 @@ import com.techullurgy.howzapp.core.designsystem.components.textfields.HowzappPa
 import com.techullurgy.howzapp.core.designsystem.components.textfields.HowzappTextField
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.core.presentation.util.ObserveAsEvents
+import com.techullurgy.howzapp.core.presentation.util.TestTag
+import com.techullurgy.howzapp.core.presentation.util.loginEmailInput
+import com.techullurgy.howzapp.core.presentation.util.loginPasswordInput
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.create_account
 import howzapp.core.presentation.generated.resources.email
@@ -80,6 +83,7 @@ private fun LoginScreen(
         ) {
             HowzappTextField(
                 state = state.emailTextFieldState,
+                tag = TestTag.loginEmailInput,
                 placeholder = stringResource(Res.string.email_placeholder),
                 keyboardType = KeyboardType.Email,
                 singleLine = true,
@@ -90,6 +94,7 @@ private fun LoginScreen(
             Spacer(modifier = Modifier.height(16.dp))
             HowzappPasswordTextField(
                 state = state.passwordTextFieldState,
+                tag = TestTag.loginPasswordInput,
                 placeholder = stringResource(Res.string.password),
                 isPasswordVisible = state.isPasswordVisible,
                 onToggleVisibilityClick = {

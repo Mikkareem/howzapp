@@ -23,13 +23,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
+import com.techullurgy.howzapp.core.designsystem.theme.extended
+import com.techullurgy.howzapp.core.presentation.util.TestTag
+import com.techullurgy.howzapp.core.presentation.util.testTag
+import howzapp.core.designsystem.generated.resources.Res
 import howzapp.core.designsystem.generated.resources.eye_icon
 import howzapp.core.designsystem.generated.resources.eye_off_icon
 import howzapp.core.designsystem.generated.resources.hide_password
 import howzapp.core.designsystem.generated.resources.show_password
-import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
-import com.techullurgy.howzapp.core.designsystem.theme.extended
-import howzapp.core.designsystem.generated.resources.Res
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -40,6 +42,7 @@ fun HowzappPasswordTextField(
     isPasswordVisible: Boolean,
     onToggleVisibilityClick: () -> Unit,
     modifier: Modifier = Modifier,
+    tag: TestTag? = null,
     placeholder: String? = null,
     title: String? = null,
     supportingText: String? = null,
@@ -57,7 +60,7 @@ fun HowzappPasswordTextField(
     ) { styleModifier, interactionSource ->
         BasicSecureTextField(
             state = state,
-            modifier = styleModifier,
+            modifier = if (tag != null) styleModifier.testTag(tag) else styleModifier,
             enabled = enabled,
             textObfuscationMode = if (isPasswordVisible) {
                 TextObfuscationMode.Visible

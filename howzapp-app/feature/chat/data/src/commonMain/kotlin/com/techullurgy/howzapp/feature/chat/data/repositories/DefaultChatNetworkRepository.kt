@@ -9,10 +9,8 @@ import com.techullurgy.howzapp.core.domain.util.EmptyResult
 import com.techullurgy.howzapp.core.domain.util.asEmptyResult
 import com.techullurgy.howzapp.core.domain.util.map
 import com.techullurgy.howzapp.core.dto.models.ReceiptDto
-import com.techullurgy.howzapp.core.dto.requests.LoadChatMessagesRequest
 import com.techullurgy.howzapp.core.dto.requests.MessageReceiptRequest
 import com.techullurgy.howzapp.core.dto.requests.NewMessageRequest
-import com.techullurgy.howzapp.core.dto.requests.SyncRequest
 import com.techullurgy.howzapp.core.dto.responses.LoadChatMessagesResponse
 import com.techullurgy.howzapp.core.dto.responses.NewMessageResponse
 import com.techullurgy.howzapp.core.dto.responses.SyncResponse
@@ -62,9 +60,9 @@ internal class DefaultChatNetworkRepository(
     }
 
     override suspend fun syncChats(lastSyncTimestamp: Long): AppResult<NetworkSyncChatsResult, DataError.Remote> {
-        return client.get<SyncRequest, SyncResponse>(
+        return client.get<SyncResponse>(
             route = "/api/chats/sync",
-            body = SyncRequest(lastSyncTimestamp)
+            queryParams = mapOf("lastSyncTimestamp" to lastSyncTimestamp)
         ).map {
             NetworkSyncChatsResult(
                 chats = it.chats.map { dto ->
@@ -76,9 +74,9 @@ internal class DefaultChatNetworkRepository(
     }
 
     override suspend fun fetchChatMessages(chatId: String, beforeMessage: String): AppResult<NetworkLoadMessagesResult, DataError.Remote> {
-        return client.get<LoadChatMessagesRequest, LoadChatMessagesResponse>(
+        return client.get<LoadChatMessagesResponse>(
             route = "/api/chats/load",
-            body = LoadChatMessagesRequest(chatId, beforeMessage)
+            queryParams = mapOf("chatId" to chatId, "beforeMessage" to beforeMessage)
         ).map {
             NetworkLoadMessagesResult(
                 messages = it.messages.map { m -> m.toDomain() },

@@ -23,15 +23,16 @@ ktor = "3.3.1"
 navigation3 = "1.0.0-beta01"
 lifecycle-navigation3 = "2.10.0-beta01"
 koin = "4.1.1"
-koin-annotations = "2.2.0"
+koin-annotations = "2.3.0"
 ksp = "2.2.20-2.0.3"
 gms = "4.4.4"
 room = "2.8.3"
 sqlite = "2.6.1"
 datastore = "1.1.7"
-adaptive = "1.2.0-alpha07"
+adaptive = "1.2.0-beta01"
 firebase-bom = "34.4.0"
 robolectric = "4.16"
+roborazzi = "1.50.0"
 assertk = "0.28.1"
 mockk = "1.14.6"
 kermit = "2.0.8"
@@ -105,6 +106,9 @@ firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
+roborazzi-compose = { group = "io.github.takahirom.roborazzi", name = "roborazzi-compose", version.ref = "roborazzi" }
+roborazzi-rule = { group = "io.github.takahirom.roborazzi", name = "roborazzi-junit-rule", version.ref = "roborazzi" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
@@ -132,6 +136,7 @@ room = { id = "androidx.room", version.ref = "room" }
 gms = { id = "com.google.gms.google-services", version.ref = "gms" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 
 [bundles]
 koin-common = [

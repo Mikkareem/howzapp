@@ -9,9 +9,11 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
 open class RobolectricTest {
     @get:Rule
     internal val watcher = RobolectricRule()
