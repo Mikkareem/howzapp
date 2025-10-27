@@ -5,10 +5,12 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.mockk)
+            implementation(projects.testUtilities)
+            implementation(libs.ktor.client.core)
             implementation(libs.koin.core)
-            implementation(projects.feature.chat.domain)
+            api(projects.feature.chat.domain)
             implementation(projects.feature.chat.data)
+            implementation(projects.feature.chat.database)
         }
     }
 }

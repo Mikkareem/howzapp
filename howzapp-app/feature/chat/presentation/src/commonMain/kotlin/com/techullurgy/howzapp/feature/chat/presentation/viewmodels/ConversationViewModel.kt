@@ -108,6 +108,7 @@ internal class ConversationViewModel(
                 subtitle = subtitle,
                 profilePicture = profileUrl,
                 messageSheets = _state.value.messageSheets.union(msgSheets).toList()
+                    .sortedBy { it.timestamp }
             )
         }.launchIn(viewModelScope)
     }

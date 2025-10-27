@@ -25,7 +25,7 @@ import io.ktor.client.HttpClient
 import org.koin.core.annotation.Single
 
 @Single(binds = [ChatNetworkRepository::class])
-internal class DefaultChatNetworkRepository(
+class DefaultChatNetworkRepository(
     private val client: HttpClient
 ): ChatNetworkRepository {
     override suspend fun sendMessage(message: ChatMessage): AppResult<String, DataError> {

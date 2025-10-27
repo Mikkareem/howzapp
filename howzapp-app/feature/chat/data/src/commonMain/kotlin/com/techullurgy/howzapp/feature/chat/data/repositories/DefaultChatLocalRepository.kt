@@ -42,7 +42,7 @@ import org.koin.core.annotation.Single
 import kotlin.time.Clock
 
 @Single(binds = [ChatLocalRepository::class])
-internal class DefaultChatLocalRepository(
+class DefaultChatLocalRepository(
     private val database: HowzappDatabase
 ): ChatLocalRepository {
     override suspend fun newPendingMessage(

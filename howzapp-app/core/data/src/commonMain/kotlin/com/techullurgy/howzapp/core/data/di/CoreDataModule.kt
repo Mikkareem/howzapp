@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.Preferences
 import com.techullurgy.howzapp.core.data.networking.ByteArrayUploadClient
 import com.techullurgy.howzapp.core.data.networking.HOST_URL
 import com.techullurgy.howzapp.core.data.networking.HttpClientFactory
-import com.techullurgy.howzapp.core.domain.auth.SessionStorage
 import com.techullurgy.howzapp.core.domain.networking.UploadClient
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineDispatcher
@@ -76,8 +75,8 @@ internal expect class PlatformModule {
 class CoreDataModule {
 
     @Single
-    fun provideHttpClient(sessionStorage: SessionStorage): HttpClient {
-        return HttpClientFactory(sessionStorage).create()
+    fun provideHttpClient(scope: Scope): HttpClient {
+        return scope.get<HttpClientFactory>().create()
     }
 
     @Single

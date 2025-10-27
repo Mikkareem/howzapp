@@ -18,7 +18,9 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Single
 
+@Single
 class HttpClientFactory(
     private val sessionStorage: SessionStorage
 ) {

@@ -3,8 +3,23 @@ package com.techullurgy.howzapp.core.presentation.util
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 
+fun Modifier.testTag(tag: TestTag) = this.then(Modifier.testTag(tag.name))
+
 class TestTag internal constructor(val name: String) {
-    companion object
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TestTag) return false
+
+        if (name != other.name) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+
+    companion object {}
 }
 
 val TestTag.Companion.loginEmailLabel: TestTag
@@ -19,4 +34,8 @@ val TestTag.Companion.loginPasswordLabel: TestTag
 val TestTag.Companion.loginPasswordInput: TestTag
     get() = TestTag("loginPasswordInput")
 
-fun Modifier.testTag(tag: TestTag) = this.then(Modifier.testTag(tag.name))
+fun TestTag.Companion.chatMessage(chatId: String, messageId: String): TestTag =
+    TestTag("chatMessage:$chatId:$messageId")
+
+val TestTag.Companion.messageInput: TestTag
+    get() = TestTag("messageInput")

@@ -4,13 +4,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
-import com.github.takahirom.roborazzi.RoborazziOptions
-import com.github.takahirom.roborazzi.RoborazziTaskType
-import com.github.takahirom.roborazzi.captureRoboGif
 import com.techullurgy.howzapp.App
 import com.techullurgy.howzapp.DevelopmentApp
 import com.techullurgy.howzapp.core.data.di.HostAndPort
@@ -26,18 +22,20 @@ import com.techullurgy.howzapp.core.dto.responses.SyncResponse
 import com.techullurgy.howzapp.core.presentation.util.TestTag
 import com.techullurgy.howzapp.core.presentation.util.loginEmailInput
 import com.techullurgy.howzapp.core.presentation.util.loginPasswordInput
+import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatNetworkRepository
 import com.techullurgy.howzapp.feature.chat.test.di.chatTestDomainModule
+import com.techullurgy.howzapp.test.utilities.AbstractMockDispatcher
 import com.techullurgy.howzapp.test.utilities.MainDispatcherRule
 import com.techullurgy.howzapp.test.utilities.RobolectricTest
 import com.techullurgy.howzapp.test.utilities.testModule
+import howzapp.core.presentation.generated.resources.Res
+import howzapp.core.presentation.generated.resources.login
+import io.mockk.coVerify
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import okhttp3.WebSocketListener
-import okhttp3.mockwebserver.Dispatcher
-import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.RecordedRequest
+import org.jetbrains.compose.resources.getString
 import org.junit.Rule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.qualifier
@@ -51,10 +49,12 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.time.Clock
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
-@Config(qualifiers = "w480dp-h700dp-480dpi")
+@Config(
+    qualifiers = "w412dp-h924dp-420dpi",
+)
 class AndroidAppTest : RobolectricTest() {
 
     @get:Rule(order = 1)
@@ -75,6 +75,7 @@ class AndroidAppTest : RobolectricTest() {
 
     private lateinit var server: MockWebServer
     private lateinit var json: Json
+    private lateinit var dispatcher: AbstractMockDispatcher
 
     @BeforeTest
     fun setup() {
@@ -84,6 +85,9 @@ class AndroidAppTest : RobolectricTest() {
             inetAddress = InetAddress.getLoopbackAddress(),
             port = 8080
         )
+
+        dispatcher = AbstractMockDispatcher(json)
+        server.dispatcher = dispatcher
 
         composeTestRule.setContent { App() }
     }
@@ -122,7 +126,7 @@ class AndroidAppTest : RobolectricTest() {
                             sender = UserDto(userId = loggedInUserId, name = "Irsath", ""),
                             status = MessageStatusDto.SENT,
                             receipt = null,
-                            timestamp = Clock.System.now().minus(3.seconds)
+                            timestamp = Clock.System.now().minus(5.minutes)
                         ),
                         ChatMessageDto(
                             messageId = "asda0s9dosada0sasdasd87as7d7as",
@@ -131,8 +135,8 @@ class AndroidAppTest : RobolectricTest() {
                             message = TextMessageDto("I am Riyas"),
                             sender = UserDto(userId = otherUserId, name = "Riyas", ""),
                             status = null,
-                            receipt = ReceiptDto.DELIVERED,
-                            timestamp = Clock.System.now().minus(5.seconds)
+                            receipt = ReceiptDto.PENDING,
+                            timestamp = Clock.System.now().minus(3.minutes)
                         )
                     )
                 )
@@ -140,107 +144,40 @@ class AndroidAppTest : RobolectricTest() {
             lastSyncTimestamp = Clock.System.now().toEpochMilliseconds()
         )
 
-        server.dispatcher = object : Dispatcher() {
-            override fun dispatch(request: RecordedRequest): MockResponse {
-                return with(json) {
-                    with(request.requestUrl!!.encodedPath) {
-                        when {
-                            startsWith("/api/auth/login") -> {
-                                getMockResponse(loginResponse)
-                            }
-
-                            startsWith("/api/chats/sync") -> {
-                                getMockResponse(syncResponse)
-                            }
-
-                            startsWith("/ws") -> {
-                                MockResponse().withWebSocketUpgrade(object : WebSocketListener() {})
-                            }
-
-                            else -> MockResponse().setResponseCode(404)
-                        }
-                    }
-                }
-            }
+        dispatcher.apply {
+            this.loginResponse = loginResponse
+            this.syncResponse = syncResponse
         }
 
         composeTestRule.apply {
-            onRoot()
-                .captureRoboGif(
-                    this, "gifs/1.gif", roborazziOptions = RoborazziOptions(
-                        taskType = RoborazziTaskType.Record,
-                        // Pixel-perfect matching
-                        compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0f),
-                        // Reduce the size of the PNGs
-                        recordOptions = RoborazziOptions.RecordOptions(resizeScale = 1.0),
-                    )
-                ) {
-                    onNodeWithTag(TestTag.loginEmailInput.name)
-                        .assertExists()
-                        .performTextInput("irsath.kareem@howzapp.com")
+            onNodeWithTag(TestTag.loginEmailInput.name)
+                .assertExists()
+                .performTextInput("irsath.kareem@howzapp.com")
 
-                    onNodeWithTag(TestTag.loginPasswordInput.name)
-                        .assertExists()
-                        .performTextInput("Irka@123")
+            onNodeWithTag(TestTag.loginPasswordInput.name)
+                .assertExists()
+                .performTextInput("Irka@123")
 
-//                    onRoot()
-//                        .captureRoboImage(
-//                            filePath = "screenshots/1.png",
-//                            roborazziOptions = RoborazziOptions(
-//                                // Don't pass taskType here, provide using gradle task or gradle property
-//                                // recordRoborazziDebug, verifyRoborazziDebug
-//                                taskType = RoborazziTaskType.Record,
-//                                compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0f),
-//                                recordOptions = RoborazziOptions.RecordOptions(resizeScale = 1.0),
-//                            )
-//                        )
+            onNodeWithText(getString(Res.string.login))
+                .assertExists().performClick()
 
-                    onNodeWithText("Log In")
-                        .assertExists().performClick()
+            advanceUntilIdle()
 
-                    advanceUntilIdle()
+            waitUntil {
+                onAllNodesWithText("Riyas").fetchSemanticsNodes().isNotEmpty()
+            }
 
-                    waitUntil {
-                        onAllNodesWithText("Riyas").fetchSemanticsNodes().isNotEmpty()
-                    }
+            onNodeWithText("Riyas").assertExists().performClick()
 
-//                    onRoot()
-//                        .captureRoboImage(
-//                            filePath = "screenshots/2.png",
-//                            roborazziOptions = RoborazziOptions(
-//                                taskType = RoborazziTaskType.Record,
-//                                // Pixel-perfect matching
-//                                compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0f),
-//                                // Reduce the size of the PNGs
-//                                recordOptions = RoborazziOptions.RecordOptions(resizeScale = 1.0),
-//                            )
-//                        )
+            waitUntil {
+                onAllNodesWithText("Who are you?").fetchSemanticsNodes().isNotEmpty()
+            }
+        }
 
-                    onNodeWithText("Riyas").assertExists().performClick()
+        advanceUntilIdle()
 
-                    waitUntil {
-                        onAllNodesWithText("Who are you?").fetchSemanticsNodes().isNotEmpty()
-                    }
-
-//                    onRoot()
-//                        .captureRoboImage(
-//                            filePath = "screenshots/3.png",
-//                            roborazziOptions = RoborazziOptions(
-//                                taskType = RoborazziTaskType.Record,
-//                                // Pixel-perfect matching
-//                                compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0f),
-//                                // Reduce the size of the PNGs
-//                                recordOptions = RoborazziOptions.RecordOptions(resizeScale = 1.0),
-//                            )
-//                        )
-                }
+        coVerify {
+            koinRule.koin.get<ChatNetworkRepository>().sendDeliveryReceiptToMessage(any())
         }
     }
-}
-
-context(json: Json)
-inline fun <reified T> getMockResponse(body: T): MockResponse {
-    return MockResponse()
-        .addHeader("Content-Type", "application/json")
-        .setBody(json.encodeToString(body))
 }

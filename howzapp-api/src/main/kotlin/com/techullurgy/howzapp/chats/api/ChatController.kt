@@ -1,10 +1,20 @@
 package com.techullurgy.howzapp.chats.api
 
-import com.techullurgy.howzapp.chats.api.dto.*
+import com.techullurgy.howzapp.chats.api.dto.LoadChatMessagesResponse
+import com.techullurgy.howzapp.chats.api.dto.MessageReceiptRequest
+import com.techullurgy.howzapp.chats.api.dto.NewMessageRequest
+import com.techullurgy.howzapp.chats.api.dto.NewMessageResponse
+import com.techullurgy.howzapp.chats.api.dto.SyncResponse
 import com.techullurgy.howzapp.chats.services.ChatService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
 @RestController
@@ -35,14 +45,14 @@ class ChatController(
 
     @GetMapping("/sync")
     fun sync(
-        @RequestBody request: SyncRequest,
+        @RequestParam("lastSyncTimestamp") lastSyncTimestamp: Long,
         auth: Authentication
     ): ResponseEntity<SyncResponse> {
         val currentUser = auth.name
 
         val chats = chatService.loadNewMessagesForUser(
             userId = currentUser,
-            after = Instant.ofEpochMilli(request.lastSyncTimestamp)
+            after = Instant.ofEpochMilli(lastSyncTimestamp)
         )
 
         return ResponseEntity.ok(
@@ -52,15 +62,16 @@ class ChatController(
 
     @GetMapping("/load")
     fun loadMessageFromChat(
-        @RequestBody request: LoadChatMessagesRequest,
+        @RequestParam("chatId") chatId: String,
+        @RequestParam("beforeMessage") beforeMessage: String,
         auth: Authentication
     ): ResponseEntity<LoadChatMessagesResponse> {
         val currentUser = auth.name
 
         val messages = chatService.loadMessagesFromChatBefore(
             userId = currentUser,
-            chatId = request.chatId,
-            lastMessage = request.beforeMessage
+            chatId = chatId,
+            lastMessage = beforeMessage
         )
 
         return ResponseEntity.ok(

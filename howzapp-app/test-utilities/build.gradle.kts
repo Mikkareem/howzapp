@@ -3,6 +3,11 @@ plugins {
 }
 
 kotlin {
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
+
     sourceSets {
         androidMain.dependencies {
             api(libs.androidx.testExt.junit)
@@ -22,6 +27,8 @@ kotlin {
             api(libs.mockk)
 
             implementation(projects.core.data)
+            implementation(projects.core.dto)
+            api(libs.mockwebserver)
         }
     }
 }
