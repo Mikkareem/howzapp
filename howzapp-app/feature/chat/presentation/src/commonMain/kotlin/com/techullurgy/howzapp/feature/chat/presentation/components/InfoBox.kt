@@ -18,6 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.techullurgy.howzapp.core.designsystem.theme.LocalAppColors
+import com.techullurgy.howzapp.core.presentation.util.TestTag
+import com.techullurgy.howzapp.core.presentation.util.conversationSubtitle
+import com.techullurgy.howzapp.core.presentation.util.conversationTitle
+import com.techullurgy.howzapp.core.presentation.util.testTag
 import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationUiState
 
 @Composable
@@ -46,13 +50,15 @@ internal fun InfoBox(state: ConversationUiState) {
             Text(
                 state.title,
                 color = LocalAppColors.current.content1,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.testTag(TestTag.conversationTitle)
             )
             AnimatedVisibility(state.subtitle.isNotBlank()) {
                 Text(
                     state.subtitle,
                     color = LocalAppColors.current.content1.copy(alpha = 0.6f),
-                    style = MaterialTheme.typography.labelSmall
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.testTag(TestTag.conversationSubtitle)
                 )
             }
         }

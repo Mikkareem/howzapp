@@ -223,7 +223,6 @@ private fun NonUploadablePendingMessageView(
 ) {
     when (val originalMessage = message.originalMessage) {
         is OriginalMessage.TextMessage -> TextMessageView(originalMessage)
-        else -> TODO()
     }
 }
 
@@ -332,7 +331,6 @@ private fun UploadablePendingMessageView(
             is OriginalMessage.DocumentMessage -> DocumentMessageView(originalMessage)
             is OriginalMessage.ImageMessage -> ImageMessageView(originalMessage)
             is OriginalMessage.VideoMessage -> VideoMessageView(originalMessage)
-            else -> TODO()
         }
     }
 }

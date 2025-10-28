@@ -8,7 +8,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.test.espresso.Espresso
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.RoborazziTaskType
@@ -19,9 +18,11 @@ import com.techullurgy.howzapp.core.presentation.util.TestTag
 import com.techullurgy.howzapp.core.presentation.util.loginEmailInput
 import com.techullurgy.howzapp.core.presentation.util.loginPasswordInput
 import com.techullurgy.howzapp.e2etests.responses.AppResponses
-import com.techullurgy.howzapp.e2etests.responses.AppResponses.otherUser
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
+import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatLocalRepository
-import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatNetworkRepository
+import com.techullurgy.howzapp.feature.chat.domain.system.FileReader
 import com.techullurgy.howzapp.feature.chat.test.di.chatTestDomainModule
 import com.techullurgy.howzapp.test.utilities.AppMockEngine
 import com.techullurgy.howzapp.test.utilities.MainDispatcherRule
@@ -31,14 +32,17 @@ import com.techullurgy.howzapp.test.utilities.testModule
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.login
 import io.ktor.http.HttpStatusCode
-import io.ktor.websocket.Frame
-import io.mockk.coVerify
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
 import org.junit.Rule
 import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 import org.koin.ksp.generated.configurationModules
 import org.koin.test.KoinTestRule
 import org.robolectric.RuntimeEnvironment
@@ -51,7 +55,7 @@ import kotlin.test.Test
     qualifiers = "w412dp-h924dp-420dpi",
 )
 @LooperMode(LooperMode.Mode.PAUSED)
-class AndroidAppTest : RobolectricTest() {
+class UploadTest: RobolectricTest() {
 
     @get:Rule(order = 1)
     val mainDispatcherRule = MainDispatcherRule()
@@ -59,7 +63,15 @@ class AndroidAppTest : RobolectricTest() {
     @get:Rule(order = 2)
     val koinRule = KoinTestRule.create {
         androidContext(RuntimeEnvironment.getApplication())
-        modules(DevelopmentApp.configurationModules + chatTestDomainModule + testModule)
+        modules(
+            DevelopmentApp.configurationModules + chatTestDomainModule + testModule + module {
+                single<FileReader> {
+                    mockk<FileReader>() {
+                        coEvery { getFileBytesFromUrl(any()) } returns "repeat".repeat(20000).toByteArray()
+                    }
+                }
+            }
+        )
     }
 
     @get:Rule(order = 3)
@@ -73,8 +85,7 @@ class AndroidAppTest : RobolectricTest() {
     }
 
     @Test
-    fun `login successful, and online indicator - if user is online, remove online indicator, if user is offline, and Read receipts sent - when Conversation Screen disposal`() = runTest {
-
+    fun uploadTest() = runTest {
         val appServer = koinRule.koin.get<AppMockEngine>()
 
         val loginResponse = AppResponses.loginResponse
@@ -108,41 +119,31 @@ class AndroidAppTest : RobolectricTest() {
             waitUntil {
                 onAllNodesWithText("Riyas").fetchSemanticsNodes().isNotEmpty()
             }
-
-            onNodeWithText("Riyas").assertExists().performClick()
-
-            waitUntil {
-                onAllNodesWithText("Who are you?").fetchSemanticsNodes().isNotEmpty()
-            }
-
-            appServer.mockedIncoming.send(Frame.Text("""{ "type": "online_indicator", "userId": "${otherUser.userId}" }"""))
-
-            waitUntil(5000) {
-                onAllNodesWithText("Online").fetchSemanticsNodes().isNotEmpty()
-            }
-
-            appServer.mockedIncoming.send(Frame.Text("""{ "type": "offline_indicator", "userId": "${otherUser.userId}" }"""))
-
-            advanceUntilIdle()
-
-            waitUntil(5000) {
-                onAllNodesWithText("Online").fetchSemanticsNodes().isEmpty()
-            }
-
-            onNodeWithText("Online").assertDoesNotExist()
         }
 
-        Espresso.pressBack()
+        val repository = koinRule.koin.get<ChatLocalRepository>()
 
-        composeTestRule.waitForIdle()
+        repository.newPendingMessage(
+            chatId = syncResponse.chats.first().messages.first().chatId,
+            senderId = loginResponse.id,
+            message = PendingMessage.UploadablePendingMessage(
+                uploadId = "89",
+                status = UploadStatus.Triggered(),
+                originalMessage = OriginalMessage.ImageMessage("89")
+            )
+        )
+
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
+            repository.observeConversation(chatId = syncResponse.chats.first().messages.first().chatId).collect {
+                it?.let { it.chatMessages.filter { c -> c.content is PendingMessage.UploadablePendingMessage }.forEach { v -> println(v) } }
+            }
+        }
+
         advanceUntilIdle()
 
-        coVerify {
-            koinRule.koin.get<ChatNetworkRepository>().sendDeliveryReceiptToMessage(any())
-            koinRule.koin.get<ChatNetworkRepository>().sendReadReceiptToMessage(any())
-            koinRule.koin.get<ChatLocalRepository>().updateUserOnlineStatus(any(), true)
-            koinRule.koin.get<ChatLocalRepository>().updateUserOnlineStatus(any(), false)
-        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.captureImageNow()
     }
 
     @OptIn(ExperimentalRoborazziApi::class)

@@ -69,11 +69,11 @@ internal fun ChatMessage.Companion.newMessage(
         PendingMessage.UploadablePendingMessage(
             uploadId = "",
             status = UploadStatus.Triggered(),
-            originalMessage = content,
+            originalMessage = content as OriginalMessage.UploadableMessage,
         )
     } else {
         PendingMessage.NonUploadablePendingMessage(
-            originalMessage = content,
+            originalMessage = content as OriginalMessage.NonUploadableMessage,
         )
     }
 

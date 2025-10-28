@@ -22,20 +22,26 @@ class TestTag internal constructor(val name: String) {
     companion object {}
 }
 
-val TestTag.Companion.loginEmailLabel: TestTag
-    get() = TestTag("loginEmailLabel")
-
 val TestTag.Companion.loginEmailInput: TestTag
     get() = TestTag("loginEmailInput")
 
-val TestTag.Companion.loginPasswordLabel: TestTag
-    get() = TestTag("loginPasswordLabel")
-
 val TestTag.Companion.loginPasswordInput: TestTag
     get() = TestTag("loginPasswordInput")
+
+val TestTag.Companion.registerEmailInput: TestTag
+    get() = TestTag("registerEmailInput")
+
+val TestTag.Companion.registerPasswordInput: TestTag
+    get() = TestTag("registerPasswordInput")
 
 fun TestTag.Companion.chatMessage(chatId: String, messageId: String): TestTag =
     TestTag("chatMessage:$chatId:$messageId")
 
 val TestTag.Companion.messageInput: TestTag
     get() = TestTag("messageInput")
+
+val TestTag.Companion.conversationTitle: TestTag
+    get() = TestTag("conversationTitle")
+
+val TestTag.Companion.conversationSubtitle: TestTag
+    get() = TestTag("conversationSubtitle")

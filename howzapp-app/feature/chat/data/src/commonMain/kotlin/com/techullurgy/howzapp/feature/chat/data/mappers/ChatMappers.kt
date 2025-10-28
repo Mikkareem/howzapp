@@ -11,6 +11,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import kotlin.time.Instant
 
@@ -52,11 +53,11 @@ private fun PendingMessageRelation.getMessage(): PendingMessage {
         PendingMessage.UploadablePendingMessage(
             uploadId = uploadable!!.pendingId,
             status = uploadable!!.uploadStatus.toDomain(),
-            originalMessage = pending.message.originalMessage.toDomain()
+            originalMessage = pending.message.originalMessage.toDomain() as OriginalMessage.UploadableMessage
         )
     } else {
         PendingMessage.NonUploadablePendingMessage(
-            originalMessage = pending.message.originalMessage.toDomain()
+            originalMessage = pending.message.originalMessage.toDomain() as OriginalMessage.NonUploadableMessage
         )
     }
 }

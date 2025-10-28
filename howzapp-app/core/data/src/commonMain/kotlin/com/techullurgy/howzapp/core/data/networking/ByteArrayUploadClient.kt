@@ -13,6 +13,7 @@ import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.readAvailable
 import io.ktor.utils.io.writeFully
 import io.ktor.utils.io.writer
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.isActive
@@ -71,6 +72,10 @@ internal class ByteArrayUploadClient(
             }
         }.onFailure {
             send(NetworkUploadStatus.Failed)
+        }
+
+        awaitClose {
+            // Nothing to do now
         }
     }
 }

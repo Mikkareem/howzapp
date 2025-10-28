@@ -11,6 +11,7 @@ import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.engine.mock.respondError
 import io.ktor.client.engine.mock.respondOk
+import io.ktor.client.engine.mock.toByteArray
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.HttpRequestBuilder
@@ -122,6 +123,21 @@ class AppMockEngine {
                     } else {
                         respondOk("")
                     }
+                }
+
+                "/api/upload" -> {
+                    respond(
+                        content = "http://${request.url.host}:${request.url.port}/gcp/upload",
+                        status = HttpStatusCode.OK,
+                        headers = headers {
+                            append("Content-Type", "application/json")
+                        }
+                    )
+                }
+
+                "/gcp/upload" -> {
+                    request.body.toByteArray()
+                    respondOk("")
                 }
 
                 else -> {

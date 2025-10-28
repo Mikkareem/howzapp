@@ -8,37 +8,41 @@ sealed interface PendingMessage: Message {
     data class UploadablePendingMessage(
         val uploadId: String,
         val status: UploadStatus,
-        override val originalMessage: OriginalMessage,
+        override val originalMessage: OriginalMessage.UploadableMessage,
     ): PendingMessage
 
     data class NonUploadablePendingMessage(
-        override val originalMessage: OriginalMessage,
+        override val originalMessage: OriginalMessage.NonUploadableMessage,
     ): PendingMessage
 }
 
 sealed interface OriginalMessage: Message {
+
+    sealed interface UploadableMessage: OriginalMessage
+    sealed interface NonUploadableMessage: OriginalMessage
+
     data class TextMessage(
         val text: String
-    ): OriginalMessage
+    ): NonUploadableMessage
 
     data class ImageMessage(
         val imageUrl: String,
         val optionalText: String? = null
-    ): OriginalMessage
+    ): UploadableMessage
 
     data class VideoMessage(
         val videoUrl: String,
         val optionalText: String? = null
-    ): OriginalMessage
+    ): UploadableMessage
 
     data class AudioMessage(
         val audioUrl: String,
         val optionalText: String? = null
-    ): OriginalMessage
+    ): UploadableMessage
 
     data class DocumentMessage(
         val documentName: String,
         val documentUrl: String,
         val optionalText: String? = null
-    ): OriginalMessage
+    ): UploadableMessage
 }
