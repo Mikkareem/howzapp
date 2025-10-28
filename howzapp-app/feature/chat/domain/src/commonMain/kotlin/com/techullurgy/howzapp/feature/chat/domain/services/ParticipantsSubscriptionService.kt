@@ -8,6 +8,7 @@ import com.techullurgy.howzapp.feature.chat.domain.networking.events.OutgoingMes
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatLocalRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -37,6 +38,7 @@ internal class ParticipantsSubscriptionService(
             }
         }
             .filterNotNull()
+            .distinctUntilChanged()
             .onEach { participants ->
                 logger.info("Subscribing Participants")
                 connector.sendOutgoingMessage(

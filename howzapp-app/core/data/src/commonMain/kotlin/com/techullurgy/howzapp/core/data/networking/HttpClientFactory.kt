@@ -5,6 +5,7 @@ import com.techullurgy.howzapp.core.domain.auth.SessionStorage
 import com.techullurgy.howzapp.core.domain.util.onFailure
 import com.techullurgy.howzapp.core.domain.util.onSuccess
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
@@ -22,10 +23,11 @@ import org.koin.core.annotation.Single
 
 @Single
 class HttpClientFactory(
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val engine: HttpClientEngine
 ) {
     fun create(): HttpClient {
-        return HttpClient {
+        return HttpClient(engine) {
             install(ContentNegotiation) {
                 json(
                     json = Json {

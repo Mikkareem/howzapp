@@ -7,6 +7,8 @@ import com.techullurgy.howzapp.core.data.networking.HOST_URL
 import com.techullurgy.howzapp.core.data.networking.HttpClientFactory
 import com.techullurgy.howzapp.core.domain.networking.UploadClient
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -73,6 +75,11 @@ internal expect class PlatformModule {
 
 @Module(includes = [CoroutinesModule::class, BaseUrlModule::class, PlatformModule::class])
 class CoreDataModule {
+
+    @Single
+    fun provideHttpClientEngine(): HttpClientEngine {
+        return CIO.create()
+    }
 
     @Single
     fun provideHttpClient(scope: Scope): HttpClient {

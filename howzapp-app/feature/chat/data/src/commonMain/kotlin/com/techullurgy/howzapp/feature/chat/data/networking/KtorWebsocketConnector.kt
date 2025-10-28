@@ -2,6 +2,8 @@ package com.techullurgy.howzapp.feature.chat.data.networking
 
 import com.techullurgy.howzapp.core.data.networking.UrlConstants
 import com.techullurgy.howzapp.core.domain.auth.SessionStorage
+import com.techullurgy.howzapp.core.domain.logging.HowzappLogger
+import com.techullurgy.howzapp.core.dto.websocket.WebsocketIncomingMessage
 import com.techullurgy.howzapp.core.dto.websocket.WebsocketOutgoingMessage
 import com.techullurgy.howzapp.feature.chat.data.lifecycle.AppLifecycleObserver
 import com.techullurgy.howzapp.feature.chat.domain.models.ConnectionState
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onEach
@@ -52,7 +55,8 @@ internal class KtorWebsocketConnector(
     private val connectionErrorHandler: ConnectionErrorHandler,
     private val connectionRetryHandler: ConnectionRetryHandler,
     appLifecycleObserver: AppLifecycleObserver,
-    connectivityObserver: ConnectivityObserver
+    connectivityObserver: ConnectivityObserver,
+    private val logger: HowzappLogger
 ): WebsocketConnector {
     private val _connectionState = MutableStateFlow(ConnectionState.DISCONNECTED)
 
@@ -122,35 +126,38 @@ internal class KtorWebsocketConnector(
                 authInfo
             }
         }
-    }.flatMapLatest { authInfo ->
-        if(authInfo == null) {
-            emptyFlow()
-        } else {
-            createWebSocketFlow(authInfo.accessToken)
-                // Catch block to transform exceptions for platform compatibility
-                .catch { e ->
-                    currentSession?.close()
-                    currentSession = null
-
-                    val transformedException = connectionErrorHandler.transformException(e)
-                    throw transformedException
-                }
-                .retryWhen { t, attempt ->
-                    val shouldRetry = connectionRetryHandler.shouldRetry(t, attempt)
-
-                    if(shouldRetry) {
-                        _connectionState.value = ConnectionState.CONNECTING
-                        connectionRetryHandler.applyRetryDelay(attempt)
-                    }
-
-                    shouldRetry
-                }
-                // Catch block for non-retriable errors
-                .catch { e ->
-                    _connectionState.value = connectionErrorHandler.getConnectionStateForError(e)
-                }
-        }
     }
+        .distinctUntilChanged()
+        .flatMapLatest { authInfo ->
+            if (authInfo == null) {
+                emptyFlow()
+            } else {
+                createWebSocketFlow(authInfo.accessToken)
+                    // Catch block to transform exceptions for platform compatibility
+                    .catch { e ->
+                        currentSession?.close()
+                        currentSession = null
+
+                        val transformedException = connectionErrorHandler.transformException(e)
+                        throw transformedException
+                    }
+                    .retryWhen { t, attempt ->
+                        val shouldRetry = connectionRetryHandler.shouldRetry(t, attempt)
+
+                        if (shouldRetry) {
+                            _connectionState.value = ConnectionState.CONNECTING
+                            connectionRetryHandler.applyRetryDelay(attempt)
+                        }
+
+                        shouldRetry
+                    }
+                    // Catch block for non-retriable errors
+                    .catch { e ->
+                        _connectionState.value =
+                            connectionErrorHandler.getConnectionStateForError(e)
+                    }
+            }
+        }
         .shareIn(
             scope = applicationScope,
             started = SharingStarted.Eagerly,
@@ -206,24 +213,25 @@ internal class KtorWebsocketConnector(
                 .collect { frame ->
                     when(frame) {
                         is Frame.Text -> {
-                            val incomingMessage = json.decodeFromString<IncomingMessage>(frame.readText())
+                            val incomingMessage =
+                                json.decodeFromString<WebsocketIncomingMessage>(frame.readText())
 
                             val message = when (incomingMessage) {
-                                IncomingMessage.NotifyMessageSyncMessage -> IncomingMessage.NotifyMessageSyncMessage
-                                is IncomingMessage.OfflineIndicatorMessage -> IncomingMessage.OfflineIndicatorMessage(
+                                WebsocketIncomingMessage.NotifyMessageSyncMessage -> IncomingMessage.NotifyMessageSyncMessage
+                                is WebsocketIncomingMessage.OfflineIndicatorMessage -> IncomingMessage.OfflineIndicatorMessage(
                                     incomingMessage.userId
                                 )
 
-                                is IncomingMessage.OnlineIndicatorMessage -> IncomingMessage.OnlineIndicatorMessage(
+                                is WebsocketIncomingMessage.OnlineIndicatorMessage -> IncomingMessage.OnlineIndicatorMessage(
                                     incomingMessage.userId
                                 )
 
-                                is IncomingMessage.RecordingAudioMessage -> IncomingMessage.RecordingAudioMessage(
+                                is WebsocketIncomingMessage.RecordingAudioMessage -> IncomingMessage.RecordingAudioMessage(
                                     incomingMessage.chatId,
                                     incomingMessage.userId
                                 )
 
-                                is IncomingMessage.TypingMessage -> IncomingMessage.TypingMessage(
+                                is WebsocketIncomingMessage.TypingMessage -> IncomingMessage.TypingMessage(
                                     incomingMessage.chatId,
                                     incomingMessage.userId
                                 )

@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,6 +70,13 @@ fun ConversationScreen(
     val viewModel = koinViewModel<ConversationViewModel> {
         parametersOf(key)
     }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.sendReadReceiptsIfAny()
+        }
+    }
+
 
     val state by viewModel.state.collectAsState()
 

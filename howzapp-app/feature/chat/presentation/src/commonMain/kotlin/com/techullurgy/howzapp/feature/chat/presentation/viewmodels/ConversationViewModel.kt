@@ -3,23 +3,29 @@ package com.techullurgy.howzapp.feature.chat.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
+import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
+import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEventType
 import com.techullurgy.howzapp.feature.chat.domain.usecases.GetConversationByIdUsecase
 import com.techullurgy.howzapp.feature.chat.domain.usecases.GetUserChatEventsByChatIdUsecase
+import com.techullurgy.howzapp.feature.chat.domain.usecases.MarkAsReadForMessageUsecase
 import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
 import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationKey
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class ConversationViewModel(
     private val key: ConversationKey,
     private val getConversationById: GetConversationByIdUsecase,
+    private val markAsReadForMessageUsecase: MarkAsReadForMessageUsecase,
     getUserChatEventsByChatId: GetUserChatEventsByChatIdUsecase
 ): ViewModel() {
     private val _state = MutableStateFlow(ConversationUiState())
@@ -112,6 +118,24 @@ internal class ConversationViewModel(
             )
         }.launchIn(viewModelScope)
     }
+
+    fun sendReadReceiptsIfAny() {
+        viewModelScope.launch(NonCancellable) {
+            _state.value.messageSheets
+                .filter {
+                    (it.messageOwner as? MessageOwner.Other)
+                        ?.status in listOf(
+                        MessageStatus.ReceiverStatus.UNREAD,
+                        MessageStatus.ReceiverStatus.PENDING
+                    )
+                }.forEach {
+                    launch {
+                        val messageId = it.messageId
+                        markAsReadForMessageUsecase(messageId)
+                    }
+                }
+        }
+    }
 }
 
 internal data class ConversationUiState(
@@ -120,3 +144,7 @@ internal data class ConversationUiState(
     val profilePicture: String? = null,
     val messageSheets: List<MessageSheet> = emptyList()
 )
+
+internal sealed interface ConversationUiAction {
+    class OnSendFile(val bytes: ByteArray) : ConversationUiAction
+}

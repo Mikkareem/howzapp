@@ -42,8 +42,9 @@ class AbstractMockDispatcher(
                     startsWith("/ws") -> {
                         if (wsListener != null) {
                             MockResponse().withWebSocketUpgrade(wsListener!!)
+                        } else {
+                            MockResponse().withWebSocketUpgrade(object : WebSocketListener() {})
                         }
-                        MockResponse().withWebSocketUpgrade(object : WebSocketListener() {})
                     }
 
                     else -> MockResponse().setResponseCode(404)

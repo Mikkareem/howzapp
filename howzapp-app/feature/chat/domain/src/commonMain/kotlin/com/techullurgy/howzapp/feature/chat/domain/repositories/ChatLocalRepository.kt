@@ -46,5 +46,7 @@ interface ChatLocalRepository {
 
     suspend fun updatePendingReceiptAsCompleted(id: Long)
 
+    suspend fun markMessageAsRead(messageId: String)
+
     suspend fun reset()
 }

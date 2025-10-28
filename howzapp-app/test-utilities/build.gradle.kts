@@ -26,9 +26,13 @@ kotlin {
             api(libs.assertk)
             api(libs.mockk)
 
+            implementation(projects.core.domain)
             implementation(projects.core.data)
             implementation(projects.core.dto)
             api(libs.mockwebserver)
+
+            implementation(libs.ktor.client.mock)
+            api(libs.ktor.client.websockets)
         }
     }
 }

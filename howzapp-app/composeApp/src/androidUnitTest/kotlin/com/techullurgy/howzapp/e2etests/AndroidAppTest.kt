@@ -1,15 +1,20 @@
 package com.techullurgy.howzapp.e2etests
 
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.espresso.Espresso
 import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
+import com.github.takahirom.roborazzi.RoborazziOptions
+import com.github.takahirom.roborazzi.RoborazziTaskType
+import com.github.takahirom.roborazzi.captureRoboImage
 import com.techullurgy.howzapp.App
 import com.techullurgy.howzapp.DevelopmentApp
-import com.techullurgy.howzapp.core.data.di.HostAndPort
 import com.techullurgy.howzapp.core.dto.models.AuthInfoSerializable
 import com.techullurgy.howzapp.core.dto.models.ChatDto
 import com.techullurgy.howzapp.core.dto.models.ChatMessageDto
@@ -22,30 +27,30 @@ import com.techullurgy.howzapp.core.dto.responses.SyncResponse
 import com.techullurgy.howzapp.core.presentation.util.TestTag
 import com.techullurgy.howzapp.core.presentation.util.loginEmailInput
 import com.techullurgy.howzapp.core.presentation.util.loginPasswordInput
+import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatLocalRepository
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatNetworkRepository
 import com.techullurgy.howzapp.feature.chat.test.di.chatTestDomainModule
-import com.techullurgy.howzapp.test.utilities.AbstractMockDispatcher
+import com.techullurgy.howzapp.test.utilities.AppMockEngine
 import com.techullurgy.howzapp.test.utilities.MainDispatcherRule
+import com.techullurgy.howzapp.test.utilities.ResponseData
 import com.techullurgy.howzapp.test.utilities.RobolectricTest
 import com.techullurgy.howzapp.test.utilities.testModule
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.login
+import io.ktor.http.HttpStatusCode
+import io.ktor.websocket.Frame
 import io.mockk.coVerify
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
-import okhttp3.mockwebserver.MockWebServer
 import org.jetbrains.compose.resources.getString
 import org.junit.Rule
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.qualifier.qualifier
-import org.koin.dsl.module
 import org.koin.ksp.generated.configurationModules
 import org.koin.test.KoinTestRule
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import java.net.InetAddress
-import kotlin.test.AfterTest
+import org.robolectric.annotation.LooperMode
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.time.Clock
@@ -55,6 +60,7 @@ import kotlin.time.ExperimentalTime
 @Config(
     qualifiers = "w412dp-h924dp-420dpi",
 )
+@LooperMode(LooperMode.Mode.PAUSED)
 class AndroidAppTest : RobolectricTest() {
 
     @get:Rule(order = 1)
@@ -63,43 +69,25 @@ class AndroidAppTest : RobolectricTest() {
     @get:Rule(order = 2)
     val koinRule = KoinTestRule.create {
         androidContext(RuntimeEnvironment.getApplication())
-        modules(
-            DevelopmentApp.configurationModules + chatTestDomainModule + testModule + module {
-                single<String>(qualifier = qualifier<HostAndPort>()) { "localhost:8080" }
-            }
-        )
+        modules(DevelopmentApp.configurationModules + chatTestDomainModule + testModule)
     }
 
     @get:Rule(order = 3)
     val composeTestRule = createComposeRule()
 
-    private lateinit var server: MockWebServer
-    private lateinit var json: Json
-    private lateinit var dispatcher: AbstractMockDispatcher
+    private val json: Json = Json
 
     @BeforeTest
     fun setup() {
-        json = Json
-        server = MockWebServer()
-        server.start(
-            inetAddress = InetAddress.getLoopbackAddress(),
-            port = 8080
-        )
-
-        dispatcher = AbstractMockDispatcher(json)
-        server.dispatcher = dispatcher
-
         composeTestRule.setContent { App() }
-    }
-
-    @AfterTest
-    fun close() {
-        server.shutdown()
     }
 
     @OptIn(ExperimentalTime::class, ExperimentalRoborazziApi::class)
     @Test
-    fun `login screen is the first screen to show if no user is logged in already`() = runTest {
+    fun `login successful, and online indicator - if user is online, remove online indicator, if user is offline, and Read receipts sent - when Conversation Screen disposal`() =
+        runTest {
+
+            val appServer = koinRule.koin.get<AppMockEngine>()
 
         val loggedInUserId = "9a8asocjaosd0as9d00aca09sd"
         val otherUserId = "9a8sda98c9a8s7d9as87dasdap"
@@ -144,9 +132,15 @@ class AndroidAppTest : RobolectricTest() {
             lastSyncTimestamp = Clock.System.now().toEpochMilliseconds()
         )
 
-        dispatcher.apply {
-            this.loginResponse = loginResponse
-            this.syncResponse = syncResponse
+            appServer.apply {
+                loginResponseData = ResponseData(
+                    content = json.encodeToString(loginResponse),
+                    status = HttpStatusCode.OK
+                )
+                syncResponseData = ResponseData(
+                    content = json.encodeToString(syncResponse),
+                    status = HttpStatusCode.OK
+                )
         }
 
         composeTestRule.apply {
@@ -172,12 +166,42 @@ class AndroidAppTest : RobolectricTest() {
             waitUntil {
                 onAllNodesWithText("Who are you?").fetchSemanticsNodes().isNotEmpty()
             }
+
+            appServer.mockedIncoming.send(Frame.Text("""{ "type": "online_indicator", "userId": "$otherUserId" }"""))
+
+            waitUntil(5000) {
+                onAllNodesWithText("Online").fetchSemanticsNodes().isNotEmpty()
+            }
+
+            appServer.mockedIncoming.send(Frame.Text("""{ "type": "offline_indicator", "userId": "$otherUserId" }"""))
+
+            advanceUntilIdle()
+
+            waitUntil(5000) {
+                onAllNodesWithText("Online").fetchSemanticsNodes().isEmpty()
+            }
+
+            onNodeWithText("Online").assertDoesNotExist()
         }
 
-        advanceUntilIdle()
+            Espresso.pressBack()
+
+            composeTestRule.waitForIdle()
+            advanceUntilIdle()
 
         coVerify {
             koinRule.koin.get<ChatNetworkRepository>().sendDeliveryReceiptToMessage(any())
+            koinRule.koin.get<ChatNetworkRepository>().sendReadReceiptToMessage(any())
+            koinRule.koin.get<ChatLocalRepository>().updateUserOnlineStatus(any(), true)
+            koinRule.koin.get<ChatLocalRepository>().updateUserOnlineStatus(any(), false)
         }
+    }
+
+    @OptIn(ExperimentalRoborazziApi::class)
+    private fun ComposeTestRule.captureImageNow() {
+        onRoot()
+            .captureRoboImage(
+                roborazziOptions = RoborazziOptions(taskType = RoborazziTaskType.Record)
+            )
     }
 }

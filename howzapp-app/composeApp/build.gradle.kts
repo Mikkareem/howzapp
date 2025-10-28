@@ -57,6 +57,7 @@ kotlin {
             implementation(libs.roborazzi.rule)
 
             implementation(libs.mockwebserver)
+            implementation(libs.ktor.client.mock)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.websockets)

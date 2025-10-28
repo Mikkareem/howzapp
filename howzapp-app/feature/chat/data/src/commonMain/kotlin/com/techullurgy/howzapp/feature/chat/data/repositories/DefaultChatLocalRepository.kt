@@ -418,6 +418,19 @@ class DefaultChatLocalRepository(
         }
     }
 
+    override suspend fun markMessageAsRead(messageId: String) {
+        database.safeExecute {
+            database.pendingReceiptsDao.upsert(
+                PendingReceiptsEntity(
+                    receipt = SerializableReceipt.MessageReceipt(
+                        message = messageId,
+                        receipt = "READ"
+                    )
+                )
+            )
+        }
+    }
+
     override suspend fun reset() {
         database.safeExecute {
             database.chatDao.deleteAll()
