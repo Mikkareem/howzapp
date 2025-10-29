@@ -101,7 +101,7 @@ class DefaultChatLocalRepository(
                     database.uploadablePendingMessageDao.upsert(
                         UploadablePendingMessageEntity(
                             pendingId = pendingMessage.pendingId,
-                            uploadStatus = UploadStatus.Triggered().toSerializable()
+                            uploadStatus = message.status.toSerializable()
                         )
                     )
                 }

@@ -2,9 +2,9 @@ package com.techullurgy.howzapp.feature.chat.domain.utils
 
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
-import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import java.util.UUID
@@ -67,7 +67,6 @@ internal fun ChatMessage.Companion.newMessage(
 ): ChatMessage {
     val pendingContent = if(content !is OriginalMessage.TextMessage) {
         PendingMessage.UploadablePendingMessage(
-            uploadId = "",
             status = UploadStatus.Triggered(),
             originalMessage = content as OriginalMessage.UploadableMessage,
         )

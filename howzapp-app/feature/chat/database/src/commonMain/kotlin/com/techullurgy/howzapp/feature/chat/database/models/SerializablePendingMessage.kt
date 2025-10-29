@@ -8,7 +8,6 @@ sealed interface SerializablePendingMessage {
 
     @Serializable
     data class UploadablePendingMessage(
-        val uploadId: String,
         val uploadStatus: SerializableUploadStatus,
         override val originalMessage: SerializableMessage
     ): SerializablePendingMessage

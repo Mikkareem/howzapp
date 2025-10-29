@@ -1,14 +1,17 @@
 package com.techullurgy.howzapp.feature.chat.presentation.viewmodels
 
+import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
+import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEventType
 import com.techullurgy.howzapp.feature.chat.domain.usecases.GetConversationByIdUsecase
 import com.techullurgy.howzapp.feature.chat.domain.usecases.GetUserChatEventsByChatIdUsecase
 import com.techullurgy.howzapp.feature.chat.domain.usecases.MarkAsReadForMessageUsecase
+import com.techullurgy.howzapp.feature.chat.domain.usecases.NewPendingMessageUsecase
 import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
 import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationKey
 import kotlinx.coroutines.NonCancellable
@@ -25,7 +28,8 @@ import org.koin.android.annotation.KoinViewModel
 internal class ConversationViewModel(
     private val key: ConversationKey,
     private val getConversationById: GetConversationByIdUsecase,
-    private val markAsReadForMessageUsecase: MarkAsReadForMessageUsecase,
+    private val markAsReadForMessage: MarkAsReadForMessageUsecase,
+    private val newPendingMessage: NewPendingMessageUsecase,
     getUserChatEventsByChatId: GetUserChatEventsByChatIdUsecase
 ): ViewModel() {
     private val _state = MutableStateFlow(ConversationUiState())
@@ -119,7 +123,54 @@ internal class ConversationViewModel(
         }.launchIn(viewModelScope)
     }
 
-    fun sendReadReceiptsIfAny() {
+    fun onAction(action: ConversationUiAction) {
+        when (action) {
+            is ConversationUiAction.OnAudioMessageSend -> newAudioMessage(action.localAudioUrl)
+            is ConversationUiAction.OnDocumentMessageSend -> newDocumentMessage(
+                action.documentName,
+                action.localDocumentUrl
+            )
+
+            is ConversationUiAction.OnImageMessageSend -> newImageMessage(action.localImageUrl)
+            is ConversationUiAction.OnTextMessageSend -> newTextMessage(action.text.text)
+            is ConversationUiAction.OnVideoMessageSend -> newVideoMessage(action.localVideoUrl)
+            ConversationUiAction.SendReadReceiptsIfAny -> sendReadReceiptsIfAny()
+        }
+    }
+
+    private fun newAudioMessage(audioUrl: String) {
+        val audioMessage = OriginalMessage.AudioMessage(audioUrl)
+        newPendingMessage(audioMessage)
+    }
+
+    private fun newVideoMessage(videoUrl: String) {
+        val videoMessage = OriginalMessage.VideoMessage(videoUrl)
+        newPendingMessage(videoMessage)
+    }
+
+    private fun newImageMessage(imageUrl: String) {
+        val imageMessage = OriginalMessage.ImageMessage(imageUrl)
+        newPendingMessage(imageMessage)
+    }
+
+    private fun newDocumentMessage(documentName: String, documentUrl: String) {
+        val documentMessage = OriginalMessage.DocumentMessage(documentName, documentUrl)
+        newPendingMessage(documentMessage)
+    }
+
+    private fun newTextMessage(text: String) {
+        val textMessage = OriginalMessage.TextMessage(text)
+        newPendingMessage(textMessage)
+    }
+
+    private fun newPendingMessage(message: OriginalMessage) {
+        viewModelScope.launch {
+            val chatId = key.conversationId
+            newPendingMessage(chatId, message)
+        }
+    }
+
+    private fun sendReadReceiptsIfAny() {
         viewModelScope.launch(NonCancellable) {
             _state.value.messageSheets
                 .filter {
@@ -131,7 +182,7 @@ internal class ConversationViewModel(
                 }.forEach {
                     launch {
                         val messageId = it.messageId
-                        markAsReadForMessageUsecase(messageId)
+                        markAsReadForMessage(messageId)
                     }
                 }
         }
@@ -146,5 +197,12 @@ internal data class ConversationUiState(
 )
 
 internal sealed interface ConversationUiAction {
-    class OnSendFile(val bytes: ByteArray) : ConversationUiAction
+    data class OnTextMessageSend(val text: AnnotatedString) : ConversationUiAction
+    data class OnVideoMessageSend(val localVideoUrl: String) : ConversationUiAction
+    data class OnAudioMessageSend(val localAudioUrl: String) : ConversationUiAction
+    data class OnImageMessageSend(val localImageUrl: String) : ConversationUiAction
+    data class OnDocumentMessageSend(val documentName: String, val localDocumentUrl: String) :
+        ConversationUiAction
+
+    data object SendReadReceiptsIfAny : ConversationUiAction
 }

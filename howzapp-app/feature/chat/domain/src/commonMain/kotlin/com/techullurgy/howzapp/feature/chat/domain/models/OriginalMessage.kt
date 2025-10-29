@@ -6,7 +6,6 @@ sealed interface PendingMessage: Message {
     val originalMessage: OriginalMessage
 
     data class UploadablePendingMessage(
-        val uploadId: String,
         val status: UploadStatus,
         override val originalMessage: OriginalMessage.UploadableMessage,
     ): PendingMessage

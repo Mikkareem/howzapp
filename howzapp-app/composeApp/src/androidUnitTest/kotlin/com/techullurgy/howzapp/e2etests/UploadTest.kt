@@ -127,7 +127,6 @@ class UploadTest: RobolectricTest() {
             chatId = syncResponse.chats.first().messages.first().chatId,
             senderId = loginResponse.id,
             message = PendingMessage.UploadablePendingMessage(
-                uploadId = "89",
                 status = UploadStatus.Triggered(),
                 originalMessage = OriginalMessage.ImageMessage("89")
             )

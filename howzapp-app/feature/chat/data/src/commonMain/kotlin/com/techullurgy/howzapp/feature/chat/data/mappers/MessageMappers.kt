@@ -28,13 +28,19 @@ fun OriginalMessage.toSerializable(): SerializableMessage {
 fun SerializablePendingMessage.toDomain(): PendingMessage {
     return when(this) {
         is SerializablePendingMessage.NonUploadablePendingMessage -> PendingMessage.NonUploadablePendingMessage(originalMessage.toDomain() as OriginalMessage.NonUploadableMessage)
-        is SerializablePendingMessage.UploadablePendingMessage -> PendingMessage.UploadablePendingMessage(uploadId,uploadStatus.toDomain(), originalMessage.toDomain() as OriginalMessage.UploadableMessage)
+        is SerializablePendingMessage.UploadablePendingMessage -> PendingMessage.UploadablePendingMessage(
+            uploadStatus.toDomain(),
+            originalMessage.toDomain() as OriginalMessage.UploadableMessage
+        )
     }
 }
 
 fun PendingMessage.toSerializable(): SerializablePendingMessage {
     return when(this) {
         is PendingMessage.NonUploadablePendingMessage -> SerializablePendingMessage.NonUploadablePendingMessage(originalMessage.toSerializable())
-        is PendingMessage.UploadablePendingMessage -> SerializablePendingMessage.UploadablePendingMessage(uploadId, status.toSerializable(), originalMessage.toSerializable())
+        is PendingMessage.UploadablePendingMessage -> SerializablePendingMessage.UploadablePendingMessage(
+            status.toSerializable(),
+            originalMessage.toSerializable()
+        )
     }
 }

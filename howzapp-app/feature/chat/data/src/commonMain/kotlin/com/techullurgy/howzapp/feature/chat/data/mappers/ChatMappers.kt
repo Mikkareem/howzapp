@@ -51,7 +51,6 @@ internal fun PendingMessageRelation.toDomain(): ChatMessage {
 private fun PendingMessageRelation.getMessage(): PendingMessage {
     return if(uploadable != null) {
         PendingMessage.UploadablePendingMessage(
-            uploadId = uploadable!!.pendingId,
             status = uploadable!!.uploadStatus.toDomain(),
             originalMessage = pending.message.originalMessage.toDomain() as OriginalMessage.UploadableMessage
         )
