@@ -26,5 +26,3 @@ internal actual class PlatformVideoPlayer : VideoPlayer {
         TODO("Not yet implemented")
     }
 }
-
-actual class Player {}
