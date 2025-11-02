@@ -1,4 +1,4 @@
-package com.techullurgy.howzapp.feature.chat.presentation.screens
+package com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_list
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -54,10 +54,10 @@ import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_list.viewmodels.ChatPreviewUi
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_list.viewmodels.ConversationListUiState
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_list.viewmodels.ConversationListViewModel
 import com.techullurgy.howzapp.feature.chat.presentation.utils.toUIString
-import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ChatPreviewUi
-import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationListUiState
-import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationListViewModel
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.done_all
 import howzapp.core.presentation.generated.resources.pending

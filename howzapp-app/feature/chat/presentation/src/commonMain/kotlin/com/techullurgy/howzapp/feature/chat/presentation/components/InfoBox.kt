@@ -22,7 +22,7 @@ import com.techullurgy.howzapp.core.presentation.util.TestTag
 import com.techullurgy.howzapp.core.presentation.util.conversationSubtitle
 import com.techullurgy.howzapp.core.presentation.util.conversationTitle
 import com.techullurgy.howzapp.core.presentation.util.testTag
-import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationUiState
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationUiState
 
 @Composable
 internal fun InfoBox(state: ConversationUiState) {

@@ -12,7 +12,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEvent
 import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEventType
-import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationViewModel
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationViewModel
 import com.techullurgy.howzapp.test.utilities.MainDispatcherRule
 import com.techullurgy.howzapp.test.utilities.core.Notifier
 import kotlinx.coroutines.flow.collect

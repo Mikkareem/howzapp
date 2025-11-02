@@ -35,8 +35,9 @@ internal fun Project.configureKotlin() {
         compilerOptions {
             jvmTarget.set(this@configureKotlin.jvmTarget)
 
-            freeCompilerArgs.add(
-                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+            optIn.addAll(
+                "kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "kotlinx.coroutines.FlowPreview"
             )
         }
     }

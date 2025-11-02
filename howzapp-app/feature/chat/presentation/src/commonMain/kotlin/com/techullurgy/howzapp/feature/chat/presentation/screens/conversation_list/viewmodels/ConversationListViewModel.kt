@@ -1,4 +1,4 @@
-package com.techullurgy.howzapp.feature.chat.presentation.viewmodels
+package com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_list.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -16,6 +16,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.presentation)
             implementation(projects.core.domain)
+            implementation(projects.core.system)
             implementation(projects.feature.chat.domain)
         }
 

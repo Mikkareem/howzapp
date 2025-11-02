@@ -10,10 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,12 +37,10 @@ import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
-import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.presentation.utils.toUIString
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.done_all
 import howzapp.core.presentation.generated.resources.pending
-import howzapp.core.presentation.generated.resources.plus
 import howzapp.core.presentation.generated.resources.sent
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
@@ -93,10 +89,15 @@ internal fun MessageView(
         ) {
             Column {
                 when (message) {
+                    is PendingMessage -> PendingMessageView(message)
                     is OriginalMessage.TextMessage -> TextMessageView(message)
-                    is PendingMessage.NonUploadablePendingMessage -> NonUploadablePendingMessageView(message)
-                    is PendingMessage.UploadablePendingMessage -> UploadablePendingMessageView(message)
-                    is OriginalMessage.AudioMessage -> AudioMessageView(message)
+                    is OriginalMessage.AudioMessage -> {
+                        AudioMessageView(
+                            message = message,
+                            onPlay = {},
+                            onPause = {}
+                        )
+                    }
                     is OriginalMessage.DocumentMessage -> DocumentMessageView(message)
                     is OriginalMessage.ImageMessage -> ImageMessageView(message)
                     is OriginalMessage.VideoMessage -> VideoMessageView(message)
@@ -162,175 +163,6 @@ internal fun MessageView(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun TextMessageView(
-    message: OriginalMessage.TextMessage
-) {
-    Text(message.text)
-}
-
-@Composable
-private fun ImageMessageView(
-    message: OriginalMessage.ImageMessage
-) {
-    Box(
-        modifier = Modifier.size(250.dp).background(Color.Green)
-    ) {
-        Text(message.imageUrl)
-    }
-}
-
-@Composable
-private fun AudioMessageView(
-    message: OriginalMessage.AudioMessage
-) {
-    Box(
-        modifier = Modifier.width(250.dp).height(80.dp).background(Color.Yellow)
-    ) {
-        Text(message.audioUrl)
-    }
-}
-
-@Composable
-private fun VideoMessageView(
-    message: OriginalMessage.VideoMessage
-) {
-    Box(
-        modifier = Modifier.size(250.dp).background(Color.Yellow)
-    ) {
-        Text(message.videoUrl)
-    }
-}
-
-@Composable
-private fun DocumentMessageView(
-    message: OriginalMessage.DocumentMessage
-) {
-    Box(
-        modifier = Modifier.width(250.dp).height(80.dp).background(Color.Yellow)
-    ) {
-        Text(message.documentName)
-    }
-}
-
-@Composable
-private fun NonUploadablePendingMessageView(
-    message: PendingMessage.NonUploadablePendingMessage
-) {
-    when (val originalMessage = message.originalMessage) {
-        is OriginalMessage.TextMessage -> TextMessageView(originalMessage)
-    }
-}
-
-@Composable
-private fun UploadablePendingMessageView(
-    message: PendingMessage.UploadablePendingMessage
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        when (message.status) {
-            is UploadStatus.Failed -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.plus),
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                            tint = Color.Red
-                        )
-                    }
-                    Text("Retry", color = Color.Red, fontSize = 14.sp)
-                }
-            }
-
-            is UploadStatus.Progress -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.plus),
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                            tint = Color.Green
-                        )
-                    }
-                    Text("Uploading", color = Color.Green, fontSize = 14.sp)
-                }
-            }
-
-            is UploadStatus.Started -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.plus),
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                        )
-                    }
-                    Text("Pending", fontSize = 14.sp)
-                }
-            }
-
-            is UploadStatus.Success -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.sent),
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                            tint = Color.Green
-                        )
-                    }
-                    Text("Uploaded", color = Color.Green, fontSize = 14.sp)
-                }
-            }
-
-            is UploadStatus.Triggered -> {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    IconButton(
-                        onClick = {}
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.plus),
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                        )
-                    }
-                    Text("Pending", fontSize = 14.sp)
-                }
-            }
-
-            else -> {}
-        }
-
-        when (val originalMessage = message.originalMessage) {
-            is OriginalMessage.AudioMessage -> AudioMessageView(originalMessage)
-            is OriginalMessage.DocumentMessage -> DocumentMessageView(originalMessage)
-            is OriginalMessage.ImageMessage -> ImageMessageView(originalMessage)
-            is OriginalMessage.VideoMessage -> VideoMessageView(originalMessage)
         }
     }
 }

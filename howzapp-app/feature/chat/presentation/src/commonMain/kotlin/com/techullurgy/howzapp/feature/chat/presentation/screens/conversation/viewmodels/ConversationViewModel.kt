@@ -1,19 +1,16 @@
-package com.techullurgy.howzapp.feature.chat.presentation.viewmodels
+package com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels
 
-import androidx.compose.ui.text.AnnotatedString
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatType
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
-import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEventType
 import com.techullurgy.howzapp.feature.chat.domain.usecases.GetConversationByIdUsecase
 import com.techullurgy.howzapp.feature.chat.domain.usecases.GetUserChatEventsByChatIdUsecase
 import com.techullurgy.howzapp.feature.chat.domain.usecases.MarkAsReadForMessageUsecase
-import com.techullurgy.howzapp.feature.chat.domain.usecases.NewPendingMessageUsecase
 import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
-import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationKey
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.ConversationKey
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,7 +26,6 @@ internal class ConversationViewModel(
     private val key: ConversationKey,
     private val getConversationById: GetConversationByIdUsecase,
     private val markAsReadForMessage: MarkAsReadForMessageUsecase,
-    private val newPendingMessage: NewPendingMessageUsecase,
     getUserChatEventsByChatId: GetUserChatEventsByChatIdUsecase
 ): ViewModel() {
     private val _state = MutableStateFlow(ConversationUiState())
@@ -101,13 +97,11 @@ internal class ConversationViewModel(
                     messageId = msg.messageId,
                     sender = msg.owner.owner,
                     messageOwner = msg.owner,
-                    isPictureShowable = ({
-                        if (index - 1 >= 0) {
-                            chat.chatMessages[index - 1].owner.owner.userId != msg.owner.owner.userId
-                        } else {
-                            true
-                        }
-                    })(),
+                    isPictureShowable = if (index - 1 >= 0) {
+                        chat.chatMessages[index - 1].owner.owner.userId != msg.owner.owner.userId
+                    } else {
+                        true
+                    },
                     message = msg.content,
                     timestamp = msg.timestamp
                 )
@@ -125,48 +119,7 @@ internal class ConversationViewModel(
 
     fun onAction(action: ConversationUiAction) {
         when (action) {
-            is ConversationUiAction.OnAudioMessageSend -> newAudioMessage(action.localAudioUrl)
-            is ConversationUiAction.OnDocumentMessageSend -> newDocumentMessage(
-                action.documentName,
-                action.localDocumentUrl
-            )
-
-            is ConversationUiAction.OnImageMessageSend -> newImageMessage(action.localImageUrl)
-            is ConversationUiAction.OnTextMessageSend -> newTextMessage(action.text.text)
-            is ConversationUiAction.OnVideoMessageSend -> newVideoMessage(action.localVideoUrl)
             ConversationUiAction.SendReadReceiptsIfAny -> sendReadReceiptsIfAny()
-        }
-    }
-
-    private fun newAudioMessage(audioUrl: String) {
-        val audioMessage = OriginalMessage.AudioMessage(audioUrl)
-        newPendingMessage(audioMessage)
-    }
-
-    private fun newVideoMessage(videoUrl: String) {
-        val videoMessage = OriginalMessage.VideoMessage(videoUrl)
-        newPendingMessage(videoMessage)
-    }
-
-    private fun newImageMessage(imageUrl: String) {
-        val imageMessage = OriginalMessage.ImageMessage(imageUrl)
-        newPendingMessage(imageMessage)
-    }
-
-    private fun newDocumentMessage(documentName: String, documentUrl: String) {
-        val documentMessage = OriginalMessage.DocumentMessage(documentName, documentUrl)
-        newPendingMessage(documentMessage)
-    }
-
-    private fun newTextMessage(text: String) {
-        val textMessage = OriginalMessage.TextMessage(text)
-        newPendingMessage(textMessage)
-    }
-
-    private fun newPendingMessage(message: OriginalMessage) {
-        viewModelScope.launch {
-            val chatId = key.conversationId
-            newPendingMessage(chatId, message)
         }
     }
 
@@ -197,12 +150,5 @@ internal data class ConversationUiState(
 )
 
 internal sealed interface ConversationUiAction {
-    data class OnTextMessageSend(val text: AnnotatedString) : ConversationUiAction
-    data class OnVideoMessageSend(val localVideoUrl: String) : ConversationUiAction
-    data class OnAudioMessageSend(val localAudioUrl: String) : ConversationUiAction
-    data class OnImageMessageSend(val localImageUrl: String) : ConversationUiAction
-    data class OnDocumentMessageSend(val documentName: String, val localDocumentUrl: String) :
-        ConversationUiAction
-
     data object SendReadReceiptsIfAny : ConversationUiAction
 }

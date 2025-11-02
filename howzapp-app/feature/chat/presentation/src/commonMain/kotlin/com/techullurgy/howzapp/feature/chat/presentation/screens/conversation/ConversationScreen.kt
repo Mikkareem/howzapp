@@ -1,15 +1,19 @@
-package com.techullurgy.howzapp.feature.chat.presentation.screens
+package com.techullurgy.howzapp.feature.chat.presentation.screens.conversation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
@@ -31,9 +35,12 @@ import com.techullurgy.howzapp.feature.chat.presentation.components.InfoBox
 import com.techullurgy.howzapp.feature.chat.presentation.components.InputBox
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageBox
 import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
-import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationUiAction
-import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationUiState
-import com.techullurgy.howzapp.feature.chat.presentation.viewmodels.ConversationViewModel
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputUiAction
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputUiState
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputViewModel
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationUiAction
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationUiState
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
@@ -50,37 +57,130 @@ data class ConversationKey(
 fun ConversationScreen(
     key: ConversationKey
 ) {
-    val viewModel = koinViewModel<ConversationViewModel> {
+    val conversationViewModel = koinViewModel<ConversationViewModel> {
+        parametersOf(key)
+    }
+
+    val conversationInputViewModel = koinViewModel<ConversationInputViewModel> {
         parametersOf(key)
     }
 
     DisposableEffect(Unit) {
         onDispose {
-            viewModel.onAction(ConversationUiAction.SendReadReceiptsIfAny)
+            conversationViewModel.onAction(ConversationUiAction.SendReadReceiptsIfAny)
         }
     }
 
-
-    val state by viewModel.state.collectAsState()
+    val conversationState by conversationViewModel.state.collectAsState()
+    val conversationInputState by conversationInputViewModel.inputState.collectAsState()
 
     ConversationScreen(
-        state = state
+        state = conversationState,
+        inputState = conversationInputState,
+        onRecordStarted = { conversationInputViewModel.onAction(ConversationInputUiAction.OnAudioRecordStarted) },
+        onRecordStopped = { conversationInputViewModel.onAction(ConversationInputUiAction.OnAudioRecordStopped) },
+        onMessageSend = { conversationInputViewModel.onAction(ConversationInputUiAction.OnMessageSend) },
+        onImageSelected = { url ->
+            conversationInputViewModel.onAction(
+                ConversationInputUiAction.OnImageSelected(
+                    url
+                )
+            )
+        },
+        onAudioSelected = { url ->
+            conversationInputViewModel.onAction(
+                ConversationInputUiAction.OnAudioSelected(
+                    url
+                )
+            )
+        },
+        onVideoSelected = { url ->
+            conversationInputViewModel.onAction(
+                ConversationInputUiAction.OnVideoSelected(
+                    url
+                )
+            )
+        },
+        onDocumentSelected = { name, url ->
+            conversationInputViewModel.onAction(
+                ConversationInputUiAction.OnDocumentSelected(name, url)
+            )
+        },
+        onPlayRecordedAudioInPreview = {
+            conversationInputViewModel.onAction(
+                ConversationInputUiAction.OnPlayRecordedAudio
+            )
+        },
+        onPauseRecordedAudioInPreview = {
+            conversationInputViewModel.onAction(
+                ConversationInputUiAction.OnPauseRecordedAudio
+            )
+        },
+        onResumeRecordedAudioInPreview = {
+            conversationInputViewModel.onAction(
+                ConversationInputUiAction.OnResumeRecordedAudio
+            )
+        },
+        onStopRecordedAudioInPreview = {
+            conversationInputViewModel.onAction(
+                ConversationInputUiAction.OnStopRecordedAudio
+            )
+        },
     )
 }
 
 @Composable
 private fun ConversationScreen(
-    state: ConversationUiState
+    state: ConversationUiState,
+    inputState: ConversationInputUiState,
+    onRecordStarted: () -> Unit,
+    onRecordStopped: () -> Unit,
+    onMessageSend: () -> Unit,
+    onImageSelected: (String) -> Unit,
+    onAudioSelected: (String) -> Unit,
+    onVideoSelected: (String) -> Unit,
+    onDocumentSelected: (String, String) -> Unit,
+    onPlayRecordedAudioInPreview: () -> Unit,
+    onPauseRecordedAudioInPreview: () -> Unit,
+    onResumeRecordedAudioInPreview: () -> Unit,
+    onStopRecordedAudioInPreview: () -> Unit,
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = { ConversationScreenTopBar(state) },
+        modifier = Modifier.fillMaxSize().consumeWindowInsets(WindowInsets.safeDrawing),
+        topBar = {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .background(LocalAppColors.current.container1)
+                    .padding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                            .asPaddingValues()
+                    )
+                    .padding(8.dp, 16.dp)
+            ) {
+                InfoBox(state)
+            }
+        },
         bottomBar = {
             Box(
                 modifier = Modifier
                     .padding(8.dp)
-            )
-            InputBox()
+            ) {
+                InputBox(
+                    inputState = inputState,
+                    onRecordStarted = onRecordStarted,
+                    onRecordStopped = onRecordStopped,
+                    onMessageSend = onMessageSend,
+                    onImageSelected = onImageSelected,
+                    onAudioSelected = onAudioSelected,
+                    onVideoSelected = onVideoSelected,
+                    onDocumentSelected = onDocumentSelected,
+                    onPlayRecordedAudioPreview = onPlayRecordedAudioInPreview,
+                    onPauseRecordedAudioPreview = onPauseRecordedAudioInPreview,
+                    onResumeRecordedAudioPreview = onResumeRecordedAudioInPreview,
+                    onStopRecordedAudioPreview = onStopRecordedAudioInPreview
+                )
+            }
         }
     ) { padding ->
         LazyColumn(
@@ -103,27 +203,13 @@ private fun ConversationScreen(
     }
 }
 
-@Composable
-private fun ConversationScreenTopBar(state: ConversationUiState) {
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .background(LocalAppColors.current.container1)
-            .statusBarsPadding()
-            .displayCutoutPadding()
-            .padding(8.dp, 16.dp)
-    ) {
-        InfoBox(state)
-    }
-}
-
 @Preview
 @Composable
 private fun ConversationScreenPreview(
     @PreviewParameter(ConversationUiStatePreviewParameterProvider::class) state: ConversationUiState
 ) {
     HowzAppTheme {
-        ConversationScreen(state)
+//        ConversationScreen(state)
     }
 }
 

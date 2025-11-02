@@ -44,6 +44,7 @@ include(":composeApp")
 
 include(":core:di")
 include(":core:dto")
+include(":core:system")
 include(":core:domain")
 include(":core:data")
 include(":core:designsystem")

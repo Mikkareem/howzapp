@@ -3,9 +3,9 @@ package com.techullurgy.howzapp.feature.chat.api.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.EntryProviderScope
-import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationKey
-import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationListScreen
-import com.techullurgy.howzapp.feature.chat.presentation.screens.ConversationScreen
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.ConversationKey
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.ConversationScreen
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_list.ConversationListScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -3,17 +3,14 @@ package com.techullurgy.howzapp.feature.chat.data.lifecycle
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.techullurgy.howzapp.core.data.di.MainDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flowOn
-import org.koin.core.annotation.Single
 
-@Single
 actual class PlatformAppLifecycleObserver(
-    @MainDispatcher mainDispatcher: CoroutineDispatcher
+    mainDispatcher: CoroutineDispatcher
 ) : AppLifecycleObserver {
     override val isInForeground: Flow<Boolean> = callbackFlow {
         val lifecycle = ProcessLifecycleOwner.get().lifecycle
