@@ -11,7 +11,7 @@ interface VideoPlayer {
     fun stop()
 }
 
-internal expect class PlatformVdieoPlayer : VideoPlayer
+internal expect class PlatformVideoPlayer : VideoPlayer
 
 data class VideoTrack(
     val id: String,
