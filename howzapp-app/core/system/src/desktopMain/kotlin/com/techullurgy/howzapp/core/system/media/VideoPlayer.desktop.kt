@@ -8,7 +8,7 @@ internal actual class PlatformVideoPlayer : VideoPlayer {
 
     override fun play(
         id: String,
-        filePath: String,
+        url: String,
         onComplete: () -> Unit
     ) {
         TODO("Not yet implemented")
@@ -26,3 +26,5 @@ internal actual class PlatformVideoPlayer : VideoPlayer {
         TODO("Not yet implemented")
     }
 }
+
+actual class ContentPlayer

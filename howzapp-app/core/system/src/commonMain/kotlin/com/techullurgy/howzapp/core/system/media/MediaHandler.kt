@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface MediaHandler {
     val activeAudioTrack: StateFlow<AudioTrack?>
     val activeAudioRecordTrack: StateFlow<AudioRecordTrack?>
+    val activeVideoTrack: StateFlow<VideoTrack?>
     val isBusy: StateFlow<Boolean>
 
     fun startAudioRecording(id: String, fileName: String)
@@ -15,4 +16,9 @@ interface MediaHandler {
     fun pauseAudio()
     fun resumeAudio()
     fun stopAudio()
+
+    fun playVideo(id: String, url: String, onComplete: () -> Unit)
+    fun pauseVideo()
+    fun resumeVideo()
+    fun stopVideo()
 }

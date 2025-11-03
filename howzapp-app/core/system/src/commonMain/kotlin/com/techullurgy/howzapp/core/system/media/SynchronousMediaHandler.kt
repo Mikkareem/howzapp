@@ -3,6 +3,7 @@ package com.techullurgy.howzapp.core.system.media
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import org.koin.core.annotation.Single
@@ -11,12 +12,14 @@ import org.koin.core.annotation.Single
 internal class SynchronousMediaHandler(
     private val audioPlayer: AudioPlayer,
     private val audioRecorder: AudioRecorder,
+    private val videoPlayer: VideoPlayer,
     private val scope: CoroutineScope
 ) : MediaHandler {
     private val currentState = MutableStateFlow<MediaState>(MediaState.MediaIdle)
 
     override val activeAudioTrack = audioPlayer.activeAudioTrack
     override val activeAudioRecordTrack = audioRecorder.activeAudioRecordTrack
+    override val activeVideoTrack: StateFlow<VideoTrack?> = videoPlayer.activeVideoTrack
 
     override val isBusy = combine(
         activeAudioTrack,
@@ -67,10 +70,32 @@ internal class SynchronousMediaHandler(
         audioPlayer.stop()
     }
 
+    override fun pauseVideo() {
+        if (currentState.value != MediaState.MediaVideoPlayer) return
+        videoPlayer.pause()
+    }
+
+    override fun playVideo(id: String, url: String, onComplete: () -> Unit) {
+        stopAll()
+        currentState.value = MediaState.MediaVideoPlayer
+        videoPlayer.play(id, url, onComplete)
+    }
+
+    override fun resumeVideo() {
+        if (currentState.value != MediaState.MediaVideoPlayer) return
+        videoPlayer.resume()
+    }
+
+    override fun stopVideo() {
+        if (currentState.value != MediaState.MediaVideoPlayer) return
+        videoPlayer.stop()
+    }
+
     private fun stopAll() {
         stopAudioRecording()
         resetAudioRecording()
         stopAudio()
+        stopVideo()
     }
 }
 

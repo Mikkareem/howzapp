@@ -28,6 +28,7 @@ ksp = "2.2.20-2.0.3"
 gms = "4.4.4"
 room = "2.8.3"
 sqlite = "2.6.1"
+media3 = "1.8.0"
 datastore = "1.1.7"
 adaptive = "1.2.0-beta01"
 firebase-bom = "34.4.0"
@@ -88,6 +89,11 @@ koin-ksp-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", vers
 # DataStore
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+
+# Media3
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
+media3-ui-compose = { module = "androidx.media3:media3-ui-compose", version.ref = "media3" }
 
 # Material3 Adaptive
 material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "adaptive" }
