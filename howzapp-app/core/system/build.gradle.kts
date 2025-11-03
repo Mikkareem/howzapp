@@ -8,5 +8,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.media3.exoplayer)
         }
+
+        commonMain.dependencies {
+            implementation(projects.core.internal)
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.techullurgy.howzapp.feature.chat.data.di
 
 import android.content.Context
-import com.techullurgy.howzapp.core.data.di.MainDispatcher
+import com.techullurgy.howzapp.core.internal.MainDispatcher
 import com.techullurgy.howzapp.feature.chat.data.lifecycle.AppLifecycleObserver
 import com.techullurgy.howzapp.feature.chat.data.lifecycle.PlatformAppLifecycleObserver
 import com.techullurgy.howzapp.feature.chat.data.networking.ConnectivityObserver

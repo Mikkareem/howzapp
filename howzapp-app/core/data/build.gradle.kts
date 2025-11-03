@@ -16,6 +16,7 @@ kotlin {
             implementation(libs.kermit)
 
             implementation(projects.core.domain)
+            implementation(projects.core.internal)
         }
     }
 }

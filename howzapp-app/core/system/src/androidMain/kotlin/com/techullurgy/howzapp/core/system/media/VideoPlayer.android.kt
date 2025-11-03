@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 
 internal actual class PlatformVideoPlayer(
     private val context: Context,
-    private val applicationScope: CoroutineScope
+    private val applicationScope: CoroutineScope,
+    private val mainDispatcher: CoroutineDispatcher
 ) : VideoPlayer {
 
     private var _activeTrack = MutableStateFlow<VideoTrack?>(null)
@@ -143,7 +145,7 @@ internal actual class PlatformVideoPlayer(
 
     private fun trackDuration() {
         durationJob?.cancel()
-        durationJob = applicationScope.launch {
+        durationJob = applicationScope.launch(mainDispatcher) {
             do {
                 _activeTrack.update {
                     it?.copy(

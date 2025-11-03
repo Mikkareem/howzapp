@@ -6,6 +6,9 @@ import com.techullurgy.howzapp.core.data.networking.ByteArrayUploadClient
 import com.techullurgy.howzapp.core.data.networking.HOST_URL
 import com.techullurgy.howzapp.core.data.networking.HttpClientFactory
 import com.techullurgy.howzapp.core.domain.networking.UploadClient
+import com.techullurgy.howzapp.core.internal.DefaultDispatcher
+import com.techullurgy.howzapp.core.internal.IoDispatcher
+import com.techullurgy.howzapp.core.internal.MainDispatcher
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
@@ -17,16 +20,6 @@ import org.koin.core.annotation.Module
 import org.koin.core.annotation.Qualifier
 import org.koin.core.annotation.Single
 import org.koin.core.scope.Scope
-
-
-@Qualifier
-annotation class IoDispatcher
-
-@Qualifier
-annotation class DefaultDispatcher
-
-@Qualifier
-annotation class MainDispatcher
 
 @Qualifier
 annotation class HostAndPort
