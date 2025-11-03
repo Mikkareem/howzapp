@@ -23,9 +23,10 @@ internal class SynchronousMediaHandler(
 
     override val isBusy = combine(
         activeAudioTrack,
-        activeAudioRecordTrack
-    ) { audio, audioRecord ->
-        audio != null || audioRecord != null
+        activeAudioRecordTrack,
+        activeVideoTrack
+    ) { audio, audioRecord, video ->
+        audio != null || audioRecord != null || video != null
     }.stateIn(
         scope = scope,
         started = SharingStarted.WhileSubscribed(),

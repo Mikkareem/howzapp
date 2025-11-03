@@ -25,7 +25,7 @@ sealed interface PlaybackState {
 data class VideoTrack(
     val id: String,
     val contentPlayer: ContentPlayer?,
-    val totalDuration: Int,
-    val durationPlayed: Int,
+    val totalDuration: Long,
+    val durationPlayed: Long,
     val state: PlaybackState
 )

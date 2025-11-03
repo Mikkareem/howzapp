@@ -4,6 +4,8 @@ import com.techullurgy.howzapp.core.system.media.AudioPlayer
 import com.techullurgy.howzapp.core.system.media.AudioRecorder
 import com.techullurgy.howzapp.core.system.media.PlatformAudioPlayer
 import com.techullurgy.howzapp.core.system.media.PlatformAudioRecorder
+import com.techullurgy.howzapp.core.system.media.PlatformVideoPlayer
+import com.techullurgy.howzapp.core.system.media.VideoPlayer
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import org.koin.core.scope.Scope
@@ -18,5 +20,10 @@ internal actual class PlatformCoreSystemModule {
     @Single
     actual fun provideAudioRecorder(scope: Scope): AudioRecorder {
         return PlatformAudioRecorder(scope.get(), scope.get())
+    }
+
+    @Single
+    actual fun provideVideoPlayer(scope: Scope): VideoPlayer {
+        return PlatformVideoPlayer(scope.get(), scope.get())
     }
 }

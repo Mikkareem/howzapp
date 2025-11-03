@@ -50,7 +50,6 @@ internal actual class PlatformVideoPlayer(
             _activeTrack.update {
                 it?.copy(
                     contentPlayer = ContentPlayer(RestrictedPlayer(this)),
-                    totalDuration = duration.toInt(),
                     durationPlayed = 0,
                     state = PlaybackState.Buffering
                 )
@@ -73,15 +72,14 @@ internal actual class PlatformVideoPlayer(
 
                     override fun onPlaybackStateChanged(playbackState: Int) {
                         when (playbackState) {
+                            Player.STATE_IDLE,
+                            Player.STATE_READY,
                             Player.STATE_BUFFERING -> {
-                                _activeTrack.update {
-                                    it?.copy(
-                                        state = PlaybackState.Buffering
-                                    )
-                                }
+                                updateStateOfTrack()
                             }
 
                             Player.STATE_ENDED -> {
+                                stop()
                                 onComplete()
                             }
                         }
@@ -106,6 +104,7 @@ internal actual class PlatformVideoPlayer(
     }
 
     override fun stop() {
+        _activeTrack.update { null }
         exoPlayer?.stop()
         exoPlayer?.release()
         exoPlayer = null
@@ -148,7 +147,8 @@ internal actual class PlatformVideoPlayer(
             do {
                 _activeTrack.update {
                     it?.copy(
-                        durationPlayed = exoPlayer?.currentPosition?.toInt() ?: 0
+                        totalDuration = exoPlayer?.duration ?: 0,
+                        durationPlayed = exoPlayer?.currentPosition ?: 0
                     )
                 }
                 delay(50L)
