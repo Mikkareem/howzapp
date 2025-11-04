@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,9 +19,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.unit.dp
+import com.techullurgy.howzapp.core.designsystem.resources.Icons
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.audio
 import kotlinx.coroutines.flow.collectLatest
@@ -41,14 +50,17 @@ internal fun InputActionButton(
 
     Box(
         modifier = modifier
-            .size(60.dp)
-            .background(Color.Red)
-            .padding(8.dp),
+            .size(48.dp)
+            .dropShadow(CircleShape) {
+                spread = 7f
+                alpha = 0.5f
+                radius = 10f
+            }
+            .background(MaterialTheme.colorScheme.primary, CircleShape),
         contentAlignment = Alignment.Center,
     ) {
         AnimatedContent(
-            targetState = actionState,
-            modifier = Modifier.matchParentSize()
+            targetState = actionState
         ) { state ->
             when (state) {
                 InputActionState.Record -> {
@@ -88,9 +100,9 @@ private fun RecordButton(
     }
 
     Icon(
-        painter = painterResource(Res.drawable.audio),
+        painter = Icons.recordingIcon,
         contentDescription = "Record Audio",
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
             .clickable(
                 interactionSource = interactionSource,
                 onClick = {}
@@ -103,10 +115,9 @@ private fun SendButton(
     onMessageSend: () -> Unit
 ) {
     Icon(
-        painter = ColorPainter(Color.Green),
+        painter = Icons.sendIcon,
         contentDescription = "Send",
-        tint = Color.Green,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
             .clickable(onClick = onMessageSend)
     )
 }

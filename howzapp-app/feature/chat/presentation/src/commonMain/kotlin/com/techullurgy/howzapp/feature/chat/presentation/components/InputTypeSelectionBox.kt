@@ -181,7 +181,7 @@ internal fun InputTypeSelectionBox(
                     }
                 }
                 val title = when (type) {
-                    InputType.Attachment -> "Attachment"
+                    InputType.Attachment -> "Docs"
                     InputType.Audio -> "Audio"
                     InputType.Contact -> "Contact"
                     InputType.Emoji -> "Emoji"

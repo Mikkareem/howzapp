@@ -4,15 +4,15 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.techullurgy.howzapp.core.designsystem.theme.LocalAppColors
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.close
 import howzapp.core.presentation.generated.resources.plus
@@ -51,10 +50,8 @@ internal fun TextBox(
     BasicTextField(
         state = state,
         modifier = modifier
-            .sizeIn(minHeight = 60.dp, maxHeight = 150.dp)
-            .border(1.dp, Color.Green, RoundedCornerShape(10.dp))
-            .background(Color.White, RoundedCornerShape(10.dp))
-            .padding(8.dp),
+            .sizeIn(maxHeight = 150.dp)
+            .background(Color.White, RoundedCornerShape(10.dp)),
         decorator = { textField ->
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -65,7 +62,7 @@ internal fun TextBox(
                         targetState = isAdditionBoxOpen,
                         label = "Addition Box Icon",
                         modifier = Modifier
-                            .heightIn(max = 60.dp)
+                            .heightIn(max = 36.dp)
                             .fillMaxHeight()
                             .aspectRatio(1f)
                             .background(Color.Red, CircleShape)
@@ -77,17 +74,17 @@ internal fun TextBox(
                             Icon(
                                 painter = painterResource(Res.drawable.close),
                                 contentDescription = null,
-                                tint = LocalAppColors.current.content2
                             )
                         } else {
                             Icon(
                                 painter = painterResource(Res.drawable.plus),
                                 contentDescription = null,
-                                tint = LocalAppColors.current.content2
                             )
                         }
                     }
                 }
+
+                Spacer(Modifier.width(4.dp))
 
                 InnerTextFieldWithPlaceholder(
                     shouldShowPlaceholder = isTextEmpty,
