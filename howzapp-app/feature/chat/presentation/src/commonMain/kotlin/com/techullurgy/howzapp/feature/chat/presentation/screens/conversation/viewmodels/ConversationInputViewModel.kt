@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techullurgy.howzapp.core.system.media.AudioRecordTrack
 import com.techullurgy.howzapp.core.system.media.MediaHandler
+import com.techullurgy.howzapp.core.system.media.PlaybackState
 import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.usecases.NewPendingMessageUsecase
 import com.techullurgy.howzapp.feature.chat.domain.usecases.RecordingAudioNotifierUsecase
@@ -43,7 +44,9 @@ internal class ConversationInputViewModel(
     private val _inputState = MutableStateFlow(ConversationInputUiState())
     val inputState = _inputState
         .onStart {
+            observeVideoPlayer()
             observeAudioPlayer()
+            observeRecordedAudioPlayer()
             observeAudioRecorder()
             observeIsTypingMessage()
             observeIsRecordingAudio()
@@ -98,6 +101,38 @@ internal class ConversationInputViewModel(
 
             ConversationInputUiAction.OnStopRecordedAudio -> {
                 stopRecordedAudioPreview()
+            }
+
+            ConversationInputUiAction.OnPauseAudioPreview -> {
+                pauseAudioPreview()
+            }
+
+            ConversationInputUiAction.OnPauseVideoPreview -> {
+                pauseVideoPreview()
+            }
+
+            ConversationInputUiAction.OnPlayAudioPreview -> {
+                playAudioPreview()
+            }
+
+            ConversationInputUiAction.OnPlayVideoPreview -> {
+                playVideoPreview()
+            }
+
+            ConversationInputUiAction.OnResumeAudioPreview -> {
+                resumeAudioPreview()
+            }
+
+            ConversationInputUiAction.OnResumeVideoPreview -> {
+                resumeVideoPreview()
+            }
+
+            ConversationInputUiAction.OnStopAudioPreview -> {
+                stopAudioPreview()
+            }
+
+            ConversationInputUiAction.OnStopVideoPreview -> {
+                stopVideoPreview()
             }
         }
     }
@@ -164,9 +199,46 @@ internal class ConversationInputViewModel(
     private fun observeAudioPlayer() {
         mediaHandler.activeAudioTrack
             .transform { track ->
+                if (track == null || track.id != "preview_recorded_audio_{${key.conversationId}}") {
+                    emit(null)
+                } else {
+                    emit(track)
+                }
+            }
+            .onEach { track ->
+
+                if (track == null) {
+                    _inputState.update {
+                        it.copy(
+                            inputMessagePreview = if (it.inputMessagePreview is InputMessagePreview.SelectedAudioPreview) {
+                                it.inputMessagePreview.copy(isPlaying = false, durationPlayed = 0)
+                            } else it.inputMessagePreview
+                        )
+                    }
+                } else {
+                    _inputState.update {
+                        it.copy(
+                            inputMessagePreview = if (it.inputMessagePreview is InputMessagePreview.SelectedAudioPreview) {
+                                it.inputMessagePreview.copy(
+                                    isPlaying = track.isPlaying,
+                                    durationPlayed = track.durationPlayed,
+                                    duration = track.totalDuration
+                                )
+                            } else it.inputMessagePreview
+                        )
+                    }
+                }
+
+            }
+            .launchIn(viewModelScope)
+
+
+
+        mediaHandler.activeAudioTrack
+            .transform { track ->
                 track
                     ?.takeIf {
-                        if (inputState.value.inputMessagePreview is InputMessagePreview.RecordedAudioPreview) {
+                        if (inputState.value.inputMessagePreview is InputMessagePreview.SelectedAudioPreview) {
                             it.id == (inputState.value.inputMessagePreview as InputMessagePreview.RecordedAudioPreview).recordedPath
                         } else false
                     }?.let {
@@ -192,6 +264,99 @@ internal class ConversationInputViewModel(
                             )
                         } else it.inputMessagePreview
                     )
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeRecordedAudioPlayer() {
+        mediaHandler.activeAudioTrack
+            .transform { track ->
+                if (track == null || track.id != "preview_recorded_audio_{${key.conversationId}}") {
+                    emit(null)
+                } else {
+                    emit(track)
+                }
+            }
+            .onEach { track ->
+
+                if (track == null) {
+                    _inputState.update {
+                        it.copy(
+                            inputMessagePreview = if (it.inputMessagePreview is InputMessagePreview.RecordedAudioPreview) {
+                                it.inputMessagePreview.copy(isPlaying = false, durationPlayed = 0)
+                            } else it.inputMessagePreview
+                        )
+                    }
+                } else {
+                    _inputState.update {
+                        it.copy(
+                            inputMessagePreview = if (it.inputMessagePreview is InputMessagePreview.RecordedAudioPreview) {
+                                it.inputMessagePreview.copy(
+                                    isPlaying = track.isPlaying,
+                                    durationPlayed = track.durationPlayed,
+                                    duration = track.totalDuration
+                                )
+                            } else it.inputMessagePreview
+                        )
+                    }
+                }
+
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeVideoPlayer() {
+        mediaHandler.activeVideoTrack
+            .transform { track ->
+                if (track == null || track.id != "preview_video_{${key.conversationId}}") {
+                    emit(null)
+                } else {
+                    emit(track)
+                }
+            }
+            .onEach { track ->
+                if (track == null) {
+                    _inputState.update {
+                        it.copy(
+                            inputMessagePreview = if (it.inputMessagePreview is InputMessagePreview.SelectedVideoPreview) {
+                                it.inputMessagePreview.copy(
+                                    isPlaying = false,
+                                    durationPlayed = 0,
+                                    isLoading = false
+                                )
+                            } else it.inputMessagePreview
+                        )
+                    }
+                } else {
+                    _inputState.update {
+                        it.copy(
+                            inputMessagePreview = if (it.inputMessagePreview is InputMessagePreview.SelectedVideoPreview) {
+                                it.inputMessagePreview.copy(durationPlayed = track.durationPlayed)
+                                when (track.state) {
+                                    PlaybackState.Buffering -> it.inputMessagePreview.copy(
+                                        isLoading = true,
+                                        isPlaying = false
+                                    )
+
+                                    PlaybackState.Paused -> it.inputMessagePreview.copy(
+                                        isPlaying = false,
+                                        isLoading = false
+                                    )
+
+                                    PlaybackState.Playing -> it.inputMessagePreview.copy(
+                                        isPlaying = true,
+                                        isLoading = false
+                                    )
+
+                                    PlaybackState.Stopped -> it.inputMessagePreview.copy(
+                                        isPlaying = false,
+                                        isLoading = false
+                                    )
+                                }
+                            } else it.inputMessagePreview
+                        )
+                    }
                 }
             }
             .launchIn(viewModelScope)
@@ -279,12 +444,62 @@ internal class ConversationInputViewModel(
         }
     }
 
+    private fun playVideoPreview() {
+        val videoPreview =
+            (inputState.value.inputMessagePreview as? InputMessagePreview.SelectedVideoPreview)
+                ?: return
+        mediaHandler.playVideo(
+            "preview_video_{${key.conversationId}}",
+            videoPreview.videoUrl,
+            onComplete = {})
+    }
+
+    private fun pauseVideoPreview() {
+        if (inputState.value.inputMessagePreview !is InputMessagePreview.SelectedVideoPreview) return
+        mediaHandler.pauseVideo()
+    }
+
+    private fun resumeVideoPreview() {
+        if (inputState.value.inputMessagePreview !is InputMessagePreview.SelectedVideoPreview) return
+        mediaHandler.resumeVideo()
+    }
+
+    private fun stopVideoPreview() {
+        if (inputState.value.inputMessagePreview !is InputMessagePreview.SelectedVideoPreview) return
+        mediaHandler.stopVideo()
+    }
+
+    private fun playAudioPreview() {
+        val audioPreview =
+            (inputState.value.inputMessagePreview as? InputMessagePreview.SelectedAudioPreview)
+                ?: return
+        mediaHandler.playAudio(
+            "preview_audio_{${key.conversationId}}",
+            audioPreview.audioUrl,
+            onComplete = {})
+    }
+
+    private fun pauseAudioPreview() {
+        if (inputState.value.inputMessagePreview !is InputMessagePreview.SelectedAudioPreview) return
+        mediaHandler.pauseAudio()
+    }
+
+    private fun resumeAudioPreview() {
+        if (inputState.value.inputMessagePreview !is InputMessagePreview.SelectedAudioPreview) return
+        mediaHandler.resumeAudio()
+    }
+
+    private fun stopAudioPreview() {
+        if (inputState.value.inputMessagePreview !is InputMessagePreview.SelectedAudioPreview) return
+        mediaHandler.stopAudio()
+    }
+
     private fun playRecordedAudioPreview() {
         val recordedAudioPreview =
             (inputState.value.inputMessagePreview as? InputMessagePreview.RecordedAudioPreview)
                 ?: return
         mediaHandler.playAudio(
-            id = recordedAudioPreview.recordedPath,
+            id = "preview_recorded_audio_{${key.conversationId}}",
             filePath = recordedAudioPreview.recordedPath,
             onComplete = {}
         )
@@ -344,10 +559,21 @@ internal sealed interface InputMessagePreview {
     data class SelectedImagePreview(val imageUrl: String) : InputMessagePreview
 
     @Stable
-    data class SelectedVideoPreview(val videoUrl: String) : InputMessagePreview
+    data class SelectedVideoPreview(
+        val videoUrl: String,
+        val duration: Long = 0,
+        val isLoading: Boolean = false,
+        val isPlaying: Boolean = false,
+        val durationPlayed: Long = 0
+    ) : InputMessagePreview
 
     @Stable
-    data class SelectedAudioPreview(val audioUrl: String) : InputMessagePreview
+    data class SelectedAudioPreview(
+        val audioUrl: String,
+        val duration: Int = 0,
+        val isPlaying: Boolean = false,
+        val durationPlayed: Int = 0
+    ) : InputMessagePreview
 
     @Stable
     data class SelectedDocumentPreview(val documentName: String, val documentUrl: String) :
@@ -379,4 +605,14 @@ internal sealed interface ConversationInputUiAction {
     data object OnPauseRecordedAudio : ConversationInputUiAction
     data object OnResumeRecordedAudio : ConversationInputUiAction
     data object OnStopRecordedAudio : ConversationInputUiAction
+
+    data object OnPlayAudioPreview : ConversationInputUiAction
+    data object OnPauseAudioPreview : ConversationInputUiAction
+    data object OnResumeAudioPreview : ConversationInputUiAction
+    data object OnStopAudioPreview : ConversationInputUiAction
+
+    data object OnPlayVideoPreview : ConversationInputUiAction
+    data object OnPauseVideoPreview : ConversationInputUiAction
+    data object OnResumeVideoPreview : ConversationInputUiAction
+    data object OnStopVideoPreview : ConversationInputUiAction
 }

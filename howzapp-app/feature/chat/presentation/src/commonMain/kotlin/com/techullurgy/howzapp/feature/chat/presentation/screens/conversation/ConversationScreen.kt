@@ -126,6 +126,30 @@ fun ConversationScreen(
                 ConversationInputUiAction.OnStopRecordedAudio
             )
         },
+        onPlayAudioInPreview = {
+            conversationInputViewModel.onAction(ConversationInputUiAction.OnPlayAudioPreview)
+        },
+        onPauseAudioInPreview = {
+            conversationInputViewModel.onAction(ConversationInputUiAction.OnPauseAudioPreview)
+        },
+        onResumeAudioInPreview = {
+            conversationInputViewModel.onAction(ConversationInputUiAction.OnResumeAudioPreview)
+        },
+        onStopAudioInPreview = {
+            conversationInputViewModel.onAction(ConversationInputUiAction.OnStopAudioPreview)
+        },
+        onPlayVideoInPreview = {
+            conversationInputViewModel.onAction(ConversationInputUiAction.OnPlayVideoPreview)
+        },
+        onPauseVideoInPreview = {
+            conversationInputViewModel.onAction(ConversationInputUiAction.OnPauseVideoPreview)
+        },
+        onResumeVideoInPreview = {
+            conversationInputViewModel.onAction(ConversationInputUiAction.OnResumeVideoPreview)
+        },
+        onStopVideoInPreview = {
+            conversationInputViewModel.onAction(ConversationInputUiAction.OnStopVideoPreview)
+        },
     )
 }
 
@@ -144,6 +168,14 @@ private fun ConversationScreen(
     onPauseRecordedAudioInPreview: () -> Unit,
     onResumeRecordedAudioInPreview: () -> Unit,
     onStopRecordedAudioInPreview: () -> Unit,
+    onPlayAudioInPreview: () -> Unit,
+    onPauseAudioInPreview: () -> Unit,
+    onResumeAudioInPreview: () -> Unit,
+    onStopAudioInPreview: () -> Unit,
+    onPlayVideoInPreview: () -> Unit,
+    onPauseVideoInPreview: () -> Unit,
+    onResumeVideoInPreview: () -> Unit,
+    onStopVideoInPreview: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize().consumeWindowInsets(WindowInsets.safeDrawing),
@@ -178,7 +210,15 @@ private fun ConversationScreen(
                     onPlayRecordedAudioPreview = onPlayRecordedAudioInPreview,
                     onPauseRecordedAudioPreview = onPauseRecordedAudioInPreview,
                     onResumeRecordedAudioPreview = onResumeRecordedAudioInPreview,
-                    onStopRecordedAudioPreview = onStopRecordedAudioInPreview
+                    onStopRecordedAudioPreview = onStopRecordedAudioInPreview,
+                    onPlayAudioPreview = onPlayAudioInPreview,
+                    onPauseAudioPreview = onPauseAudioInPreview,
+                    onResumeAudioPreview = onResumeAudioInPreview,
+                    onStopAudioPreview = onStopAudioInPreview,
+                    onPlayVideoPreview = onPlayVideoInPreview,
+                    onPauseVideoPreview = onPauseVideoInPreview,
+                    onResumeVideoPreview = onResumeVideoInPreview,
+                    onStopVideoPreview = onStopVideoInPreview,
                 )
             }
         }

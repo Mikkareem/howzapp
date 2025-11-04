@@ -1,12 +1,10 @@
 package com.techullurgy.howzapp.feature.chat.presentation.components
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,7 +12,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputUiState
-import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.InputMessagePreview
 
 @Composable
 internal fun InputBox(
@@ -31,6 +28,14 @@ internal fun InputBox(
     onPauseRecordedAudioPreview: () -> Unit,
     onResumeRecordedAudioPreview: () -> Unit,
     onStopRecordedAudioPreview: () -> Unit,
+    onPlayAudioPreview: () -> Unit,
+    onPauseAudioPreview: () -> Unit,
+    onResumeAudioPreview: () -> Unit,
+    onStopAudioPreview: () -> Unit,
+    onPlayVideoPreview: () -> Unit,
+    onPauseVideoPreview: () -> Unit,
+    onResumeVideoPreview: () -> Unit,
+    onStopVideoPreview: () -> Unit,
 ) {
     var shouldAdditionBoxOpen by remember { mutableStateOf(false) }
 
@@ -41,6 +46,14 @@ internal fun InputBox(
             onPauseRecordedAudioPreview = onPauseRecordedAudioPreview,
             onResumeRecordedAudioPreview = onResumeRecordedAudioPreview,
             onStopRecordedAudioPreview = onStopRecordedAudioPreview,
+            onPlayAudioPreview = onPlayAudioPreview,
+            onPauseAudioPreview = onPauseAudioPreview,
+            onResumeAudioPreview = onResumeAudioPreview,
+            onStopAudioPreview = onStopAudioPreview,
+            onPlayVideoPreview = onPlayVideoPreview,
+            onPauseVideoPreview = onPauseVideoPreview,
+            onResumeVideoPreview = onResumeVideoPreview,
+            onStopVideoPreview = onStopVideoPreview,
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -93,54 +106,4 @@ internal fun InputBox(
             }
         )
     }
-}
-
-@Composable
-private fun PreviewBox(
-    preview: InputMessagePreview?,
-    onPlayRecordedAudioPreview: () -> Unit,
-    onPauseRecordedAudioPreview: () -> Unit,
-    onResumeRecordedAudioPreview: () -> Unit,
-    onStopRecordedAudioPreview: () -> Unit
-) {
-    AnimatedVisibility(
-        visible = preview != null,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        AnimatedContent(
-            targetState = preview!!
-        ) {
-            when (it) {
-                is InputMessagePreview.RecordedAudioPreview -> {
-                    RecordedAudioPreviewBox(
-                        preview = it,
-                        onPlayPreview = onPlayRecordedAudioPreview,
-                        onPausePreview = onPauseRecordedAudioPreview,
-                        onResumePreview = onResumeRecordedAudioPreview,
-                        onStopPreview = onStopRecordedAudioPreview
-                    )
-                }
-
-                is InputMessagePreview.SelectedAudioPreview -> TODO()
-                is InputMessagePreview.SelectedDocumentPreview -> TODO()
-                is InputMessagePreview.SelectedImagePreview -> TODO()
-                is InputMessagePreview.SelectedVideoPreview -> TODO()
-            }
-        }
-    }
-}
-
-@Composable
-private fun RecordedAudioPreviewBox(
-    preview: InputMessagePreview.RecordedAudioPreview,
-    onPlayPreview: () -> Unit,
-    onPausePreview: () -> Unit,
-    onResumePreview: () -> Unit,
-    onStopPreview: () -> Unit
-) {
-    DisposableEffect(preview) {
-        onDispose { onStopPreview() }
-    }
-
-
 }

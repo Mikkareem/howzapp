@@ -78,12 +78,7 @@ internal actual class PlatformAudioPlayer(
     }
 
     override fun stop() {
-        _activeTrack.update {
-            it?.copy(
-                isPlaying = false,
-                durationPlayed = 0
-            )
-        }
+        _activeTrack.update { null }
         durationJob?.cancel()
         mediaPlayer?.apply {
             stop()
