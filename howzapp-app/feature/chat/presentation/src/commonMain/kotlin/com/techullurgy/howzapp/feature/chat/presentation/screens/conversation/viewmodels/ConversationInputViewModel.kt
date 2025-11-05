@@ -67,6 +67,10 @@ internal class ConversationInputViewModel(
                 stopRecording()
             }
 
+            ConversationInputUiAction.OnAudioRecordCancelled -> {
+                stopRecording()
+            }
+
             ConversationInputUiAction.OnMessageSend -> {
                 sendMessage()
             }
@@ -529,6 +533,10 @@ internal class ConversationInputViewModel(
         mediaHandler.stopAudioRecording()
     }
 
+    private fun cancelRecording() {
+
+    }
+
     private fun recorded(fileUrl: String, duration: Long) {
         _inputState.update {
             it.copy(
@@ -587,13 +595,14 @@ internal data class ConversationInputUiState(
     val textState: TextFieldState = TextFieldState()
 ) {
     private val isSendable: Boolean = textState.text.isNotBlank() || inputMessagePreview != null
-    val canRecordAudio: Boolean = audioRecordTrack == null && !isSendable
+    val canRecordAudio: Boolean = !isSendable
     val canOpenMoreInputSheet: Boolean = inputMessagePreview == null
 }
 
 internal sealed interface ConversationInputUiAction {
     data object OnAudioRecordStarted : ConversationInputUiAction
     data object OnAudioRecordStopped : ConversationInputUiAction
+    data object OnAudioRecordCancelled : ConversationInputUiAction
     data object OnMessageSend : ConversationInputUiAction
     data class OnImageSelected(val imageUrl: String) : ConversationInputUiAction
     data class OnAudioSelected(val audioUrl: String) : ConversationInputUiAction

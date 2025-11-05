@@ -1,11 +1,14 @@
 package com.techullurgy.howzapp.feature.chat.presentation.components
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +32,7 @@ internal fun InputBox(
     modifier: Modifier = Modifier,
     onRecordStarted: () -> Unit,
     onRecordStopped: () -> Unit,
+    onRecordCancelled: () -> Unit,
     onMessageSend: () -> Unit,
     onImageSelected: (String) -> Unit,
     onAudioSelected: (String) -> Unit,
@@ -51,18 +55,32 @@ internal fun InputBox(
 
     InputBoxLayout(
         main = {
-            TextBox(
-                state = inputState.textState,
-                canOpenMoreInputSheet = inputState.canOpenMoreInputSheet,
-                isAdditionBoxOpen = shouldAdditionBoxOpen,
-                onAdditionIconClicked = { shouldAdditionBoxOpen = !shouldAdditionBoxOpen }
-            )
+            AnimatedContent(
+                inputState.audioRecordTrack?.isRecording ?: false
+            ) {
+                if (it) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("${inputState.audioRecordTrack!!.duration}")
+                    }
+                } else {
+                    TextBox(
+                        state = inputState.textState,
+                        canOpenMoreInputSheet = inputState.canOpenMoreInputSheet,
+                        isAdditionBoxOpen = shouldAdditionBoxOpen,
+                        onAdditionIconClicked = { shouldAdditionBoxOpen = !shouldAdditionBoxOpen },
+                    )
+                }
+            }
         },
         button = {
             InputActionButton(
                 canRecordAudio = inputState.canRecordAudio,
+                isRecording = inputState.audioRecordTrack?.isRecording ?: false,
                 onRecordStarted = onRecordStarted,
                 onRecordEnded = onRecordStopped,
+                onRecordCancelled = onRecordCancelled,
                 onMessageSend = onMessageSend
             )
         },
@@ -103,13 +121,14 @@ private fun InputBoxPreview(
 ) {
     HowzAppTheme(state.isDarkMode) {
         Box(
-//            modifier = Modifier.fillMaxSize(),
-//            contentAlignment = Alignment.BottomStart
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomStart
         ) {
             InputBox(
                 inputState = state.state,
                 onRecordStarted = {},
                 onRecordStopped = {},
+                onRecordCancelled = {},
                 onMessageSend = {},
                 onImageSelected = {},
                 onAudioSelected = {},
@@ -171,11 +190,11 @@ private class InputBoxStateProvider: PreviewParameterProvider<InputBoxState> {
     }
 }
 
-private val darkModes = sequenceOf(false, true)
+private val darkModes = sequenceOf(false)
 
 private val audioRecordTracks = sequenceOf<AudioRecordTrack?>(
-    null,
-//    AudioRecordTrack(id = "", isRecording = true, recordingPath = "", duration = 3428349),
+//    null,
+    AudioRecordTrack(id = "", isRecording = true, recordingPath = "", duration = 3428349),
 //    AudioRecordTrack(id = "", isRecording = false, recordingPath = "", duration = 3428349),
 )
 
@@ -186,4 +205,7 @@ private val inputMessagePreviews = sequenceOf<InputMessagePreview?>(
 //    InputMessagePreview.RecordedAudioPreview(recordedPath = "", duration = 3428349, isPlaying = true, durationPlayed = 238917)
 )
 
-private val texts = sequenceOf("", "repeat ".repeat(10), "repeat".repeat(100), "repeat".repeat(10), "repeat ".repeat(100))
+private val texts = sequenceOf(
+    "",
+    "repeat ".repeat(10), "repeat".repeat(100), "repeat".repeat(10), "repeat ".repeat(100)
+)

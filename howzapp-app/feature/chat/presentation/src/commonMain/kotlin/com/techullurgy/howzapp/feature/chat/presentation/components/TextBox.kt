@@ -1,7 +1,7 @@
 package com.techullurgy.howzapp.feature.chat.presentation.components
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,15 +52,14 @@ internal fun TextBox(
     BasicTextField(
         state = state,
         modifier = modifier
-            .sizeIn(maxHeight = 150.dp)
-            .background(Color.White, RoundedCornerShape(10.dp)),
+            .background(Color.White, RoundedCornerShape(10.dp))
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         decorator = { textField ->
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
-
                 AnimatedVisibility(canOpenMoreInputSheet) {
-                    AnimatedContent(
+                    Crossfade(
                         targetState = isAdditionBoxOpen,
                         label = "Addition Box Icon",
                         modifier = Modifier
@@ -71,25 +72,37 @@ internal fun TextBox(
                             }
                     ) { isOpen ->
                         if (isOpen) {
-                            Icon(
-                                painter = painterResource(Res.drawable.close),
-                                contentDescription = null,
-                            )
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.close),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
                         } else {
-                            Icon(
-                                painter = painterResource(Res.drawable.plus),
-                                contentDescription = null,
-                            )
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.plus),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(30.dp)
+                                )
+                            }
                         }
                     }
                 }
 
-                Spacer(Modifier.width(4.dp))
+                Spacer(Modifier.width(8.dp))
 
                 InnerTextFieldWithPlaceholder(
                     shouldShowPlaceholder = isTextEmpty,
                     textField = textField,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).align(Alignment.CenterVertically)
                 )
             }
         }

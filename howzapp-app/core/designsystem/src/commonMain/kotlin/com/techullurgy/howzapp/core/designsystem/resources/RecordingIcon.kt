@@ -7,16 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 
 internal class RecordingIcon: AbstractPainter() {
     override fun DrawScope.onDraw() {
         val ovalRect1 = Rect(
             left = size.width * .3f,
-            top = size.height * .1f,
+            top = defaultStroke.width,
             right = size.width * .7f,
             bottom = size.height * .75f
         )
@@ -39,6 +36,11 @@ internal class RecordingIcon: AbstractPainter() {
             path = path,
             color = defaultColor,
             style = defaultStroke
+        )
+
+        drawCircle(
+            color = defaultColor,
+            radius = (ovalRect1.width / 2f) - (ovalRect1.width * .2f)
         )
     }
 }

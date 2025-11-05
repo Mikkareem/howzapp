@@ -1,8 +1,7 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.techullurgy.howzapp.conventions.configureKotlinAndroid
-import com.techullurgy.howzapp.conventions.libs
 import com.techullurgy.howzapp.conventions.applicationId
 import com.techullurgy.howzapp.conventions.applicationLibs
+import com.techullurgy.howzapp.conventions.configureKotlinAndroid
 import com.techullurgy.howzapp.conventions.versionCode
 import com.techullurgy.howzapp.conventions.versionName
 import org.gradle.api.Plugin
@@ -29,7 +28,9 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
                 }
                 packaging {
                     resources {
-                        excludes += "/META-INF/{AL2.0,LGPL2.1}"
+                        excludes += setOf(
+                            "/META-INF/{AL2.0,LGPL2.1}",
+                        )
                     }
                 }
                 buildTypes {

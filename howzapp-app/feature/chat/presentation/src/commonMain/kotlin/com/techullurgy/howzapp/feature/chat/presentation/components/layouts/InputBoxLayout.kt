@@ -2,6 +2,7 @@ package com.techullurgy.howzapp.feature.chat.presentation.components.layouts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,13 +26,14 @@ import kotlin.math.roundToInt
 @Composable
 fun InputBoxLayout(
     modifier: Modifier = Modifier,
-    main: @Composable () -> Unit,
-    button: @Composable () -> Unit,
-    overlay: @Composable () -> Unit = {},
-    preview: @Composable () -> Unit = {}
+    main: @Composable BoxScope.() -> Unit,
+    button: @Composable BoxScope.() -> Unit,
+    overlay: @Composable BoxScope.() -> Unit = {},
+    preview: @Composable BoxScope.() -> Unit = {}
 ) {
 
-    val mainComposable: @Composable () -> Unit = remember(main) { { Box { main() } } }
+    val mainComposable: @Composable () -> Unit =
+        remember(main) { { Box(propagateMinConstraints = true) { main() } } }
     val buttonComposable: @Composable () -> Unit = remember(button) { { Box { button() } } }
     val overlayComposable: @Composable () -> Unit = remember(overlay) { { Box { overlay() } } }
     val previewComposable: @Composable () -> Unit = remember(preview) { { Box { preview() } } }
@@ -54,9 +56,14 @@ fun InputBoxLayout(
         val buttonPlaceable = buttonMeasurable.measure(constraints)
 
         val mainPlaceable = constraints.copy(
-            maxWidth = constraints.maxWidth - buttonPlaceable.width - 8.dp.roundToPx(),
-            minHeight = maxOf(constraints.minWidth, buttonPlaceable.height)
-        ).run { mainMeasurable.measure(this) }
+            minWidth = constraints.maxWidth - buttonPlaceable.width - mainToButtonPadding,
+            maxWidth = constraints.maxWidth - buttonPlaceable.width - mainToButtonPadding,
+            minHeight = buttonPlaceable.height,
+            maxHeight = 150.dp.roundToPx()
+        ).run {
+            println("Setting Constraints in Main Composable = $this")
+            mainMeasurable.measure(this)
+        }
 
         val previewPlaceable = constraints.copy(
             maxWidth = mainPlaceable.width
@@ -107,7 +114,7 @@ private fun InputBoxLayoutPreview() {
 
         InputBoxLayout(
             main = {
-                Box(Modifier.fillMaxWidth().height(150.dp).background(Color.Green))
+                Box(Modifier.matchParentSize().background(Color.Green))
             },
             button = {
                 Box(Modifier.size(48.dp).background(Color.Magenta))

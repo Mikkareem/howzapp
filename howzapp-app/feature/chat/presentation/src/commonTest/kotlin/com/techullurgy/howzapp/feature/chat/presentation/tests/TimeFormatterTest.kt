@@ -20,7 +20,7 @@ import kotlin.time.Duration.Companion.seconds
 class TimeFormatterTest {
 
     @Test
-    fun `test 'Just Now' string is returned, when the current time is less than 1 minute from message time`() {
+    fun test_JustNow_string_is_returned_when_the_current_time_is_less_than_1_minute_from_message_time() {
         assertThat(
             Clock.System.now().toUIString()
         )
@@ -33,7 +33,7 @@ class TimeFormatterTest {
     }
 
     @Test
-    fun `test '1 minute ago' string is returned, when the current time is 1-2 minute from message time`() {
+    fun test_1_minute_ago_string_is_returned_when_the_current_time_is_1_to_2_minutes_from_message_time() {
         assertThat(
             Clock.System.now().minus(1.minutes).toUIString()
         )
@@ -51,7 +51,7 @@ class TimeFormatterTest {
     }
 
     @Test
-    fun `test '2 minutes ago' string is returned, when the current time is 2-3 minutes from message time`() {
+    fun test_2_minutes_ago_string_is_returned_when_the_current_time_is_2_to_3_minutes_from_message_time() {
         assertThat(
             Clock.System.now().minus(2.minutes).toUIString()
         )
@@ -69,7 +69,7 @@ class TimeFormatterTest {
     }
 
     @Test
-    fun `test '3 minutes ago' string is returned, when the current time is 3-4 minutes from message time`() {
+    fun test_3_minutes_ago_string_is_returned_when_the_current_time_is_3_to_4_minutes_from_message_time() {
         assertThat(
             Clock.System.now().minus(3.minutes).toUIString()
         )
@@ -87,7 +87,7 @@ class TimeFormatterTest {
     }
 
     @Test
-    fun `test '4 minutes ago' string is returned, when the current time is 4-5 minutes from message time`() {
+    fun test_4_minutes_ago_string_is_returned_when_the_current_time_is_4_to_5_minutes_from_message_time() {
         assertThat(
             Clock.System.now().minus(4.minutes).toUIString()
         )
@@ -105,7 +105,7 @@ class TimeFormatterTest {
     }
 
     @Test
-    fun `test '5 minutes ago' string is returned, when the current time is 5-6 minutes from message time`() {
+    fun test_5_minutes_ago_string_is_returned_when_the_current_time_is_5_to_6_minutes_from_message_time() {
         assertThat(
             Clock.System.now().minus(5.minutes).toUIString()
         )
@@ -123,7 +123,7 @@ class TimeFormatterTest {
     }
 
     @Test
-    fun `test 'AM-PM' string is returned, when the current time is more than 6 minutes from message time`() {
+    fun test_AM_PM_string_is_returned_when_the_current_time_is_more_than_6_minutes_from_message_time() {
         assertThat(
             Clock.System.now().minus(5.minutes + 61.seconds).toUIString()
         ).doesNotContain("minutes ago")
@@ -134,7 +134,7 @@ class TimeFormatterTest {
     }
 
     @Test
-    fun `test Exact Time string is returned with AM-PM, when the current time is more than 5 minutes from message time`() {
+    fun test_Exact_Time_string_is_returned_with_AM_PM_when_the_current_time_is_more_than_5_minutes_from_message_time() {
         val commonDate = LocalDate(1997, Month.OCTOBER, 31)
 
         assertThat(

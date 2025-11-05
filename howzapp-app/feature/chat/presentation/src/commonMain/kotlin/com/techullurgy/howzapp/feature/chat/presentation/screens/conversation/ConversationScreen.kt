@@ -79,6 +79,7 @@ fun ConversationScreen(
         inputState = conversationInputState,
         onRecordStarted = { conversationInputViewModel.onAction(ConversationInputUiAction.OnAudioRecordStarted) },
         onRecordStopped = { conversationInputViewModel.onAction(ConversationInputUiAction.OnAudioRecordStopped) },
+        onRecordCancelled = { conversationInputViewModel.onAction(ConversationInputUiAction.OnAudioRecordCancelled) },
         onMessageSend = { conversationInputViewModel.onAction(ConversationInputUiAction.OnMessageSend) },
         onImageSelected = { url ->
             conversationInputViewModel.onAction(
@@ -159,6 +160,7 @@ private fun ConversationScreen(
     inputState: ConversationInputUiState,
     onRecordStarted: () -> Unit,
     onRecordStopped: () -> Unit,
+    onRecordCancelled: () -> Unit,
     onMessageSend: () -> Unit,
     onImageSelected: (String) -> Unit,
     onAudioSelected: (String) -> Unit,
@@ -202,6 +204,7 @@ private fun ConversationScreen(
                     inputState = inputState,
                     onRecordStarted = onRecordStarted,
                     onRecordStopped = onRecordStopped,
+                    onRecordCancelled = onRecordCancelled,
                     onMessageSend = onMessageSend,
                     onImageSelected = onImageSelected,
                     onAudioSelected = onAudioSelected,
