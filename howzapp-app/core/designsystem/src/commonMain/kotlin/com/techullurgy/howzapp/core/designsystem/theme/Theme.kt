@@ -50,6 +50,7 @@ data class ExtendedColors(
     val accentOrange: Color,
     val accentYellow: Color,
     val accentGreen: Color,
+    val accentRed: Color,
     val accentTeal: Color,
     val accentLightBlue: Color,
     val accentGrey: Color,
@@ -81,7 +82,7 @@ val LightExtendedColors = ExtendedColors(
     textPrimary = HowzappBase1000,
     textTertiary = HowzappBase800,
     textSecondary = HowzappBase900,
-    textPlaceholder = HowzappBase700,
+    textPlaceholder = HowzappNeutral2Light,
     textDisabled = HowzappBase400,
 
     surfaceLower = HowzappBase100,
@@ -93,16 +94,17 @@ val LightExtendedColors = ExtendedColors(
     accentPurple = HowzappPurple,
     accentViolet = HowzappViolet,
     accentPink = HowzappPink,
-    accentOrange = HowzappOrange,
+    accentOrange = HowzappOrangeLight,
     accentYellow = HowzappYellow,
-    accentGreen = HowzappGreen,
+    accentGreen = HowzappAccentGreen,
+    accentRed = HowzappAccentRed,
     accentTeal = HowzappTeal,
     accentLightBlue = HowzappLightBlue,
     accentGrey = HowzappGrey,
 
     cakeViolet = HowzappCakeLightViolet,
     cakeGreen = HowzappCakeLightGreen,
-    cakeBlue = HowzappCakeLightBlue,
+    cakeBlue = HowzappSkyBlueLight,
     cakePink = HowzappCakeLightPink,
     cakeOrange = HowzappCakeLightOrange,
     cakeYellow = HowzappCakeLightYellow,
@@ -126,7 +128,7 @@ val DarkExtendedColors = ExtendedColors(
     textPrimary = HowzappBase0,
     textTertiary = HowzappBase200,
     textSecondary = HowzappBase150,
-    textPlaceholder = HowzappBase400,
+    textPlaceholder = HowzappNeutral2Dark,
     textDisabled = HowzappBase500,
 
     surfaceLower = HowzappBase1000,
@@ -138,16 +140,17 @@ val DarkExtendedColors = ExtendedColors(
     accentPurple = HowzappPurple,
     accentViolet = HowzappViolet,
     accentPink = HowzappPink,
-    accentOrange = HowzappOrange,
+    accentOrange = HowzappOrangeDark,
     accentYellow = HowzappYellow,
-    accentGreen = HowzappGreen,
+    accentGreen = HowzappAccentGreen,
+    accentRed = HowzappAccentRed,
     accentTeal = HowzappTeal,
     accentLightBlue = HowzappLightBlue,
     accentGrey = HowzappGrey,
 
     cakeViolet = HowzappCakeDarkViolet,
     cakeGreen = HowzappCakeDarkGreen,
-    cakeBlue = HowzappCakeDarkBlue,
+    cakeBlue = HowzappSkyBlueDark,
     cakePink = HowzappCakeDarkPink,
     cakeOrange = HowzappCakeDarkOrange,
     cakeYellow = HowzappCakeDarkYellow,
@@ -158,13 +161,13 @@ val DarkExtendedColors = ExtendedColors(
 )
 
 val LightColorScheme = lightColorScheme(
-    primary = HowzappBrand500,
+    primary = HowzappPurple2Light,
     onPrimary = HowzappBrand1000,
     primaryContainer = HowzappBrand100,
     onPrimaryContainer = HowzappBrand900,
 
-    secondary = HowzappBase700,
-    onSecondary = HowzappBase0,
+    secondary = HowzappPurple1Light,
+    onSecondary = Color.Black,
     secondaryContainer = HowzappBase100,
     onSecondaryContainer = HowzappBase900,
 
@@ -178,9 +181,9 @@ val LightColorScheme = lightColorScheme(
     errorContainer = HowzappRed200,
     onErrorContainer = HowzappRed600,
 
-    background = HowzappBrand100,
+    background = HowzappNeutralWhite,
     onBackground = HowzappBase0,
-    surface = HowzappBase0,
+    surface = HowzappNeutral1Light,
     onSurface = HowzappBase1000,
     surfaceVariant = HowzappBase100,
     onSurfaceVariant = HowzappBase900,
@@ -190,13 +193,13 @@ val LightColorScheme = lightColorScheme(
 )
 
 val DarkColorScheme = darkColorScheme(
-    primary = HowzappBrand500,
-    onPrimary = HowzappBrand1000,
+    primary = HowzappPurple2Dark,
+    onPrimary = Color.White,
     primaryContainer = HowzappBrand900,
     onPrimaryContainer = HowzappBrand500,
 
-    secondary = HowzappBase400,
-    onSecondary = HowzappBase1000,
+    secondary = HowzappPurple1Dark,
+    onSecondary = Color.White,
     secondaryContainer = HowzappBase900,
     onSecondaryContainer = HowzappBase150,
 
@@ -210,9 +213,9 @@ val DarkColorScheme = darkColorScheme(
     errorContainer = HowzappRed600,
     onErrorContainer = HowzappRed200,
 
-    background = HowzappBase1000,
+    background = HowzappNeutralBlack,
     onBackground = HowzappBase0,
-    surface = HowzappBase950,
+    surface = HowzappNeutral1Dark,
     onSurface = HowzappBase0,
     surfaceVariant = HowzappBase900,
     onSurfaceVariant = HowzappBase150,
