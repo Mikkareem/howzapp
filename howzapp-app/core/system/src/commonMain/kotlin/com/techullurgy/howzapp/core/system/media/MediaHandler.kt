@@ -10,6 +10,7 @@ interface MediaHandler {
 
     fun startAudioRecording(id: String, fileName: String)
     fun stopAudioRecording()
+    fun cancelAudioRecording()
     fun resetAudioRecording()
 
     fun playAudio(id: String, filePath: String, onComplete: () -> Unit)

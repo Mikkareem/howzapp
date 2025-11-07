@@ -178,7 +178,7 @@ val LightColorScheme = lightColorScheme(
     errorContainer = HowzappRed200,
     onErrorContainer = HowzappRed600,
 
-    background = HowzappBrand1000,
+    background = HowzappBrand100,
     onBackground = HowzappBase0,
     surface = HowzappBase0,
     onSurface = HowzappBase1000,

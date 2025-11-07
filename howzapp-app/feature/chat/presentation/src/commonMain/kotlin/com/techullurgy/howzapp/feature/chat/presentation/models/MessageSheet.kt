@@ -3,6 +3,7 @@ package com.techullurgy.howzapp.feature.chat.presentation.models
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
 import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
+import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import kotlin.time.Instant
 
 internal data class MessageSheet(
@@ -14,6 +15,10 @@ internal data class MessageSheet(
     val timestamp: Instant
 ) {
     val isCurrentUser = messageOwner is MessageOwner.Me
+
+    val isUnread = if (!isCurrentUser) {
+        (messageOwner as MessageOwner.Other).status != MessageStatus.ReceiverStatus.READ
+    } else false
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

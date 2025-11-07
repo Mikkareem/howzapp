@@ -45,6 +45,12 @@ internal class SynchronousMediaHandler(
         audioRecorder.stop()
     }
 
+    override fun cancelAudioRecording() {
+        if (currentState.value != MediaState.MediaAudioRecorder) return
+        currentState.value = MediaState.MediaIdle
+        audioRecorder.cancel()
+    }
+
     override fun resetAudioRecording() {
         // Checking currentState needed?
         audioRecorder.reset()
@@ -93,8 +99,7 @@ internal class SynchronousMediaHandler(
     }
 
     private fun stopAll() {
-        stopAudioRecording()
-        resetAudioRecording()
+        cancelAudioRecording()
         stopAudio()
         stopVideo()
     }

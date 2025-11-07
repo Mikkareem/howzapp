@@ -22,6 +22,7 @@ import com.techullurgy.howzapp.core.system.media.AudioRecordTrack
 import com.techullurgy.howzapp.feature.chat.presentation.components.layouts.InputBoxLayout
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputUiState
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.InputMessagePreview
+import com.techullurgy.howzapp.feature.chat.presentation.utils.toDurationUiString
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
@@ -62,7 +63,7 @@ internal fun InputBox(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("${inputState.audioRecordTrack!!.duration}")
+                        Text(inputState.audioRecordTrack!!.duration.toDurationUiString())
                     }
                 } else {
                     TextBox(
@@ -194,8 +195,14 @@ private val darkModes = sequenceOf(false)
 
 private val audioRecordTracks = sequenceOf<AudioRecordTrack?>(
 //    null,
-    AudioRecordTrack(id = "", isRecording = true, recordingPath = "", duration = 3428349),
-//    AudioRecordTrack(id = "", isRecording = false, recordingPath = "", duration = 3428349),
+    AudioRecordTrack(
+        id = "",
+        isRecording = true,
+        recordingPath = "",
+        isCancelled = false,
+        duration = 328349
+    ),
+//    AudioRecordTrack(id = "", isRecording = false, recordingPath = "", isCancelled = false, duration = 3428349),
 )
 
 private val inputMessagePreviews = sequenceOf<InputMessagePreview?>(

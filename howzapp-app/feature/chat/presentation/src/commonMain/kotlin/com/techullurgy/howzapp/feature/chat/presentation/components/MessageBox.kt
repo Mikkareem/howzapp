@@ -12,14 +12,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.LayoutDirection
 import com.techullurgy.howzapp.feature.chat.presentation.components.layouts.MessageViewLayout
 import com.techullurgy.howzapp.feature.chat.presentation.components.layouts.MessageViewUi
-import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.MessageUi
 
 @Composable
 internal fun MessageBox(
-    sheet: MessageSheet,
+    content: MessageUi.Content,
     modifier: Modifier = Modifier
 ) {
-    val direction = if(sheet.isCurrentUser) LayoutDirection.Rtl else LayoutDirection.Ltr
+    val direction = if (content.content.isCurrentUser) LayoutDirection.Rtl else LayoutDirection.Ltr
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -29,7 +29,7 @@ internal fun MessageBox(
         }
     ) {
 
-        val view = if(sheet.isPictureShowable) {
+        val view = if (content.content.isPictureShowable) {
             MessageViewUi.Anchored(
                 direction = direction
             ) {
@@ -43,9 +43,9 @@ internal fun MessageBox(
 
         MessageViewLayout(
             view = view,
-            message = sheet.message,
-            owner = sheet.messageOwner,
-            timestamp = sheet.timestamp
+            message = content.content.message,
+            owner = content.content.messageOwner,
+            timestamp = content.content.timestamp
         )
     }
 }

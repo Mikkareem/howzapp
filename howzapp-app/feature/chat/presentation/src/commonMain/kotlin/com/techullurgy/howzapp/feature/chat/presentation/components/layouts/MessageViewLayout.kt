@@ -53,12 +53,18 @@ internal fun MessageViewLayout(
             .takeIf { it is MessageViewUi.NonAnchored }
             ?.let {
                 measurables.first().first().measure(
-                    constraints.copy(maxWidth = constraints.maxWidth - anchorSize - anchoredPlaceableSize)
+                    constraints.copy(
+                        maxWidth = (constraints.maxWidth - anchorSize - anchoredPlaceableSize)
+                            .coerceAtMost(250.dp.roundToPx())
+                    )
                 )
             }
             ?: run {
                 measurables.last().first().measure(
-                    constraints.copy(maxWidth = constraints.maxWidth - anchorSize - anchoredPlaceableSize)
+                    constraints.copy(
+                        maxWidth = (constraints.maxWidth - anchorSize - anchoredPlaceableSize)
+                            .coerceAtMost(250.dp.roundToPx())
+                    )
                 )
             }
 

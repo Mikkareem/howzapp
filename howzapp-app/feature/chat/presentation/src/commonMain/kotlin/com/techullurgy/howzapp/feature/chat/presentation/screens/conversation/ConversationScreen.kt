@@ -3,24 +3,24 @@ package com.techullurgy.howzapp.feature.chat.presentation.screens.conversation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
@@ -33,6 +33,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.presentation.components.InfoBox
 import com.techullurgy.howzapp.feature.chat.presentation.components.InputBox
+import com.techullurgy.howzapp.feature.chat.presentation.components.MessageBadge
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageBox
 import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputUiAction
@@ -41,13 +42,17 @@ import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.vi
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationUiAction
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationUiState
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationViewModel
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.MessageUi
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 data class ConversationKey(
     val conversationId: String
@@ -71,8 +76,8 @@ fun ConversationScreen(
         }
     }
 
-    val conversationState by conversationViewModel.state.collectAsState()
-    val conversationInputState by conversationInputViewModel.inputState.collectAsState()
+    val conversationState = conversationViewModel.state.collectAsState()
+    val conversationInputState = conversationInputViewModel.inputState.collectAsState()
 
     ConversationScreen(
         state = conversationState,
@@ -156,8 +161,8 @@ fun ConversationScreen(
 
 @Composable
 private fun ConversationScreen(
-    state: ConversationUiState,
-    inputState: ConversationInputUiState,
+    state: State<ConversationUiState>,
+    inputState: State<ConversationInputUiState>,
     onRecordStarted: () -> Unit,
     onRecordStopped: () -> Unit,
     onRecordCancelled: () -> Unit,
@@ -192,16 +197,18 @@ private fun ConversationScreen(
                     )
                     .padding(8.dp, 16.dp)
             ) {
-                InfoBox(state)
+                InfoBox(state.value)
             }
         },
         bottomBar = {
             Box(
-                modifier = Modifier
-                    .padding(8.dp)
+                modifier = Modifier.padding(
+                    WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom + WindowInsetsSides.Horizontal)
+                        .asPaddingValues()
+                )
             ) {
                 InputBox(
-                    inputState = inputState,
+                    inputState = inputState.value,
                     onRecordStarted = onRecordStarted,
                     onRecordStopped = onRecordStopped,
                     onRecordCancelled = onRecordCancelled,
@@ -231,14 +238,14 @@ private fun ConversationScreen(
                 .fillMaxSize(),
             contentPadding = PaddingValues(16.dp)
         ) {
-            itemsIndexed(state.messageSheets) { index, sheet ->
-                MessageBox(sheet)
+            items(state.value.messageUis) {
+                when (it) {
+                    is MessageUi.Badge -> {
+                        MessageBadge(it)
+                    }
 
-                if(index+1 <= state.messageSheets.lastIndex) {
-                    if(state.messageSheets[index+1].isCurrentUser != sheet.isCurrentUser) {
-                        Spacer(Modifier.height(16.dp))
-                    } else {
-                        Spacer(Modifier.height(4.dp))
+                    is MessageUi.Content -> {
+                        MessageBox(it)
                     }
                 }
             }
@@ -249,65 +256,153 @@ private fun ConversationScreen(
 @Preview
 @Composable
 private fun ConversationScreenPreview(
-    @PreviewParameter(ConversationUiStatePreviewParameterProvider::class) state: ConversationUiState
+    @PreviewParameter(ConversationUiStatePreviewParameterProvider::class) _state: PreviewProvider
 ) {
-    HowzAppTheme {
-//        ConversationScreen(state)
+    HowzAppTheme(
+        _state.isDarkMode
+    ) {
+        val state = remember { mutableStateOf(_state.state) }
+        val inputState = remember { mutableStateOf(_state.inputState) }
+
+        ConversationScreen(
+            state,
+            inputState,
+            onRecordStarted = {},
+            onRecordStopped = {},
+            onRecordCancelled = {},
+            onMessageSend = {},
+            onImageSelected = {},
+            onAudioSelected = {},
+            onVideoSelected = {},
+            onDocumentSelected = { _, _ -> },
+            onPlayRecordedAudioInPreview = {},
+            onPauseRecordedAudioInPreview = {},
+            onResumeRecordedAudioInPreview = {},
+            onStopRecordedAudioInPreview = {},
+            onPlayAudioInPreview = {},
+            onPauseAudioInPreview = {},
+            onResumeAudioInPreview = {},
+            onStopAudioInPreview = {},
+            onPlayVideoInPreview = {},
+            onPauseVideoInPreview = {},
+            onResumeVideoInPreview = {},
+            onStopVideoInPreview = {},
+        )
     }
 }
 
+private data class PreviewProvider(
+    val isDarkMode: Boolean,
+    val state: ConversationUiState,
+    val inputState: ConversationInputUiState
+)
+
 private class ConversationUiStatePreviewParameterProvider :
-    PreviewParameterProvider<ConversationUiState> {
-    private val sampleMessageSheet = MessageSheet(
-        messageId = "m1",
-        sender = ChatParticipant("", ""),
-        isPictureShowable = false,
-        message = OriginalMessage.TextMessage(""),
-        messageOwner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.SenderStatus.SENT),
-        timestamp = Clock.System.now()
-    )
+    PreviewParameterProvider<PreviewProvider> {
+    override val values: Sequence<PreviewProvider>
+        get() = sequence {
+            buildList {
+                add(MessageUi.Badge("Today"))
 
-
-    override val values: Sequence<ConversationUiState>
-        get() = sequenceOf(
-            ConversationUiState(
-                title = "Irsath Kareem",
-                subtitle = "Online",
-                messageSheets = listOf(
-                    sampleMessageSheet.copy(
-                        message = OriginalMessage.ImageMessage(""),
-                        timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
-                    ),
-                    sampleMessageSheet.copy(
-                        message = PendingMessage.UploadablePendingMessage(
-                            originalMessage = OriginalMessage.ImageMessage(""),
-                            status = UploadStatus.Progress(28.0)
-                        ),
-                        timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
-                    ),
-                    sampleMessageSheet.copy(
-                        message = PendingMessage.UploadablePendingMessage(
-                            originalMessage = OriginalMessage.AudioMessage(""),
-                            status = UploadStatus.Progress(28.0)
-                        ),
-                        timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
-                    ),
-                    sampleMessageSheet.copy(
-                        message = PendingMessage.UploadablePendingMessage(
-                            originalMessage = OriginalMessage.AudioMessage(""),
-                            status = UploadStatus.Failed()
-                        ),
-                        timestamp = sampleMessageSheet.timestamp.minus(28.minutes)
-                    ),
-
-                    sampleMessageSheet.copy(
-                        message = PendingMessage.UploadablePendingMessage(
-                            originalMessage = OriginalMessage.AudioMessage(""),
-                            status = UploadStatus.Success("")
-                        ),
-                        timestamp = sampleMessageSheet.timestamp.minus(3.minutes)
-                    ),
+                addAll(
+                    buildList {
+                        var _minutes = 4.minutes
+                        repeat(10) {
+                            val user = listOf(users[0], users[1]).random()
+                            val minutes = _minutes + 15.minutes
+                            MessageSheet(
+                                message = messages.random(),
+                                messageId = "m1_001",
+                                sender = user,
+                                isPictureShowable = if (it % 3 == 0) true else false,
+                                messageOwner = messageOwners[if (user.userId == users[0].userId) 0 else 4],
+                                timestamp = Clock.System.now().minus(minutes)
+                            ).run {
+                                add(MessageUi.Content(this))
+                            }
+                            _minutes = minutes
+                        }
+                    }
                 )
-            )
-        )
+            }.run {
+                yield(
+                    PreviewProvider(
+                        false,
+                        ConversationUiState(
+                            title = "Riyas",
+                            subtitle = "Online",
+                            profilePicture = "",
+                            messageUis = this
+                        ),
+                        ConversationInputUiState()
+                    )
+                )
+
+                yield(
+                    PreviewProvider(
+                        true,
+                        ConversationUiState(
+                            title = "Riyas",
+                            subtitle = "Online",
+                            profilePicture = "",
+                            messageUis = this
+                        ),
+                        ConversationInputUiState()
+                    )
+                )
+            }
+        }
+}
+
+private val users = listOf(
+    ChatParticipant("u123", "Irsath", ""),
+    ChatParticipant("u456", "Riyas", "")
+)
+
+private val messageOwners = listOf(
+    MessageOwner.Me(users[0], MessageStatus.SenderStatus.READ),
+    MessageOwner.Me(users[0], MessageStatus.SenderStatus.DELIVERED),
+    MessageOwner.Me(users[0], MessageStatus.SenderStatus.SENT),
+    MessageOwner.Me(users[0], MessageStatus.SenderStatus.PENDING),
+
+    MessageOwner.Other(users[1], MessageStatus.ReceiverStatus.READ),
+    MessageOwner.Other(users[1], MessageStatus.ReceiverStatus.UNREAD),
+    MessageOwner.Other(users[1], MessageStatus.ReceiverStatus.PENDING),
+)
+
+private val messageTimeStamps = sequenceOf(
+    Clock.System.now().minus(182.days),
+    Clock.System.now().minus(84.days),
+    Clock.System.now().minus(71.days),
+    Clock.System.now().minus(42.days),
+    Clock.System.now().minus(15.days),
+    Clock.System.now().minus(8.days),
+    Clock.System.now().minus(3.days + 4.hours),
+    Clock.System.now().minus(3.days),
+    Clock.System.now().minus(5.hours),
+    Clock.System.now().minus(28.minutes),
+    Clock.System.now().minus(253.seconds),
+    Clock.System.now().minus(45.seconds),
+    Clock.System.now().minus(3.seconds),
+)
+
+private val messages = listOf(
+    OriginalMessage.AudioMessage(""),
+    OriginalMessage.TextMessage("How are you?"),
+) + listOf(
+    "Hey!",
+    "How’s it going?",
+    "Did you check the new design?",
+    "Yes, I liked it!",
+    "Let's meet tomorrow.",
+    "Sure, what time?",
+    "10 AM sounds good.",
+    "Perfect!"
+).map { OriginalMessage.TextMessage(it) } + listOf(
+    24.5, 16.66, 68.0, 92.34, 100.0, 0.0
+).map {
+    PendingMessage.UploadablePendingMessage(
+        status = UploadStatus.Progress(it),
+        originalMessage = OriginalMessage.ImageMessage("")
+    )
 }

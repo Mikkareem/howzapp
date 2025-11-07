@@ -50,11 +50,11 @@ class ConversationViewModelTest {
         assertThat(viewModel.state.value.title).isEqualTo("Joe Biden")
         assertThat(viewModel.state.value.subtitle).isEqualTo("")
 
-        assertThat(viewModel.state.value.messageSheets.size).isEqualTo(2)
-        assertThat(viewModel.state.value.messageSheets.first().isCurrentUser).isEqualTo(true)
-        assertThat(viewModel.state.value.messageSheets.first().isPictureShowable).isEqualTo(true)
-        assertThat(viewModel.state.value.messageSheets.last().isCurrentUser).isEqualTo(true)
-        assertThat(viewModel.state.value.messageSheets.last().isPictureShowable).isEqualTo(false)
+        assertThat(viewModel.state.value.messageUis.size).isEqualTo(2)
+        assertThat(viewModel.state.value.messageUis.first().isCurrentUser).isEqualTo(true)
+        assertThat(viewModel.state.value.messageUis.first().isPictureShowable).isEqualTo(true)
+        assertThat(viewModel.state.value.messageUis.last().isCurrentUser).isEqualTo(true)
+        assertThat(viewModel.state.value.messageUis.last().isPictureShowable).isEqualTo(false)
 
 //        verifyAll {
 //            mockedRepository.observeChatByChatId("c123")

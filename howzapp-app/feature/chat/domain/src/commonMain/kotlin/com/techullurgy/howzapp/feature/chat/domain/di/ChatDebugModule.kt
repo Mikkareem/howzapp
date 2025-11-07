@@ -6,7 +6,7 @@ import org.koin.core.annotation.Single
 import org.koin.core.scope.Scope
 
 @Module(createdAtStart = true)
-class ChatTestModule {
+class ChatDebugModule {
     @Single
     internal fun provideTestRepository(scope: Scope): TestRepository {
         return TestRepository(

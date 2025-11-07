@@ -17,4 +17,12 @@ internal actual class PlatformAudioRecorder : AudioRecorder {
     override fun reset() {
         TODO("Not yet implemented")
     }
+
+    override fun cancel() {
+        TODO("Not yet implemented")
+    }
+
+    override fun discard() {
+        TODO("Not yet implemented")
+    }
 }

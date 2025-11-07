@@ -84,6 +84,7 @@ internal actual class PlatformAudioRecorder(
                         id = id,
                         recordingPath = recordingFilePath,
                         isRecording = true,
+                        isCancelled = false,
                         duration = 0
                     )
                 }
@@ -106,9 +107,26 @@ internal actual class PlatformAudioRecorder(
         }
     }
 
+    override fun cancel() {
+        _activeAudioRecordTrack.update {
+            it?.copy(
+                isCancelled = true,
+                isRecording = false
+            )
+        }
+        discard()
+        stop()
+        reset()
+    }
+
     override fun reset() {
         durationJob?.cancel()
         _activeAudioRecordTrack.update { null }
+    }
+
+    override fun discard() {
+        val filePath = _activeAudioRecordTrack.value?.recordingPath ?: return
+        File(filePath).delete()
     }
 
     private fun trackDuration() {

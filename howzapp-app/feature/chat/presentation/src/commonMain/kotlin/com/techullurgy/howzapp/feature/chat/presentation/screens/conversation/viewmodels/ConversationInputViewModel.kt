@@ -68,7 +68,7 @@ internal class ConversationInputViewModel(
             }
 
             ConversationInputUiAction.OnAudioRecordCancelled -> {
-                stopRecording()
+                cancelRecording()
             }
 
             ConversationInputUiAction.OnMessageSend -> {
@@ -162,11 +162,11 @@ internal class ConversationInputViewModel(
                         }
                     } else {
                         if (it.duration < 3.seconds.inWholeMilliseconds) {
-                            discardRecorded(it.recordingPath)
+                            mediaHandler.cancelAudioRecording()
                         } else {
                             recorded(it.recordingPath, it.duration)
+                            mediaHandler.resetAudioRecording()
                         }
-                        mediaHandler.resetAudioRecording()
                     }
                 }
             }
@@ -233,42 +233,6 @@ internal class ConversationInputViewModel(
                     }
                 }
 
-            }
-            .launchIn(viewModelScope)
-
-
-
-        mediaHandler.activeAudioTrack
-            .transform { track ->
-                track
-                    ?.takeIf {
-                        if (inputState.value.inputMessagePreview is InputMessagePreview.SelectedAudioPreview) {
-                            it.id == (inputState.value.inputMessagePreview as InputMessagePreview.RecordedAudioPreview).recordedPath
-                        } else false
-                    }?.let {
-                        emit(it)
-                    } ?: run {
-                    _inputState.update {
-                        it.copy(
-                            inputMessagePreview = if (it.inputMessagePreview is InputMessagePreview.RecordedAudioPreview) {
-                                it.inputMessagePreview.copy(isPlaying = false, durationPlayed = 0)
-                            } else it.inputMessagePreview
-                        )
-                    }
-                }
-            }
-            .onEach { track ->
-                _inputState.update {
-                    it.copy(
-                        inputMessagePreview = if (it.inputMessagePreview is InputMessagePreview.RecordedAudioPreview) {
-                            it.inputMessagePreview.copy(
-                                isPlaying = track.isPlaying,
-                                durationPlayed = track.durationPlayed,
-                                duration = track.totalDuration
-                            )
-                        } else it.inputMessagePreview
-                    )
-                }
             }
             .launchIn(viewModelScope)
     }
@@ -534,7 +498,7 @@ internal class ConversationInputViewModel(
     }
 
     private fun cancelRecording() {
-
+        mediaHandler.cancelAudioRecording()
     }
 
     private fun recorded(fileUrl: String, duration: Long) {
@@ -546,10 +510,6 @@ internal class ConversationInputViewModel(
                 )
             )
         }
-    }
-
-    private fun discardRecorded(fileUrl: String) {
-        // TODO: Deletes from the Cache, (NO LONGER NEEDED)
     }
 }
 

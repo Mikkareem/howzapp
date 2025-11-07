@@ -3,16 +3,13 @@ package com.techullurgy.howzapp.feature.chat.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -24,13 +21,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
+import com.techullurgy.howzapp.core.designsystem.theme.labelXSmall
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
 import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
@@ -58,7 +57,6 @@ internal fun MessageView(
     timestamp: Instant,
     modifier: Modifier = Modifier,
 ) {
-
     var timeString by rememberSaveable {
         mutableStateOf(timestamp.toUIString())
     }
@@ -72,6 +70,9 @@ internal fun MessageView(
         }
     }
 
+    val backgroundColor = if (owner is MessageOwner.Me) Color.Blue else Color.White
+    val contentColor = if (owner is MessageOwner.Me) Color.White else Color.Black
+
     Box(
         modifier = modifier
             .drawBehind {
@@ -80,14 +81,20 @@ internal fun MessageView(
                         RoundRect(0f, 0f, size.width, size.height, CornerRadius(20f))
                     )
                 }
-                drawPath(path1, Color.Blue)
+                drawPath(path1, backgroundColor)
             }
-            .padding(12.dp)
+            .innerShadow(RoundedCornerShape(20f)) {
+                spread = 5f
+                radius = 20f
+            }
+            .padding(all = 8.dp)
     ) {
         CompositionLocalProvider(
-            LocalContentColor provides Color.White
+            LocalContentColor provides contentColor
         ) {
-            Column {
+            MessageLayout(
+                owner = owner
+            ) {
                 when (message) {
                     is PendingMessage -> PendingMessageView(message)
                     is OriginalMessage.TextMessage -> TextMessageView(message)
@@ -98,70 +105,97 @@ internal fun MessageView(
                             onPause = {}
                         )
                     }
+
                     is OriginalMessage.DocumentMessage -> DocumentMessageView(message)
                     is OriginalMessage.ImageMessage -> ImageMessageView(message)
                     is OriginalMessage.VideoMessage -> VideoMessageView(message)
                 }
 
-                Spacer(Modifier.height(2.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = when (owner) {
-                        is MessageOwner.Me -> Arrangement.End
-                        is MessageOwner.Other -> Arrangement.Start
-                    },
-                    verticalAlignment = Alignment.CenterVertically
+                Box(
+                    Modifier
+                        .background(shape = RoundedCornerShape(4.dp), color = Color.Black)
+                        .padding(4.dp)
                 ) {
-                    Box(
-                        Modifier
-                            .background(shape = RoundedCornerShape(4.dp), color = Color.Black)
-                            .padding(4.dp)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Text(text = timeString, fontSize = 12.sp, lineHeight = 12.sp)
-                            if (owner is MessageOwner.Me) {
-                                when (owner.status) {
-                                    MessageStatus.SenderStatus.PENDING -> {
-                                        Icon(
-                                            painter = painterResource(Res.drawable.pending),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(16.dp)
-                                        )
-                                    }
+                        Text(
+                            text = timeString,
+                            style = MaterialTheme.typography.labelXSmall,
+                            color = Color.White
+                        )
+                        if (owner is MessageOwner.Me) {
+                            when (owner.status) {
+                                MessageStatus.SenderStatus.PENDING -> {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.pending),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
 
-                                    MessageStatus.SenderStatus.SENT -> {
-                                        Icon(
-                                            painter = painterResource(Res.drawable.sent),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(16.dp)
-                                        )
-                                    }
+                                MessageStatus.SenderStatus.SENT -> {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.sent),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
 
-                                    MessageStatus.SenderStatus.DELIVERED -> {
-                                        Icon(
-                                            painter = painterResource(Res.drawable.done_all),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(16.dp)
-                                        )
-                                    }
+                                MessageStatus.SenderStatus.DELIVERED -> {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.done_all),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
 
-                                    MessageStatus.SenderStatus.READ -> {
-                                        Icon(
-                                            painter = painterResource(Res.drawable.done_all),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(16.dp),
-                                            tint = Color.Red
-                                        )
-                                    }
+                                MessageStatus.SenderStatus.READ -> {
+                                    Icon(
+                                        painter = painterResource(Res.drawable.done_all),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp),
+                                        tint = Color.Red
+                                    )
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MessageLayout(
+    modifier: Modifier = Modifier,
+    owner: MessageOwner,
+    content: @Composable () -> Unit
+) {
+    Layout(
+        modifier = modifier,
+        content = content
+    ) { measurables, constraints ->
+        val placeables = measurables.map { it.measure(constraints) }
+
+        val totalWidth = placeables.maxOf { it.width }
+        val totalHeight = placeables.sumOf { it.height }
+
+        layout(totalWidth, totalHeight) {
+            val messagePlaceable = placeables.first()
+            val timePlaceable = placeables.last()
+
+            messagePlaceable.place(0, 0)
+
+            if (owner is MessageOwner.Me) {
+                timePlaceable.place(totalWidth - timePlaceable.width, messagePlaceable.height)
+            } else {
+                timePlaceable.place(
+                    0,
+                    messagePlaceable.height
+                )
             }
         }
     }
@@ -173,11 +207,15 @@ private fun MessageViewPreview(
     @PreviewParameter(MessageViewPreviewParameterProvider::class) data: MessageViewData
 ) {
     HowzAppTheme {
-        MessageView(
-            message = data.message,
-            owner = data.owner,
-            timestamp = data.timestamp,
-        )
+        Box(
+            Modifier.padding(10.dp)
+        ) {
+            MessageView(
+                message = data.message,
+                owner = data.owner,
+                timestamp = data.timestamp,
+            )
+        }
     }
 }
 
@@ -198,6 +236,22 @@ private class MessageViewPreviewParameterProvider : PreviewParameterProvider<Mes
             MessageViewData(
                 message = OriginalMessage.ImageMessage("Hello People, How are you?"),
                 owner = MessageOwner.Me(ChatParticipant("", ""), MessageStatus.SenderStatus.DELIVERED),
+                timestamp = Clock.System.now().minus(34.minutes)
+            ),
+            MessageViewData(
+                message = OriginalMessage.TextMessage("Hello People, How are you?"),
+                owner = MessageOwner.Other(
+                    ChatParticipant("", ""),
+                    MessageStatus.ReceiverStatus.UNREAD
+                ),
+                timestamp = Clock.System.now()
+            ),
+            MessageViewData(
+                message = OriginalMessage.ImageMessage("Hello People, How are you?"),
+                owner = MessageOwner.Other(
+                    ChatParticipant("", ""),
+                    MessageStatus.ReceiverStatus.READ
+                ),
                 timestamp = Clock.System.now().minus(34.minutes)
             )
         )
