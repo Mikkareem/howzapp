@@ -10,16 +10,14 @@ spring:
     url: jdbc:h2:mem:test-db
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-
-
+    host: ${RABBITMQ_HOST:-localhost}
+    port: ${RABBITMQ_PORT:-5672}
+    username: ${RABBITMQ_USER:-guest}
+    password: ${RABBITMQ_PASSWORD:-guest}
 
 application:
   rabbitmq:
-    enabled: false
+    enabled: ${RABBITMQ_ENABLED:-false}
 
   jwt:
     secret: V0UgQVJFIE5PVCBUSEUgRkFLRSBPTkUgVE8gT0JGVVNDQVRF
