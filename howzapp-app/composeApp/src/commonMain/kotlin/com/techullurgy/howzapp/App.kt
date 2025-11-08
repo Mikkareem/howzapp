@@ -12,6 +12,8 @@ import com.techullurgy.howzapp.feature.auth.api.navigation.LoginRoute
 import com.techullurgy.howzapp.feature.auth.api.navigation.authGraph
 import com.techullurgy.howzapp.feature.chat.api.navigation.ChatGraphRoute
 import com.techullurgy.howzapp.feature.chat.api.navigation.chatGraph
+import com.techullurgy.howzapp.feature.splash.api.navigation.SplashRoute
+import com.techullurgy.howzapp.feature.splash.api.navigation.splashRoute
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -19,7 +21,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
     HowzAppTheme {
 
-        val backStack = rememberSaveable { mutableStateListOf<Any>(LoginRoute) }
+        val backStack = rememberSaveable { mutableStateListOf<Any>(SplashRoute) }
 
         NavDisplay(
             backStack = backStack,
@@ -28,6 +30,16 @@ fun App() {
                 rememberViewModelStoreNavEntryDecorator()
             ),
             entryProvider = entryProvider {
+                splashRoute(
+                    onSuccess = {
+                        backStack.clear()
+                        backStack.add(ChatGraphRoute)
+                    },
+                    onFailure = {
+                        backStack.clear()
+                        backStack.add(LoginRoute)
+                    }
+                )
                 chatGraph(backStack)
                 authGraph(
                     backStack = backStack,
