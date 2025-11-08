@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
@@ -55,6 +52,7 @@ internal fun MessageView(
     message: Message,
     owner: MessageOwner,
     timestamp: Instant,
+    color: Color,
     modifier: Modifier = Modifier,
 ) {
     var timeString by rememberSaveable {
@@ -70,9 +68,6 @@ internal fun MessageView(
         }
     }
 
-    val backgroundColor = if (owner is MessageOwner.Me) Color.Blue else Color.White
-    val contentColor = if (owner is MessageOwner.Me) Color.White else Color.Black
-
     Box(
         modifier = modifier
             .drawBehind {
@@ -81,84 +76,80 @@ internal fun MessageView(
                         RoundRect(0f, 0f, size.width, size.height, CornerRadius(20f))
                     )
                 }
-                drawPath(path1, backgroundColor)
+                drawPath(path1, color)
             }
-            .innerShadow(RoundedCornerShape(20f)) {
-                spread = 5f
-                radius = 20f
-            }
+//            .innerShadow(RoundedCornerShape(20f)) {
+//                spread = 5f
+//                radius = 20f
+//            }
             .padding(all = 8.dp)
     ) {
-        CompositionLocalProvider(
-            LocalContentColor provides contentColor
+        MessageLayout(
+            owner = owner
         ) {
-            MessageLayout(
-                owner = owner
-            ) {
-                when (message) {
-                    is PendingMessage -> PendingMessageView(message)
-                    is OriginalMessage.TextMessage -> TextMessageView(message)
-                    is OriginalMessage.AudioMessage -> {
-                        AudioMessageView(
-                            message = message,
-                            onPlay = {},
-                            onPause = {}
-                        )
-                    }
-
-                    is OriginalMessage.DocumentMessage -> DocumentMessageView(message)
-                    is OriginalMessage.ImageMessage -> ImageMessageView(message)
-                    is OriginalMessage.VideoMessage -> VideoMessageView(message)
+            when (message) {
+                is PendingMessage -> PendingMessageView(message)
+                is OriginalMessage.TextMessage -> TextMessageView(message)
+                is OriginalMessage.AudioMessage -> {
+                    AudioMessageView(
+                        message = message,
+                        onPlay = {},
+                        onPause = {}
+                    )
                 }
 
-                Box(
-                    Modifier
-                        .background(shape = RoundedCornerShape(4.dp), color = Color.Black)
-                        .padding(4.dp)
+                is OriginalMessage.DocumentMessage -> DocumentMessageView(message)
+                is OriginalMessage.ImageMessage -> ImageMessageView(message)
+                is OriginalMessage.VideoMessage -> VideoMessageView(message)
+            }
+
+            Box(
+                Modifier
+                    .background(shape = RoundedCornerShape(4.dp), color = Color.Black)
+                    .padding(4.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = timeString,
-                            style = MaterialTheme.typography.labelXSmall,
-                            color = Color.White
-                        )
-                        if (owner is MessageOwner.Me) {
-                            when (owner.status) {
-                                MessageStatus.SenderStatus.PENDING -> {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.pending),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
+                    Text(
+                        text = timeString,
+                        style = MaterialTheme.typography.labelXSmall,
+                        color = Color.White
+                    )
+                    if (owner is MessageOwner.Me) {
+                        when (owner.status) {
+                            MessageStatus.SenderStatus.PENDING -> {
+                                Icon(
+                                    painter = painterResource(Res.drawable.pending),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
 
-                                MessageStatus.SenderStatus.SENT -> {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.sent),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
+                            MessageStatus.SenderStatus.SENT -> {
+                                Icon(
+                                    painter = painterResource(Res.drawable.sent),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
 
-                                MessageStatus.SenderStatus.DELIVERED -> {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.done_all),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
+                            MessageStatus.SenderStatus.DELIVERED -> {
+                                Icon(
+                                    painter = painterResource(Res.drawable.done_all),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
 
-                                MessageStatus.SenderStatus.READ -> {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.done_all),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(16.dp),
-                                        tint = Color.Red
-                                    )
-                                }
+                            MessageStatus.SenderStatus.READ -> {
+                                Icon(
+                                    painter = painterResource(Res.drawable.done_all),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    tint = Color.Red
+                                )
                             }
                         }
                     }
@@ -214,6 +205,7 @@ private fun MessageViewPreview(
                 message = data.message,
                 owner = data.owner,
                 timestamp = data.timestamp,
+                color = Color.Blue
             )
         }
     }

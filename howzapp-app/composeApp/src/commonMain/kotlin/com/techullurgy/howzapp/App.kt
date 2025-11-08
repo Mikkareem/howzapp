@@ -8,6 +8,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
+import com.techullurgy.howzapp.feature.auth.api.navigation.LoginRoute
 import com.techullurgy.howzapp.feature.auth.api.navigation.authGraph
 import com.techullurgy.howzapp.feature.chat.api.navigation.ChatGraphRoute
 import com.techullurgy.howzapp.feature.chat.api.navigation.chatGraph
@@ -18,7 +19,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App() {
     HowzAppTheme {
 
-        val backStack = rememberSaveable { mutableStateListOf<Any>(ChatGraphRoute) }
+        val backStack = rememberSaveable { mutableStateListOf<Any>(LoginRoute) }
 
         NavDisplay(
             backStack = backStack,

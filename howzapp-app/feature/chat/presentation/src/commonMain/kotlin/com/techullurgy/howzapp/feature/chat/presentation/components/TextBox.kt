@@ -28,7 +28,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.close
@@ -52,7 +51,7 @@ internal fun TextBox(
     BasicTextField(
         state = state,
         modifier = modifier
-            .background(Color.White, RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(10.dp))
             .padding(horizontal = 8.dp, vertical = 8.dp),
         decorator = { textField ->
             Row(
@@ -66,7 +65,7 @@ internal fun TextBox(
                             .heightIn(max = 36.dp)
                             .fillMaxHeight()
                             .aspectRatio(1f)
-                            .background(Color.Red, CircleShape)
+                            .background(MaterialTheme.colorScheme.primary, CircleShape)
                             .clickable {
                                 onAdditionIconClicked(!isAdditionBoxOpen)
                             }
@@ -89,6 +88,7 @@ internal fun TextBox(
                             ) {
                                 Icon(
                                     painter = painterResource(Res.drawable.plus),
+                                    tint = MaterialTheme.colorScheme.onPrimary,
                                     contentDescription = null,
                                     modifier = Modifier.size(30.dp)
                                 )

@@ -1,11 +1,15 @@
 package com.techullurgy.howzapp.feature.chat.presentation.components.layouts
 
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.techullurgy.howzapp.core.designsystem.theme.extended
 import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageView
@@ -20,74 +24,87 @@ internal fun MessageViewLayout(
     timestamp: Instant,
     modifier: Modifier = Modifier
 ) {
+
+    val backgroundColor =
+        if (owner is MessageOwner.Me) MaterialTheme.colorScheme.extended.accentOrange else MaterialTheme.colorScheme.extended.tileNeutral
+
+    val contentColor =
+        if (owner is MessageOwner.Me) MaterialTheme.colorScheme.extended.onAccentOrange else MaterialTheme.colorScheme.extended.onTileNeutral
+
     val contents = mutableListOf<@Composable () -> Unit>().apply {
         if(view is MessageViewUi.Anchored) {
             add(view.content)
             add {
-                MessageViewAnchored(message, owner, timestamp, view.direction)
+                MessageViewAnchored(message, owner, timestamp, view.direction, backgroundColor)
             }
         } else {
             add {
-                MessageView(message, owner, timestamp)
+                MessageView(message, owner, timestamp, backgroundColor)
             }
         }
     }.toList()
 
-    Layout(
-        contents = contents,
-        modifier = modifier
-    ) { measurables, constraints ->
-        val anchoredPlaceableSize = 36.dp.roundToPx()
+    CompositionLocalProvider(
+        LocalContentColor provides contentColor
+    ) {
+        Layout(
+            contents = contents,
+            modifier = modifier
+        ) { measurables, constraints ->
+            val anchoredPlaceableSize = 36.dp.roundToPx()
 
-        val anchoredPlaceable = view
-            .takeIf { it is MessageViewUi.Anchored }
-            ?.let {
-                measurables.first().first().measure(
-                    Constraints.fixed(anchoredPlaceableSize, anchoredPlaceableSize)
-                )
-            }
-
-        val anchorSize = 50
-
-        val messagePlaceable = view
-            .takeIf { it is MessageViewUi.NonAnchored }
-            ?.let {
-                measurables.first().first().measure(
-                    constraints.copy(
-                        maxWidth = (constraints.maxWidth - anchorSize - anchoredPlaceableSize)
-                            .coerceAtMost(250.dp.roundToPx())
+            val anchoredPlaceable = view
+                .takeIf { it is MessageViewUi.Anchored }
+                ?.let {
+                    measurables.first().first().measure(
+                        Constraints.fixed(anchoredPlaceableSize, anchoredPlaceableSize)
                     )
-                )
-            }
-            ?: run {
-                measurables.last().first().measure(
-                    constraints.copy(
-                        maxWidth = (constraints.maxWidth - anchorSize - anchoredPlaceableSize)
-                            .coerceAtMost(250.dp.roundToPx())
-                    )
-                )
-            }
-
-        val totalWidth = anchoredPlaceableSize + anchorSize + messagePlaceable.width
-        val totalHeight = maxOf(anchoredPlaceableSize, messagePlaceable.height)
-
-        layout(totalWidth, totalHeight) {
-            when(view.direction) {
-                LayoutDirection.Ltr -> {
-                    anchoredPlaceable?.place(0, 0)
-                    val messagePlaceableX = anchoredPlaceableSize + anchorSize
-                    messagePlaceable.place(messagePlaceableX, 0)
                 }
-                LayoutDirection.Rtl -> {
-                    messagePlaceable.place(0, 0)
-                    anchoredPlaceable?.let {
-                        val anchorPlaceableX = messagePlaceable.width + anchorSize
-                        it.place(anchorPlaceableX, 0)
+
+            val anchorSize = 50
+
+            val messagePlaceable = view
+                .takeIf { it is MessageViewUi.NonAnchored }
+                ?.let {
+                    measurables.first().first().measure(
+                        constraints.copy(
+                            maxWidth = (constraints.maxWidth - anchorSize - anchoredPlaceableSize)
+                                .coerceAtMost(250.dp.roundToPx())
+                        )
+                    )
+                }
+                ?: run {
+                    measurables.last().first().measure(
+                        constraints.copy(
+                            maxWidth = (constraints.maxWidth - anchorSize - anchoredPlaceableSize)
+                                .coerceAtMost(250.dp.roundToPx())
+                        )
+                    )
+                }
+
+            val totalWidth = anchoredPlaceableSize + anchorSize + messagePlaceable.width
+            val totalHeight = maxOf(anchoredPlaceableSize, messagePlaceable.height)
+
+            layout(totalWidth, totalHeight) {
+                when (view.direction) {
+                    LayoutDirection.Ltr -> {
+                        anchoredPlaceable?.place(0, 0)
+                        val messagePlaceableX = anchoredPlaceableSize + anchorSize
+                        messagePlaceable.place(messagePlaceableX, 0)
+                    }
+
+                    LayoutDirection.Rtl -> {
+                        messagePlaceable.place(0, 0)
+                        anchoredPlaceable?.let {
+                            val anchorPlaceableX = messagePlaceable.width + anchorSize
+                            it.place(anchorPlaceableX, 0)
+                        }
                     }
                 }
             }
         }
     }
+
 }
 
 internal sealed interface MessageViewUi {

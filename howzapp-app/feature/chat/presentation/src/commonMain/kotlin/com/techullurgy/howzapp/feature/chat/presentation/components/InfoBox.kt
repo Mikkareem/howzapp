@@ -49,14 +49,12 @@ internal fun InfoBox(state: ConversationUiState) {
         ) {
             Text(
                 state.title,
-                color = LocalAppColors.current.content1,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.testTag(TestTag.conversationTitle)
             )
             AnimatedVisibility(state.subtitle.isNotBlank()) {
                 Text(
                     state.subtitle,
-                    color = LocalAppColors.current.content1.copy(alpha = 0.6f),
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier.testTag(TestTag.conversationSubtitle)
                 )

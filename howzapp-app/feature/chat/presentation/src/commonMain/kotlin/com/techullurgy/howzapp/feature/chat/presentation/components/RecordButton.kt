@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.techullurgy.howzapp.core.designsystem.resources.Icons
+import com.techullurgy.howzapp.core.designsystem.theme.extended
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -47,22 +48,25 @@ internal fun RecordButton(
 
     var slideRadius by remember { mutableFloatStateOf(0f) }
 
-    val primaryColor = MaterialTheme.colorScheme.primary
+    val recordingColor = MaterialTheme.colorScheme.extended.accentGreen
+    val cancellingColor = MaterialTheme.colorScheme.extended.accentRed
+
     val textMeasurer = rememberTextMeasurer()
 
     Icon(
         painter = Icons.recordingIcon,
+        tint = Color.White,
         contentDescription = "Record Audio",
         modifier = Modifier
             .drawBehind {
                 if (isRecording) {
                     drawCircle(
-                        color = primaryColor,
+                        color = recordingColor,
                         radius = 200.dp.toPx() * expandAnimation
                     )
 
                     drawCircle(
-                        color = Color.Red,
+                        color = cancellingColor,
                         radius = slideRadius
                     )
 

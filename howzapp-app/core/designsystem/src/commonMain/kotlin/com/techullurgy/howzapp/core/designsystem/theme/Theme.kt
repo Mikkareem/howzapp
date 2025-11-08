@@ -66,6 +66,10 @@ data class ExtendedColors(
     val cakePurple: Color,
     val cakeRed: Color,
     val cakeMint: Color,
+
+    val tileNeutral: Color,
+    val onTileNeutral: Color,
+    val onAccentOrange: Color,
 )
 
 val LightExtendedColors = ExtendedColors(
@@ -112,6 +116,10 @@ val LightExtendedColors = ExtendedColors(
     cakePurple = HowzappCakeLightPurple,
     cakeRed = HowzappCakeLightRed,
     cakeMint = HowzappCakeLightMint,
+
+    tileNeutral = Color.White,
+    onTileNeutral = Color.Black,
+    onAccentOrange = Color.Black
 )
 
 val DarkExtendedColors = ExtendedColors(
@@ -158,11 +166,15 @@ val DarkExtendedColors = ExtendedColors(
     cakePurple = HowzappCakeDarkPurple,
     cakeRed = HowzappCakeDarkRed,
     cakeMint = HowzappCakeDarkMint,
+
+    tileNeutral = Color.Black,
+    onTileNeutral = Color.White,
+    onAccentOrange = Color.White
 )
 
 val LightColorScheme = lightColorScheme(
     primary = HowzappPurple2Light,
-    onPrimary = HowzappBrand1000,
+    onPrimary = Color.White,
     primaryContainer = HowzappBrand100,
     onPrimaryContainer = HowzappBrand900,
 

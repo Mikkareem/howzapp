@@ -1,5 +1,10 @@
 package com.techullurgy.howzapp.feature.chat.presentation.screens.conversation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,17 +19,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
-import com.techullurgy.howzapp.core.designsystem.theme.LocalAppColors
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
@@ -43,6 +54,13 @@ import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.vi
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationUiState
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationViewModel
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.MessageUi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
@@ -185,12 +203,13 @@ private fun ConversationScreen(
     onStopVideoInPreview: () -> Unit,
 ) {
     Scaffold(
+        contentColor = LocalContentColor.current,
         modifier = Modifier.fillMaxSize().consumeWindowInsets(WindowInsets.safeDrawing),
         topBar = {
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .background(LocalAppColors.current.container1)
+                    .background(MaterialTheme.colorScheme.secondary)
                     .padding(
                         WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
                             .asPaddingValues()
@@ -233,21 +252,90 @@ private fun ConversationScreen(
             }
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier.padding(padding)
-                .fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(state.value.messageUis) {
-                when (it) {
-                    is MessageUi.Badge -> {
-                        MessageBadge(it)
-                    }
 
-                    is MessageUi.Content -> {
-                        MessageBox(it)
+        var overlayBadgeContent by remember { mutableStateOf("") }
+
+        val listState = rememberLazyListState()
+
+        LaunchedEffect(listState) {
+            launch {
+                snapshotFlow { listState.firstVisibleItemIndex }
+                    .drop(1)
+                    .collectLatest {
+                        val firstContentIndex = listState.layoutInfo.visibleItemsInfo
+                            .firstOrNull { it.contentType == "content" }?.index
+                            ?: return@collectLatest
+
+                        val dateString =
+                            (state.value.messageUis[firstContentIndex] as MessageUi.Content).content.timestamp.toLocalDateTime(
+                                TimeZone.UTC
+                            ).date
+
+                        overlayBadgeContent = dateString.toString()
+                    }
+            }
+
+            launch {
+                snapshotFlow { listState.isScrollInProgress }
+                    .drop(1)
+                    .transform {
+                        if (!it) {
+                            delay(1000)
+                            emit(it)
+                        }
+                    }
+                    .collect {
+                        overlayBadgeContent = ""
+                    }
+            }
+        }
+
+        Box(
+            modifier = Modifier.padding(padding)
+        ) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentPadding = PaddingValues(vertical = 16.dp, horizontal = 8.dp)
+            ) {
+                items(
+                    state.value.messageUis,
+                    key = {
+                        when (it) {
+                            is MessageUi.Badge -> it.badge
+                            is MessageUi.Content -> it.content.messageId
+                        }
+                    },
+                    contentType = {
+                        when (it) {
+                            is MessageUi.Badge -> "badge"
+                            is MessageUi.Content -> "content"
+                        }
+                    }
+                ) {
+                    when (it) {
+                        is MessageUi.Badge -> {
+                            MessageBadge(it)
+                        }
+
+                        is MessageUi.Content -> {
+                            MessageBox(it)
+                        }
                     }
                 }
+            }
+
+            AnimatedVisibility(
+                overlayBadgeContent.isNotEmpty(),
+                modifier = Modifier.padding(top = 16.dp),
+                enter = slideInVertically() + fadeIn(),
+                exit = slideOutVertically() + fadeOut()
+            ) {
+                MessageBadge(
+                    badge = MessageUi.Badge(overlayBadgeContent),
+                    isDividerPresent = false,
+                )
             }
         }
     }
@@ -256,13 +344,13 @@ private fun ConversationScreen(
 @Preview
 @Composable
 private fun ConversationScreenPreview(
-    @PreviewParameter(ConversationUiStatePreviewParameterProvider::class) _state: PreviewProvider
+    @PreviewParameter(ConversationUiStatePreviewParameterProvider::class) previewState: PreviewProvider
 ) {
     HowzAppTheme(
-        _state.isDarkMode
+        previewState.isDarkMode
     ) {
-        val state = remember { mutableStateOf(_state.state) }
-        val inputState = remember { mutableStateOf(_state.inputState) }
+        val state = remember { mutableStateOf(previewState.state) }
+        val inputState = remember { mutableStateOf(previewState.inputState) }
 
         ConversationScreen(
             state,
@@ -306,21 +394,21 @@ private class ConversationUiStatePreviewParameterProvider :
 
                 addAll(
                     buildList {
-                        var _minutes = 4.minutes
+                        var mutableMinutes = 4.minutes
                         repeat(10) {
                             val user = listOf(users[0], users[1]).random()
-                            val minutes = _minutes + 15.minutes
+                            val minutes = mutableMinutes + 15.minutes
                             MessageSheet(
                                 message = messages.random(),
-                                messageId = "m1_001",
+                                messageId = "m1_${lastIndex + 1}",
                                 sender = user,
-                                isPictureShowable = if (it % 3 == 0) true else false,
+                                isPictureShowable = it % 3 == 0,
                                 messageOwner = messageOwners[if (user.userId == users[0].userId) 0 else 4],
                                 timestamp = Clock.System.now().minus(minutes)
                             ).run {
                                 add(MessageUi.Content(this))
                             }
-                            _minutes = minutes
+                            mutableMinutes = minutes
                         }
                     }
                 )

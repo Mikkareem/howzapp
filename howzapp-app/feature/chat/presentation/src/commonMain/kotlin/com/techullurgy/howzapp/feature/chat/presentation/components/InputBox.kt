@@ -111,7 +111,7 @@ internal fun InputBox(
                 onDocumentSelected = onDocumentSelected
             )
         },
-        modifier = modifier.background(MaterialTheme.colorScheme.inversePrimary).padding(8.dp)
+        modifier = modifier.background(MaterialTheme.colorScheme.secondary).padding(8.dp)
     )
 }
 

@@ -16,12 +16,13 @@ internal fun MessageViewAnchored(
     message: Message,
     owner: MessageOwner,
     timestamp: Instant,
-    arrowDirection: LayoutDirection
+    arrowDirection: LayoutDirection,
+    color: Color,
 ) {
     Box(
         modifier = Modifier
             .drawBehind {
-                val path2 = Path().apply {
+                val path = Path().apply {
                     val startX = if(arrowDirection == LayoutDirection.Ltr) 0f else size.width
                     val endX = if(arrowDirection == LayoutDirection.Ltr) -40f else size.width + 40f
 
@@ -33,9 +34,9 @@ internal fun MessageViewAnchored(
                     close()
                 }
 
-                drawPath(path2, Color.Blue)
+                drawPath(path, color)
             }
     ) {
-        MessageView(message, owner, timestamp)
+        MessageView(message, owner, timestamp, color)
     }
 }

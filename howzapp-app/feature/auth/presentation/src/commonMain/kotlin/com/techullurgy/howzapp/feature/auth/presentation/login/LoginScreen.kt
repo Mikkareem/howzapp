@@ -146,7 +146,7 @@ private fun LoginScreen(
 private fun LightThemePreview() {
     HowzAppTheme {
         LoginScreen(
-            state = LoginState(),
+            state = LoginState(canLogin = true),
             onAction = {}
         )
     }
@@ -157,7 +157,7 @@ private fun LightThemePreview() {
 private fun DarkThemePreview() {
     HowzAppTheme(darkTheme = true) {
         LoginScreen(
-            state = LoginState(),
+            state = LoginState(canLogin = true),
             onAction = {}
         )
     }
