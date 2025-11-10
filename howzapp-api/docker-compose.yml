@@ -1,0 +1,23 @@
+services:
+  app:
+    depends_on:
+      - rabbitmq
+    image: ${APP_DOCKER_IMAGE}
+    ports:
+      - "80:8080"
+    environment:
+      RABBITMQ_ENABLED: true
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+
+  rabbitmq:
+    image: rabbitmq:4.2.0-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"     # AMQP
+      - "15672:15672"   # Management UI
