@@ -2,8 +2,7 @@ services:
   app:
     depends_on:
       - rabbitmq
-    build:
-      context: .
+    image: ${APP_DOCKER_IMAGE}
     ports:
       - "80:8080"
     environment:
@@ -15,7 +14,6 @@ services:
 
   rabbitmq:
     image: rabbitmq:4.2.0-management
-    container_name: rabbitmq
     restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: guest

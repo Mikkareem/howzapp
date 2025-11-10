@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.techullurgy"
-version = "0.0.1-SNAPSHOT"
+version = "1.0"
 description = "Social Media Application for Connecting People"
 
 java {
