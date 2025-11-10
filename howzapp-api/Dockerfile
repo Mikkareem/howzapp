@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21 AS jre-build
+FROM eclipse-temurin:17 AS jre-build
 COPY src /app/src
 COPY gradle /app/gradle
 COPY build.gradle.kts /app/build.gradle.kts
