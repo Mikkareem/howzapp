@@ -21,7 +21,7 @@ RUN $JAVA_HOME/bin/jdeps \
           --multi-release 21 \
           --class-path="./temp/BOOT-INF/lib/*" \
           --module-path="./temp/BOOT-INF/lib/*" \
-          build/libs/howzapp-0.0.1-SNAPSHOT.jar > ./jre-modules.txt \
+          /app/howzapp.jar > ./jre-modules.txt \
         && $JAVA_HOME/bin/jlink \
           --verbose \
           --add-modules "$(cat ./jre-modules.txt)" \
