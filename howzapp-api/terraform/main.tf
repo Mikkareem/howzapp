@@ -93,7 +93,7 @@ resource "google_compute_instance" "app_server" {
   scheduling {
     automatic_restart   = false
     on_host_maintenance = "TERMINATE"
-    preemptible         = false
+    preemptible         = true
     provisioning_model  = "SPOT"
   }
 }
