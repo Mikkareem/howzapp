@@ -1,0 +1,164 @@
+package com.techullurgy.howzapp.feature.auth.presentation.login
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.techullurgy.howzapp.core.designsystem.components.brand.HowzappBrandLogo
+import com.techullurgy.howzapp.core.designsystem.components.buttons.HowzappButton
+import com.techullurgy.howzapp.core.designsystem.components.buttons.HowzappButtonStyle
+import com.techullurgy.howzapp.core.designsystem.components.layouts.HowzappAdaptiveFormLayout
+import com.techullurgy.howzapp.core.designsystem.components.layouts.HowzappSnackbarScaffold
+import com.techullurgy.howzapp.core.designsystem.components.textfields.HowzappPasswordTextField
+import com.techullurgy.howzapp.core.designsystem.components.textfields.HowzappTextField
+import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
+import com.techullurgy.howzapp.core.presentation.util.ObserveAsEvents
+import com.techullurgy.howzapp.core.presentation.util.TestTag
+import com.techullurgy.howzapp.core.presentation.util.loginEmailInput
+import com.techullurgy.howzapp.core.presentation.util.loginPasswordInput
+import howzapp.core.presentation.generated.resources.Res
+import howzapp.core.presentation.generated.resources.create_account
+import howzapp.core.presentation.generated.resources.email
+import howzapp.core.presentation.generated.resources.email_placeholder
+import howzapp.core.presentation.generated.resources.forgot_password
+import howzapp.core.presentation.generated.resources.login
+import howzapp.core.presentation.generated.resources.password
+import howzapp.core.presentation.generated.resources.welcome_back
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
+    onCreateAccountClick: () -> Unit
+) {
+    val viewModel: LoginViewModel = koinViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when(event) {
+            LoginEvent.Success -> onLoginSuccess()
+        }
+    }
+
+    LoginScreen(
+        state = state,
+        onAction = { action ->
+            when(action) {
+                LoginAction.OnForgotPasswordClick -> onForgotPasswordClick()
+                LoginAction.OnSignUpClick -> onCreateAccountClick()
+                else -> Unit
+            }
+            viewModel.onAction(action)
+        }
+    )
+}
+
+@Composable
+private fun LoginScreen(
+    state: LoginState,
+    onAction: (LoginAction) -> Unit,
+) {
+    HowzappSnackbarScaffold {
+        HowzappAdaptiveFormLayout(
+            headerText = stringResource(Res.string.welcome_back),
+            errorText = state.error?.asString(),
+            logo = {
+                HowzappBrandLogo()
+            },
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            HowzappTextField(
+                state = state.emailTextFieldState,
+                tag = TestTag.loginEmailInput,
+                placeholder = stringResource(Res.string.email_placeholder),
+                keyboardType = KeyboardType.Email,
+                singleLine = true,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                title = stringResource(Res.string.email)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            HowzappPasswordTextField(
+                state = state.passwordTextFieldState,
+                tag = TestTag.loginPasswordInput,
+                placeholder = stringResource(Res.string.password),
+                isPasswordVisible = state.isPasswordVisible,
+                onToggleVisibilityClick = {
+                    onAction(LoginAction.OnTogglePasswordVisibility)
+                },
+                title = stringResource(Res.string.password),
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(Res.string.forgot_password),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.tertiary,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clickable {
+                        onAction(LoginAction.OnForgotPasswordClick)
+                    }
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+
+            HowzappButton(
+                text = stringResource(Res.string.login),
+                onClick = {
+                    onAction(LoginAction.OnLoginClick)
+                },
+                enabled = state.canLogin,
+                isLoading = state.isLoggingIn,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            HowzappButton(
+                text = stringResource(Res.string.create_account),
+                onClick = {
+                    onAction(LoginAction.OnSignUpClick)
+                },
+                style = HowzappButtonStyle.SECONDARY,
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun LightThemePreview() {
+    HowzAppTheme {
+        LoginScreen(
+            state = LoginState(canLogin = true),
+            onAction = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun DarkThemePreview() {
+    HowzAppTheme(darkTheme = true) {
+        LoginScreen(
+            state = LoginState(canLogin = true),
+            onAction = {}
+        )
+    }
+}

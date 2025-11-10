@@ -40,3 +40,4 @@ out/
 .kotlin
 
 local.properties
+service-account.json
