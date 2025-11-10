@@ -11,23 +11,24 @@ RUN chmod +x /app/gradlew \
     && apt update \
     && apt install unzip -y \
     && unzip /app/howzapp.jar -d temp \
-    && $JAVA_HOME/bin/jdeps \
-      --print-module-deps \
-      --ignore-missing-deps \
-      --recursive \
-      --multi-release 17 \
-      --class-path="./temp/BOOT-INF/lib/*" \
-      --module-path="./temp/BOOT-INF/lib/*" \
-      build/libs/howzapp-0.0.1-SNAPSHOT.jar > ./jre-modules.txt \
-    && $JAVA_HOME/bin/jlink \
-      --verbose \
-      --add-modules "$(cat ./jre-modules.txt)" \
-      --strip-debug \
-      --no-man-pages \
-      --no-header-files \
-      --compress=2 \
-      --output /tmp/jre \
-    && rm -rf temp
+
+RUN $JAVA_HOME/bin/jdeps \
+          --print-module-deps \
+          --ignore-missing-deps \
+          --recursive \
+          --multi-release 21 \
+          --class-path="./temp/BOOT-INF/lib/*" \
+          --module-path="./temp/BOOT-INF/lib/*" \
+          build/libs/howzapp-0.0.1-SNAPSHOT.jar > ./jre-modules.txt \
+        && $JAVA_HOME/bin/jlink \
+          --verbose \
+          --add-modules "$(cat ./jre-modules.txt)" \
+          --strip-debug \
+          --no-man-pages \
+          --no-header-files \
+          --compress=2 \
+          --output /tmp/jre \
+        && rm -rf temp
 
 FROM debian:buster-slim
 ENV JAVA_HOME=/opt/java/openjdk
