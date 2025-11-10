@@ -5,6 +5,8 @@ COPY build.gradle.kts /app/build.gradle.kts
 COPY settings.gradle.kts /app/settings.gradle.kts
 COPY gradlew /app/gradlew
 
+WORKDIR /app
+
 RUN chmod +x /app/gradlew \
     && /app/gradlew build -x test \
     && mv /app/build/libs/howzapp-1.0.jar /app/howzapp.jar \
