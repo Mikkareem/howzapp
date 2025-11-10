@@ -5,11 +5,11 @@ COPY build.gradle.kts /app/build.gradle.kts
 COPY settings.gradle.kts /app/settings.gradle.kts
 COPY gradlew /app/gradlew
 
-RUN sudo chmod +x /app/gradlew \
+RUN chmod +x /app/gradlew \
     && /app/gradlew build -x test \
-    && sudo mv /app/build/libs/howzapp-1.0.jar /app/howzapp.jar \
-    && sudo apt update \
-    && sudo apt install unzip -y \
+    && mv /app/build/libs/howzapp-1.0.jar /app/howzapp.jar \
+    && apt update \
+    && apt install unzip -y \
     && unzip /app/howzapp.jar -d temp \
     && $JAVA_HOME/bin/jdeps \
       --print-module-deps \
@@ -26,7 +26,8 @@ RUN sudo chmod +x /app/gradlew \
       --no-man-pages \
       --no-header-files \
       --compress=2 \
-      --output /tmp/jre
+      --output /tmp/jre \
+    && rm -rf temp
 
 FROM debian:buster-slim
 ENV JAVA_HOME=/opt/java/openjdk
