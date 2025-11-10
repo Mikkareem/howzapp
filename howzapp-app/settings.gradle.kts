@@ -58,6 +58,10 @@ include(":feature:chat:data")
 include(":feature:chat:presentation")
 include(":feature:chat:test")
 
+include(":feature:splash:api")
+include(":feature:splash:domain")
+include(":feature:splash:presentation")
+
 include(":feature:auth:api")
 include(":feature:auth:domain")
 include(":feature:auth:data")
