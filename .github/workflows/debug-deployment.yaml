@@ -6,7 +6,7 @@ on:
 env:
   DOCKER_USER: ${{ vars.DOCKERHUB_USERNAME }}
   DOCKER_BUILD_IMAGE: "howzapp-debug-full"
-  APP_DOCKER_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/howzapp-debug-full
+  APP_DOCKER_IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/howzapp-debug-full:latest
   GCP_PROJECT_ID: "howzapp-techullurgy-full"
   GCP_REGION: "us-central1"
   GCP_ZONE: "us-central1-a"
