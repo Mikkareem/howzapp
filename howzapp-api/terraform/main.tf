@@ -59,7 +59,7 @@ resource "google_compute_firewall" "allow_app_ports" {
   target_tags = ["app-ports"]
 }
 
-resource "google_compute_instance" "app_server" {
+resource "google_compute_instance" "app-server" {
   name = "app-server"
   machine_type = var.machine_type
 
