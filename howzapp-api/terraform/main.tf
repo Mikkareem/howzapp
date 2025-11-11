@@ -65,11 +65,11 @@ resource "google_compute_instance" "app_server" {
 
   zone = var.zone
 
-  metadata = {
-    # ssh-keys = sensitive("${var.ssh_user}:${file("~/.ssh/id_rsa.pub")}")
-
-    startup-script = file("${path.root}/scripts/main.sh")
-  }
+  # metadata = {
+  #   # ssh-keys = sensitive("${var.ssh_user}:${file("~/.ssh/id_rsa.pub")}")
+  #
+  #   startup-script = file("${path.root}/scripts/main.sh")
+  # }
 
   boot_disk {
     device_name = "app-server"
