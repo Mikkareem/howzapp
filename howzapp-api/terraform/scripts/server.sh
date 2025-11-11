@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "APP_DOCKER_IMAGE=$APP_DOCKER_IMAGE" > /tmp/.env
 echo $DOCKER_COMPOSE_CONTENT_BASE64 | base64 --decode > /tmp/docker-compose.yml
 
 # Installing Docker
