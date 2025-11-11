@@ -32,7 +32,7 @@ variable machine_type {
 
 variable machine_image {
   type = string
-  default = "projects/debian-cloud/global/images/debian-12-bookworm-arm64-v20250812"
+  default = "projects/debian-cloud/global/images/debian-12-bookworm-arm64-v20251014"
 }
 
 variable "disk_type" {
@@ -82,10 +82,12 @@ resource "google_compute_instance" "app_server" {
   }
 
   network_interface {
-    network = "default"
     access_config {
       network_tier = "STANDARD"
     }
+    queue_count = 0
+    stack_type  = "IPV4_ONLY"
+    subnetwork  = "projects/howzapp-techullurgy-full/regions/us-central1/subnetworks/default"
   }
 
   tags = ["app-ports"]
@@ -101,4 +103,65 @@ resource "google_compute_instance" "app_server" {
     email  = "620351186909-compute@developer.gserviceaccount.com"
     scopes = ["https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring.write", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
   }
+}
+
+resource "google_compute_instance" "instance-20251111-004649" {
+  boot_disk {
+    auto_delete = true
+    device_name = "instance-20251111-004649"
+
+    initialize_params {
+      image = "projects/debian-cloud/global/images/debian-12-bookworm-v20251014"
+      size  = 10
+      type  = "pd-standard"
+    }
+
+    mode = "READ_WRITE"
+  }
+
+  can_ip_forward      = false
+  deletion_protection = false
+  enable_display      = false
+
+  labels = {
+    goog-ec-src = "vm_add-tf"
+  }
+
+  machine_type = "e2-micro"
+
+  metadata = {
+    startup-script = "kajsdh\nakjsdhakjdh\naslkdjalksd\naskldjalksdhl"
+  }
+
+  name = "instance-20251111-004649"
+
+  network_interface {
+    access_config {
+      network_tier = "STANDARD"
+    }
+
+    queue_count = 0
+    stack_type  = "IPV4_ONLY"
+    subnetwork  = "projects/howzapp-techullurgy-full/regions/us-central1/subnetworks/default"
+  }
+
+  scheduling {
+    automatic_restart   = false
+    on_host_maintenance = "TERMINATE"
+    preemptible         = true
+    provisioning_model  = "SPOT"
+  }
+
+  service_account {
+    email  = "620351186909-compute@developer.gserviceaccount.com"
+    scopes = ["https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring.write", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
+  }
+
+  shielded_instance_config {
+    enable_integrity_monitoring = true
+    enable_secure_boot          = false
+    enable_vtpm                 = true
+  }
+
+  zone = "us-central1-f"
 }
