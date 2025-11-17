@@ -7,6 +7,8 @@ import com.techullurgy.howzapp.conventions.versionName
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.konan.file.use
+import java.util.Properties
 
 class AndroidApplicationConventionPlugin: Plugin<Project> {
     override fun apply(target: Project) {
@@ -26,6 +28,27 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
 
                     testInstrumentationRunner = "androidx.test.runner.AndroidJunitRunner"
                 }
+
+                signingConfigs {
+                    create("release") {
+                        val signingProperties = Properties().apply {
+                            val signingPropertiesFile = rootProject.file("signing.properties")
+                            if (signingPropertiesFile.exists()) {
+                                signingPropertiesFile.reader().use { load(it) }
+                            } else {
+                                // Handle the case where the file is missing (e.g., for debug builds or CI/CD)
+                                println("Warning: signing.properties file not found at ${signingPropertiesFile.absolutePath}")
+                            }
+                        }
+
+                        storeFile =
+                            signingProperties.getProperty("KEYSTORE_FILEPATH")?.let { file(it) }
+                        storePassword = signingProperties.getProperty("KEYSTORE_PASSWORD")
+                        keyAlias = signingProperties.getProperty("KEYSTORE_KEY_ALIAS")
+                        keyPassword = signingProperties.getProperty("KEYSTORE_KEY_ALIAS_PASSWORD")
+                    }
+                }
+
                 packaging {
                     resources {
                         excludes += setOf(
@@ -35,7 +58,13 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
                 }
                 buildTypes {
                     getByName("release") {
-                        isMinifyEnabled = false
+                        isMinifyEnabled = true
+                        isShrinkResources = true
+                        signingConfig = signingConfigs.getByName("release")
+                        proguardFiles(
+                            getDefaultProguardFile("proguard-android-optimize.txt"),
+                            "proguard-rules.pro"
+                        )
                     }
                 }
 

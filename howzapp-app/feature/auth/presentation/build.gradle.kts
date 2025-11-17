@@ -30,4 +30,15 @@ afterEvaluate {
             "generateExpectResourceCollectorsForCommonMain"
         )
     }
+
+    tasks.named("kspReleaseKotlinAndroid") {
+        dependsOn(
+            "generateResourceAccessorsForAndroidRelease",
+            "generateResourceAccessorsForAndroidMain",
+            "generateActualResourceCollectorsForAndroidMain",
+            "generateComposeResClass",
+            "generateResourceAccessorsForCommonMain",
+            "generateExpectResourceCollectorsForCommonMain"
+        )
+    }
 }
