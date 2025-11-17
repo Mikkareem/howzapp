@@ -1,7 +1,6 @@
 package com.techullurgy.howzapp.test.utilities
 
 import com.techullurgy.howzapp.core.data.di.DispatcherProvider
-import com.techullurgy.howzapp.core.data.di.HostAndPort
 import com.techullurgy.howzapp.core.data.networking.HttpClientFactory
 import com.techullurgy.howzapp.core.domain.logging.HowzappLogger
 import io.ktor.client.HttpClient
@@ -30,14 +29,12 @@ import io.mockk.mockkStatic
 import io.mockk.spyk
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import org.koin.core.qualifier.qualifier
 import org.koin.dsl.module
 
 val testModule = module {
     single<DispatcherProvider> { TestDispatchers() }
     single<HowzappLogger> { TestLogger() }
 
-    single<String>(qualifier = qualifier<HostAndPort>()) { "localhost:8080" }
     single<HttpClientEngine> {
         MockEngine.create {
             dispatcher = UnconfinedTestDispatcher()

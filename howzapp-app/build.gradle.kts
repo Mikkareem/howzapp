@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.room) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.roborazzi) apply false
+    alias(libs.plugins.buildkonfig) apply false
 
     alias(applicationLibs.plugins.conventions.android.application) apply false
     alias(applicationLibs.plugins.conventions.android.application.compose) apply false
