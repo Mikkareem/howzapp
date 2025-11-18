@@ -2,6 +2,8 @@ plugins {
     alias(applicationLibs.plugins.conventions.cmp.application)
     alias(applicationLibs.plugins.conventions.koin.compiler)
     alias(libs.plugins.roborazzi)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.baselineprofile)
 }
 
 kotlin {
@@ -89,6 +91,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(projects.androidBaselineprofile)
     debugImplementation(compose.uiTooling)
     androidTestImplementation(libs.androidx.compose.uitest.junit4.android)
     testImplementation(libs.androidx.compose.uitest.junit4.android)
@@ -121,6 +125,17 @@ afterEvaluate {
     tasks.named("kspBenchmarkKotlinAndroid") {
         dependsOn(
             "generateResourceAccessorsForAndroidBenchmark",
+            "generateResourceAccessorsForAndroidMain",
+            "generateActualResourceCollectorsForAndroidMain",
+            "generateComposeResClass",
+            "generateResourceAccessorsForCommonMain",
+            "generateExpectResourceCollectorsForCommonMain"
+        )
+    }
+
+    tasks.named("kspNonMinifiedReleaseKotlinAndroid") {
+        dependsOn(
+            "generateResourceAccessorsForAndroidNonMinifiedRelease",
             "generateResourceAccessorsForAndroidMain",
             "generateActualResourceCollectorsForAndroidMain",
             "generateComposeResClass",

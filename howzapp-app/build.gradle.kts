@@ -22,4 +22,5 @@ plugins {
     alias(applicationLibs.plugins.conventions.cmp.feature) apply false
     alias(applicationLibs.plugins.conventions.room) apply false
     alias(applicationLibs.plugins.conventions.koin.compiler) apply false
+    alias(libs.plugins.baselineprofile) apply false
 }

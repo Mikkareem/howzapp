@@ -40,6 +40,8 @@ kermit = "2.0.8"
 mockwebserver = "5.2.1"
 uiautomator = "2.3.0"
 benchmarkMacroJunit4 = "1.4.1"
+baselineprofile = "1.4.1"
+profileinstaller = "1.4.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -137,6 +139,7 @@ buildkonfig-compiler = { group = "com.codingfeline.buildkonfig", name = "buildko
 # Benchmark
 androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -152,6 +155,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 android-test = { id = "com.android.test", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
 
 [bundles]
 koin-common = [
