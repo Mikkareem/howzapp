@@ -39,16 +39,16 @@ jobs:
           EOF
 
       - name: Setup JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: 17
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
       - name: Accept licenses
-        run: yes || sdkmanager --licenses || true
+        run: yes | sdkmanager --licenses || true
 
       - name: Run Baseline Profile Generator
         working-directory: howzapp-app
