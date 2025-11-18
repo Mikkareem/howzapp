@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ManagedVirtualDevice
+
 plugins {
     alias(libs.plugins.android.test)
     alias(libs.plugins.kotlin.android)
@@ -36,6 +38,18 @@ android {
             JavaVersion.toVersion(applicationLibs.versions.javaVersion.get().toInt())
         targetCompatibility =
             JavaVersion.toVersion(applicationLibs.versions.javaVersion.get().toInt())
+    }
+
+    testOptions {
+        managedDevices {
+            localDevices {
+                create("pixel6", ManagedVirtualDevice::class) {
+                    apiLevel = 35
+                    device = "Pixel 6"
+                    systemImageSource = "aosp"
+                }
+            }
+        }
     }
 }
 
