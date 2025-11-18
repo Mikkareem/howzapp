@@ -57,4 +57,4 @@ jobs:
             --info
             -Pandroid.experimental.testOptions.managedDevices.emulator.showKernelLogging=true
             -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
-            -Pandroid.testInstrumentationRunnerArguments.class=com.techullurgy.howzapp.android.benchmark.BaselineProfileGenerator
+            -Pandroid.testInstrumentationRunnerArguments.androidx.benchmark.enabledRules=BaselineProfile
