@@ -55,7 +55,7 @@ jobs:
       - name: Run Baseline Profile Generator
         working-directory: howzapp-app
         run: |
-          ./gradlew :android-benchmarks:pixel6BenchmarkAndroidTest
+          ./gradlew :android-benchmark:pixel6BenchmarkAndroidTest
             --info
             -Pandroid.experimental.testOptions.managedDevices.emulator.showKernelLogging=true
             -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
