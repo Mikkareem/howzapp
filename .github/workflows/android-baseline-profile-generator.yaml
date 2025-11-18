@@ -50,7 +50,7 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Accept licenses
-        run: yes || sdkmanager --licenses || true
+        run: yes | sdkmanager --licenses || true
 
       - name: Run Baseline Profile Generator
         working-directory: howzapp-app
