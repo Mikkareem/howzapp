@@ -78,6 +78,14 @@ android {
             isIncludeAndroidResources = true
         }
     }
+    buildTypes {
+        create("benchmark") {
+            initWith(buildTypes.getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isDebuggable = false
+        }
+    }
 }
 
 dependencies {
@@ -102,6 +110,17 @@ afterEvaluate {
     tasks.named("kspReleaseKotlinAndroid") {
         dependsOn(
             "generateResourceAccessorsForAndroidRelease",
+            "generateResourceAccessorsForAndroidMain",
+            "generateActualResourceCollectorsForAndroidMain",
+            "generateComposeResClass",
+            "generateResourceAccessorsForCommonMain",
+            "generateExpectResourceCollectorsForCommonMain"
+        )
+    }
+
+    tasks.named("kspBenchmarkKotlinAndroid") {
+        dependsOn(
+            "generateResourceAccessorsForAndroidBenchmark",
             "generateResourceAccessorsForAndroidMain",
             "generateActualResourceCollectorsForAndroidMain",
             "generateComposeResClass",
