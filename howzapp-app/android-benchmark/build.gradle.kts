@@ -43,7 +43,7 @@ android {
     testOptions {
         managedDevices {
             localDevices {
-                create("pixel6", ManagedVirtualDevice::class) {
+                create("pixel6") {
                     apiLevel = 35
                     device = "Pixel 6"
                     systemImageSource = "aosp"
