@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.roborazzi) apply false
     alias(libs.plugins.buildkonfig) apply false
+    alias(libs.plugins.android.test) apply false
+    alias(libs.plugins.kotlin.android) apply false
 
     alias(applicationLibs.plugins.conventions.android.application) apply false
     alias(applicationLibs.plugins.conventions.android.application.compose) apply false
@@ -20,4 +22,5 @@ plugins {
     alias(applicationLibs.plugins.conventions.cmp.feature) apply false
     alias(applicationLibs.plugins.conventions.room) apply false
     alias(applicationLibs.plugins.conventions.koin.compiler) apply false
+    alias(libs.plugins.baselineprofile) apply false
 }

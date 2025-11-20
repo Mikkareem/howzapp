@@ -2,6 +2,8 @@ plugins {
     alias(applicationLibs.plugins.conventions.cmp.application)
     alias(applicationLibs.plugins.conventions.koin.compiler)
     alias(libs.plugins.roborazzi)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.baselineprofile)
 }
 
 kotlin {
@@ -81,32 +83,30 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(projects.androidBaselineprofile)
     debugImplementation(compose.uiTooling)
     androidTestImplementation(libs.androidx.compose.uitest.junit4.android)
     testImplementation(libs.androidx.compose.uitest.junit4.android)
     debugImplementation(libs.androidx.compose.uitest.manifest)
 }
 
-afterEvaluate {
-    tasks.named("kspDebugKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidDebug",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
+baselineProfile {
+    val isDuringBuild = false
 
-    tasks.named("kspReleaseKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidRelease",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
+    automaticGenerationDuringBuild = isDuringBuild
+    saveInSrc = true
+}
+
+tasks.configureEach {
+    val variant =
+        Regex("ksp(\\w+)KotlinAndroid").matchEntire(name)?.groupValues[1] ?: return@configureEach
+    dependsOn(
+        "generateResourceAccessorsForAndroid$variant",
+        "generateResourceAccessorsForAndroidMain",
+        "generateActualResourceCollectorsForAndroidMain",
+        "generateComposeResClass",
+        "generateResourceAccessorsForCommonMain",
+        "generateExpectResourceCollectorsForCommonMain"
+    )
 }

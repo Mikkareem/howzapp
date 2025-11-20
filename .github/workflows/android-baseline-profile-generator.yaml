@@ -17,8 +17,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: 'test-benchmark-baseline-profiles'
 
       - name: Enable KVM group perms
         run: |
@@ -51,12 +49,3 @@ jobs:
 
       - name: Accept licenses
         run: yes | sdkmanager --licenses || true
-
-      - name: Run Baseline Profile Generator
-        working-directory: howzapp-app
-        run: |
-          ./gradlew :android-benchmark:pixel6BenchmarkAndroidTest
-            --info
-            -Pandroid.experimental.testOptions.managedDevices.emulator.showKernelLogging=true
-            -Pandroid.testoptions.manageddevices.emulator.gpu="swiftshader_indirect"
-            -Pandroid.testInstrumentationRunnerArguments.class=com.techullurgy.howzapp.android.benchmark.BaselineProfileGenerator

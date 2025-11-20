@@ -38,6 +38,10 @@ assertk = "0.28.1"
 mockk = "1.14.6"
 kermit = "2.0.8"
 mockwebserver = "5.2.1"
+uiautomator = "2.3.0"
+benchmarkMacroJunit4 = "1.4.1"
+baselineprofile = "1.4.1"
+profileinstaller = "1.4.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -132,6 +136,11 @@ ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devto
 buildkonfig-gradlePlugin = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
 buildkonfig-compiler = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-compiler", version.ref = "buildkonfig" }
 
+# Benchmark
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -144,6 +153,9 @@ gms = { id = "com.google.gms.google-services", version.ref = "gms" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
+android-test = { id = "com.android.test", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
 
 [bundles]
 koin-common = [
