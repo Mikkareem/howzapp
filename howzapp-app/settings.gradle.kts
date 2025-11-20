@@ -39,7 +39,8 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-include(":android-benchmark")
+//include(":android-benchmark")
+include(":android-baselineprofile")
 
 include(":test-utilities")
 include(":composeApp")
@@ -68,4 +69,3 @@ include(":feature:auth:api")
 include(":feature:auth:domain")
 include(":feature:auth:data")
 include(":feature:auth:presentation")
-include(":android-baselineprofile")

@@ -1,4 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.TestOptions
 import com.techullurgy.howzapp.conventions.applicationId
 import com.techullurgy.howzapp.conventions.applicationLibs
 import com.techullurgy.howzapp.conventions.configureKotlinAndroid
@@ -7,6 +8,7 @@ import com.techullurgy.howzapp.conventions.versionName
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.konan.file.use
 import java.util.Properties
 
@@ -68,7 +70,23 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
                     }
                 }
 
+                testOptions {
+                    configureManagedDevices()
+                }
+
                 configureKotlinAndroid(this)
+            }
+        }
+    }
+}
+
+private fun TestOptions.configureManagedDevices() {
+    managedDevices {
+        localDevices {
+            create("pixel6") {
+                apiLevel = 35
+                device = "Pixel 6"
+                systemImageSource = "aosp"
             }
         }
     }

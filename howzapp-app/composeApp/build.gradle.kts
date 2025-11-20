@@ -80,14 +80,6 @@ android {
             isIncludeAndroidResources = true
         }
     }
-    buildTypes {
-        create("benchmark") {
-            initWith(buildTypes.getByName("release"))
-            signingConfig = signingConfigs.getByName("debug")
-            matchingFallbacks += listOf("release")
-            isDebuggable = false
-        }
-    }
 }
 
 dependencies {
@@ -99,48 +91,22 @@ dependencies {
     debugImplementation(libs.androidx.compose.uitest.manifest)
 }
 
-afterEvaluate {
-    tasks.named("kspDebugKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidDebug",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
+baselineProfile {
+    val isDuringBuild = false
 
-    tasks.named("kspReleaseKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidRelease",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
+    automaticGenerationDuringBuild = isDuringBuild
+    saveInSrc = true
+}
 
-    tasks.named("kspBenchmarkKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidBenchmark",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
-
-    tasks.named("kspNonMinifiedReleaseKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidNonMinifiedRelease",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
+tasks.configureEach {
+    val variant =
+        Regex("ksp(\\w+)KotlinAndroid").matchEntire(name)?.groupValues[1] ?: return@configureEach
+    dependsOn(
+        "generateResourceAccessorsForAndroid$variant",
+        "generateResourceAccessorsForAndroidMain",
+        "generateActualResourceCollectorsForAndroidMain",
+        "generateComposeResClass",
+        "generateResourceAccessorsForCommonMain",
+        "generateExpectResourceCollectorsForCommonMain"
+    )
 }
