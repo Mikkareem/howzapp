@@ -95,7 +95,6 @@ baselineProfile {
     val isDuringBuild = false
 
     automaticGenerationDuringBuild = isDuringBuild
-    saveInSrc = true
 }
 
 tasks.configureEach {
