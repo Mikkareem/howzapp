@@ -25,27 +25,40 @@ kotlin {
         }
     }
 }
+//
+//tasks.configureEach {
+//    val variant =
+//        Regex("ksp(\\w+)KotlinAndroid").matchEntire(name)?.groupValues[1] ?: return@configureEach
+//    dependsOn(
+//        "generateResourceAccessorsForAndroid$variant",
+//        "generateResourceAccessorsForAndroidMain",
+//        "generateActualResourceCollectorsForAndroidMain",
+//        "generateComposeResClass",
+//        "generateResourceAccessorsForCommonMain",
+//        "generateExpectResourceCollectorsForCommonMain"
+//    )
+//}
 
-afterEvaluate {
-    tasks.named("kspDebugKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidDebug",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
-
-    tasks.named("kspReleaseKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidRelease",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
-}
+//afterEvaluate {
+//    tasks.named("kspDebugKotlinAndroid") {
+//        dependsOn(
+//            "generateResourceAccessorsForAndroidDebug",
+//            "generateResourceAccessorsForAndroidMain",
+//            "generateActualResourceCollectorsForAndroidMain",
+//            "generateComposeResClass",
+//            "generateResourceAccessorsForCommonMain",
+//            "generateExpectResourceCollectorsForCommonMain"
+//        )
+//    }
+//
+//    tasks.named("kspReleaseKotlinAndroid") {
+//        dependsOn(
+//            "generateResourceAccessorsForAndroidRelease",
+//            "generateResourceAccessorsForAndroidMain",
+//            "generateActualResourceCollectorsForAndroidMain",
+//            "generateComposeResClass",
+//            "generateResourceAccessorsForCommonMain",
+//            "generateExpectResourceCollectorsForCommonMain"
+//        )
+//    }
+//}

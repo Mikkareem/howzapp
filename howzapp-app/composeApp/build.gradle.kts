@@ -19,7 +19,6 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(compose.runtime)
-            implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.androidx.navigation3.runtime)
@@ -65,23 +64,6 @@ kotlin {
     }
 }
 
-android {
-    packaging {
-        resources {
-            excludes += arrayOf(
-                "META-INF/LICENSE.md",
-                "META-INF/LICENSE-notice.md"
-            )
-        }
-    }
-
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
-}
-
 dependencies {
     implementation(libs.androidx.profileinstaller)
     baselineProfile(projects.androidBaselineprofile)
@@ -92,20 +74,5 @@ dependencies {
 }
 
 baselineProfile {
-    val isDuringBuild = false
-
-    automaticGenerationDuringBuild = isDuringBuild
-}
-
-tasks.configureEach {
-    val variant =
-        Regex("ksp(\\w+)KotlinAndroid").matchEntire(name)?.groupValues[1] ?: return@configureEach
-    dependsOn(
-        "generateResourceAccessorsForAndroid$variant",
-        "generateResourceAccessorsForAndroidMain",
-        "generateActualResourceCollectorsForAndroidMain",
-        "generateComposeResClass",
-        "generateResourceAccessorsForCommonMain",
-        "generateExpectResourceCollectorsForCommonMain"
-    )
+    automaticGenerationDuringBuild = false
 }

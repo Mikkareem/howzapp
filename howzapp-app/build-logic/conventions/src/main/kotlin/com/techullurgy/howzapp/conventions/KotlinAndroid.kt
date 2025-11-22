@@ -13,8 +13,8 @@ internal fun Project.configureKotlinAndroid(
         compileSdk = applicationLibs.findVersion("android-compileSdk").get().toString().toInt()
 
         defaultConfig.minSdk = applicationLibs.findVersion("android-minSdk").get().toString().toInt()
-//        defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        defaultConfig.testInstrumentationRunner = "com.techullurgy.howzapp.test.utilities.TestApplicationRunner"
+        defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        defaultConfig.testInstrumentationRunner = "com.techullurgy.howzapp.test.utilities.TestApplicationRunner"
 
         compileOptions {
             sourceCompatibility = this@configureKotlinAndroid.javaVersion
@@ -31,7 +31,15 @@ internal fun Project.configureKotlinAndroid(
             }
         }
 
+        testOptions {
+            unitTests {
+                isIncludeAndroidResources = true
+            }
+        }
+
         configureKotlin()
+
+        configureAndroidProductFlavors()
 
         dependencies {
             "coreLibraryDesugaring"(libs.findLibrary("android-desugarJdkLibs").get())

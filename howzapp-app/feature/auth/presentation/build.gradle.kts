@@ -19,26 +19,38 @@ kotlin {
     }
 }
 
-afterEvaluate {
-    tasks.named("kspDebugKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidDebug",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
+//tasks.configureEach {
+// "ksp(\\w+?)?(UnitTest|AndroidTest|Test)?Kotlin(Android|Desktop)"
+//    val variant =
+//        Regex("ksp(\\w+)KotlinAndroid").matchEntire(name)?.groupValues[1] ?: return@configureEach
+//    dependsOn(
+//        "generateResourceAccessorsForAndroid$variant",
+//        "generateResourceAccessorsForAndroidMain",
+//        "generateActualResourceCollectorsForAndroidMain",
+//    )
 
-    tasks.named("kspReleaseKotlinAndroid") {
-        dependsOn(
-            "generateResourceAccessorsForAndroidRelease",
-            "generateResourceAccessorsForAndroidMain",
-            "generateActualResourceCollectorsForAndroidMain",
-            "generateComposeResClass",
-            "generateResourceAccessorsForCommonMain",
-            "generateExpectResourceCollectorsForCommonMain"
-        )
-    }
-}
+//    val pattern = "ksp(\\w+?)?(UnitTest|AndroidTest|Test)?Kotlin(Android|Desktop)"
+//
+//    Regex(pattern).matchEntire(name)
+//        ?.groupValues
+//        ?.let {
+//            val variant = it[1]
+//            val type = it[2]
+//            val target = it[3]
+//
+//            if(target == "Android") {
+//                val dependencies = listOf(
+//                    "generateResourceAccessorsForAndroidMain",
+//                    "generateActualResourceCollectorsForAndroidMain"
+//                )
+//
+//                val dependsOn1 = (dependencies + when(type) {
+//                    "UnitTest" -> "generateResourceAccessorsForAndroid$type$variant"
+//                    "AndroidTest" -> "generateResourceAccessorsForAndroid${type.replace("Android", "Instrumented")}$variant"
+//                    else -> null
+//                }).filterNotNull()
+//
+//                dependsOn(*dependsOn1.toTypedArray())
+//            }
+//        }
+//}

@@ -41,6 +41,7 @@ plugins {
 
 //include(":android-benchmark")
 include(":android-baselineprofile")
+include(":android-instrumented")
 
 include(":test-utilities")
 include(":composeApp")

@@ -30,10 +30,6 @@ android {
         jvmToolchain(applicationLibs.versions.javaVersion.get().toInt())
     }
 
-    buildTypes {
-        create("release") {}
-    }
-
     defaultConfig {
         minSdk = applicationLibs.versions.android.minSdk.get().toInt()
         targetSdk = applicationLibs.versions.android.targetSdk.get().toInt()
