@@ -36,9 +36,11 @@ internal fun CommonExtension<*, *, *, *, *, *>.configureAndroidProductFlavors(
                     if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {
                         if (flavor.applicationIdSuffix != null) {
                             applicationIdSuffix = flavor.applicationIdSuffix
-                            if (flavor.appName != null) {
-                                manifestPlaceholders.put("appLabel", flavor.appName)
-                            }
+                        }
+                        if (flavor.appName != null) {
+                            manifestPlaceholders.put("appLabel", " (${flavor.appName})")
+                        } else {
+                            manifestPlaceholders.put("appLabel", "")
                         }
                     }
                 }
