@@ -53,6 +53,8 @@ internal fun MessageView(
     owner: MessageOwner,
     timestamp: Instant,
     color: Color,
+    onImageMessageClick: (String) -> Unit,
+    onVideoMessageClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var timeString by rememberSaveable {
@@ -78,17 +80,17 @@ internal fun MessageView(
                 }
                 drawPath(path1, color)
             }
-//            .innerShadow(RoundedCornerShape(20f)) {
-//                spread = 5f
-//                radius = 20f
-//            }
             .padding(all = 8.dp)
     ) {
         MessageLayout(
             owner = owner
         ) {
             when (message) {
-                is PendingMessage -> PendingMessageView(message)
+                is PendingMessage -> PendingMessageView(
+                    message,
+                    onImageMessageClick,
+                    onVideoMessageClick
+                )
                 is OriginalMessage.TextMessage -> TextMessageView(message)
                 is OriginalMessage.AudioMessage -> {
                     AudioMessageView(
@@ -99,8 +101,8 @@ internal fun MessageView(
                 }
 
                 is OriginalMessage.DocumentMessage -> DocumentMessageView(message)
-                is OriginalMessage.ImageMessage -> ImageMessageView(message)
-                is OriginalMessage.VideoMessage -> VideoMessageView(message)
+                is OriginalMessage.ImageMessage -> ImageMessageView(message, onImageMessageClick)
+                is OriginalMessage.VideoMessage -> VideoMessageView(message, onVideoMessageClick)
             }
 
             Box(
@@ -205,7 +207,9 @@ private fun MessageViewPreview(
                 message = data.message,
                 owner = data.owner,
                 timestamp = data.timestamp,
-                color = Color.Blue
+                color = Color.Blue,
+                onImageMessageClick = {},
+                onVideoMessageClick = {}
             )
         }
     }

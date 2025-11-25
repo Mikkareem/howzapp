@@ -17,7 +17,9 @@ data class ConversationKey(
 
 @Composable
 fun ConversationScreen(
-    key: ConversationKey
+    key: ConversationKey,
+    onImagePreview: (String) -> Unit,
+    onVideoPreview: (String, String) -> Unit
 ) {
     val conversationViewModel = koinViewModel<ConversationViewModel> {
         parametersOf(key)
@@ -113,5 +115,7 @@ fun ConversationScreen(
         onStopVideoInPreview = {
             conversationInputViewModel.onAction(ConversationInputUiAction.OnStopVideoPreview)
         },
+        onImageMessageClick = onImagePreview,
+        onVideoMessageClick = { onVideoPreview(key.conversationId, it) }
     )
 }

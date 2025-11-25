@@ -7,7 +7,6 @@ import com.techullurgy.howzapp.core.system.media.ContentPlayer
 @Composable
 internal actual fun PlatformVideoPlayer(
     player: ContentPlayer?,
-    onPlay: (String) -> Unit,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onStop: () -> Unit,

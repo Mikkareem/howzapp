@@ -35,7 +35,14 @@ internal class TestRepository(
 }
 
 private val participants = List(10) {
-    ChatParticipant("u${it+1}", "Irsath-${it+1}", "")
+    ChatParticipant(
+        userId = "u${it + 1}",
+        username = "Irsath-${it + 1}",
+        profilePictureUrl = listOf(
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        ).random()
+    )
 }
 
 private val chat = Chat(
@@ -90,9 +97,49 @@ private val chat = Chat(
             timestamp = Clock.System.now().minus(329.days).minus(20.seconds)
         ),
         ChatMessage(
+            messageId = "m1_403",
+            chatId = "${participants[0].userId}__${participants[1].userId}",
+            content = OriginalMessage.TextMessage("Same here. Deadlines everywhere 😂"),
+            owner = MessageOwner.Me(
+                participants[0],
+                MessageStatus.SenderStatus.READ
+            ),
+            timestamp = Clock.System.now().minus(329.days).minus(45.seconds)
+        ),
+        ChatMessage(
+            messageId = "m1_404",
+            chatId = "${participants[0].userId}__${participants[1].userId}",
+            content = OriginalMessage.ImageMessage("https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+            owner = MessageOwner.Other(
+                participants[1],
+                MessageStatus.ReceiverStatus.READ
+            ),
+            timestamp = Clock.System.now().minus(329.days).minus(20.seconds)
+        ),
+        ChatMessage(
+            messageId = "m1_403",
+            chatId = "${participants[0].userId}__${participants[1].userId}",
+            content = OriginalMessage.VideoMessage("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"),
+            owner = MessageOwner.Me(
+                participants[0],
+                MessageStatus.SenderStatus.READ
+            ),
+            timestamp = Clock.System.now().minus(329.days).minus(45.seconds)
+        ),
+        ChatMessage(
+            messageId = "m1_404",
+            chatId = "${participants[0].userId}__${participants[1].userId}",
+            content = OriginalMessage.VideoMessage("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"),
+            owner = MessageOwner.Other(
+                participants[1],
+                MessageStatus.ReceiverStatus.READ
+            ),
+            timestamp = Clock.System.now().minus(329.days).minus(20.seconds)
+        ),
+        ChatMessage(
             messageId = "m1_005",
             chatId = "${participants[0].userId}__${participants[1].userId}",
-            content = OriginalMessage.TextMessage("Probably visiting family, might go skiing if I get days off."),
+            content = OriginalMessage.ImageMessage("https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
             owner = MessageOwner.Me(
                 participants[0],
                 MessageStatus.SenderStatus.READ
@@ -257,6 +304,3 @@ private val chat = Chat(
         ),
     )
 )
-
-
-private fun chatIdFor(user1Index: Int, user2Index: Int): String = listOf(participants[user1Index].userId, participants[user2Index].userId).sorted().joinToString("__")

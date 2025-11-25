@@ -1,10 +1,12 @@
 package com.techullurgy.howzapp.core.designsystem.components.media
 
+import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.PlayerSurface
 import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import com.techullurgy.howzapp.core.system.media.ContentPlayer
@@ -12,7 +14,6 @@ import com.techullurgy.howzapp.core.system.media.ContentPlayer
 @Composable
 internal actual fun PlatformVideoPlayer(
     player: ContentPlayer?,
-    onPlay: (String) -> Unit,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onStop: () -> Unit,
@@ -28,6 +29,7 @@ internal actual fun PlatformVideoPlayer(
     }
 }
 
+@OptIn(UnstableApi::class)
 @Composable
 private fun PlayerControls(
     player: ContentPlayer,
