@@ -7,34 +7,30 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *, *, *>
+    commonExtension: CommonExtension
 ) {
     with(commonExtension) {
-        compileSdk = applicationLibs.findVersion("android-compileSdk").get().toString().toInt()
-
-        defaultConfig.minSdk = applicationLibs.findVersion("android-minSdk").get().toString().toInt()
-        defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-//        defaultConfig.testInstrumentationRunner = "com.techullurgy.howzapp.test.utilities.TestApplicationRunner"
-
-        compileOptions {
-            sourceCompatibility = this@configureKotlinAndroid.javaVersion
-            targetCompatibility = this@configureKotlinAndroid.javaVersion
-            isCoreLibraryDesugaringEnabled = true
+        compileSdk {
+            version = release(applicationLibs.findVersion("android-compileSdk").get().toString().toInt())
         }
 
-        packaging {
-            resources {
-                excludes += setOf(
-                    "META-INF/LICENSE.md",
-                    "META-INF/LICENSE-notice.md"
-                )
-            }
+        defaultConfig.minSdk {
+            version = release(applicationLibs.findVersion("android-minSdk").get().toString().toInt())
         }
 
-        testOptions {
-            unitTests {
-                isIncludeAndroidResources = true
-            }
+        compileOptions.sourceCompatibility = this@configureKotlinAndroid.javaVersion
+        compileOptions.targetCompatibility = this@configureKotlinAndroid.javaVersion
+        compileOptions.isCoreLibraryDesugaringEnabled = true
+
+        packaging.resources {
+            excludes += setOf(
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md"
+            )
+        }
+
+        testOptions.unitTests {
+            isIncludeAndroidResources = true
         }
 
         configureKotlin()
