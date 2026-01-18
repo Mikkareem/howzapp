@@ -20,7 +20,7 @@ import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import howzapp.core.designsystem.generated.resources.Res
 import howzapp.core.designsystem.generated.resources.logo_chirp
 import org.jetbrains.compose.resources.vectorResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HowzappSurface(

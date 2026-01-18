@@ -1,6 +1,6 @@
 package com.techullurgy.howzapp.core.designsystem.resources
 
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Preview(widthDp = 24, heightDp = 24)
 @Preview(widthDp = 48, heightDp = 48)

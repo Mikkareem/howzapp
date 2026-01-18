@@ -33,7 +33,7 @@ import com.techullurgy.howzapp.core.designsystem.theme.extended
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun RecordButton(

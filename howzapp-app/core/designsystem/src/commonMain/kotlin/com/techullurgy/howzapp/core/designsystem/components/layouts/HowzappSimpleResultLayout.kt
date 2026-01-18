@@ -19,7 +19,7 @@ import com.techullurgy.howzapp.core.designsystem.components.buttons.HowzappButto
 import com.techullurgy.howzapp.core.designsystem.components.buttons.HowzappButtonStyle
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.core.designsystem.theme.extended
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HowzappSimpleResultLayout(

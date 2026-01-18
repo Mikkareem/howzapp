@@ -35,7 +35,7 @@ import howzapp.core.presentation.generated.resources.login
 import howzapp.core.presentation.generated.resources.password
 import howzapp.core.presentation.generated.resources.welcome_back
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

@@ -1,6 +1,6 @@
 package com.techullurgy.howzapp.core.designsystem.preview
 
-import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
 data class PreviewUiState<T>(
     val state: T,

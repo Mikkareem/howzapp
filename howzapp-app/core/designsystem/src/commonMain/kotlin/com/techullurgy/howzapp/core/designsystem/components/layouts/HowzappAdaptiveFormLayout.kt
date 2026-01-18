@@ -31,7 +31,7 @@ import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.core.designsystem.theme.extended
 import com.techullurgy.howzapp.core.presentation.util.DeviceConfiguration
 import com.techullurgy.howzapp.core.presentation.util.currentDeviceConfiguration
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HowzappAdaptiveFormLayout(
