@@ -55,6 +55,7 @@ internal fun MessageView(
     color: Color,
     onImageMessageClick: (String) -> Unit,
     onVideoMessageClick: (String) -> Unit,
+    onLocationMessageClick: (Double, Double) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var timeString by rememberSaveable {
@@ -89,7 +90,8 @@ internal fun MessageView(
                 is PendingMessage -> PendingMessageView(
                     message,
                     onImageMessageClick,
-                    onVideoMessageClick
+                    onVideoMessageClick,
+                    onLocationMessageClick
                 )
                 is OriginalMessage.TextMessage -> TextMessageView(message)
                 is OriginalMessage.AudioMessage -> {
@@ -103,6 +105,7 @@ internal fun MessageView(
                 is OriginalMessage.DocumentMessage -> DocumentMessageView(message)
                 is OriginalMessage.ImageMessage -> ImageMessageView(message, onImageMessageClick)
                 is OriginalMessage.VideoMessage -> VideoMessageView(message, onVideoMessageClick)
+                is OriginalMessage.LocationMessage -> LocationMessageView(message, onLocationMessageClick)
             }
 
             Box(
@@ -209,7 +212,8 @@ private fun MessageViewPreview(
                 timestamp = data.timestamp,
                 color = Color.Blue,
                 onImageMessageClick = {},
-                onVideoMessageClick = {}
+                onVideoMessageClick = {},
+                onLocationMessageClick = {_,_ ->}
             )
         }
     }

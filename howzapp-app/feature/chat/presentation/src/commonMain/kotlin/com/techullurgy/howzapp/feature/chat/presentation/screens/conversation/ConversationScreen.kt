@@ -19,7 +19,8 @@ data class ConversationKey(
 fun ConversationScreen(
     key: ConversationKey,
     onImagePreview: (String) -> Unit,
-    onVideoPreview: (String, String) -> Unit
+    onVideoPreview: (String, String) -> Unit,
+    onLocationPreview: (Double, Double) -> Unit
 ) {
     val conversationViewModel = koinViewModel<ConversationViewModel> {
         parametersOf(key)
@@ -116,6 +117,9 @@ fun ConversationScreen(
             conversationInputViewModel.onAction(ConversationInputUiAction.OnStopVideoPreview)
         },
         onImageMessageClick = onImagePreview,
-        onVideoMessageClick = { onVideoPreview(key.conversationId, it) }
+        onVideoMessageClick = { onVideoPreview(key.conversationId, it) },
+        onLocationMessageClick = { latitude, longitude ->
+            onLocationPreview(latitude, longitude)
+        }
     )
 }

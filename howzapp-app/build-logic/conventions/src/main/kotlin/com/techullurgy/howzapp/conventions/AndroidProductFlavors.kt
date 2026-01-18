@@ -32,6 +32,7 @@ internal fun CommonExtension.configureAndroidProductFlavors(
         productFlavors {
             HowzappFlavor.entries.forEach { flavor ->
                 register(flavor.name) {
+                    buildFeatures.buildConfig = true
                     dimension = flavor.dimension.name
                     configure(flavor)
                     if (this@apply is ApplicationExtension && this is ApplicationProductFlavor) {

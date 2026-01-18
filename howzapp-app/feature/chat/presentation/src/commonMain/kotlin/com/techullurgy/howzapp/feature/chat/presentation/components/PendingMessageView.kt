@@ -27,10 +27,11 @@ import org.jetbrains.compose.resources.painterResource
 internal fun PendingMessageView(
     message: PendingMessage,
     onImageMessageClick: (String) -> Unit,
-    onVideoMessageClick: (String) -> Unit
+    onVideoMessageClick: (String) -> Unit,
+    onLocationMessageClick: (Double, Double) -> Unit
 ) {
     when (message) {
-        is PendingMessage.NonUploadablePendingMessage -> NonUploadablePendingMessageView(message)
+        is PendingMessage.NonUploadablePendingMessage -> NonUploadablePendingMessageView(message, onLocationMessageClick)
         is PendingMessage.UploadablePendingMessage -> UploadablePendingMessageView(
             message,
             onImageMessageClick,
@@ -41,10 +42,12 @@ internal fun PendingMessageView(
 
 @Composable
 private fun NonUploadablePendingMessageView(
-    message: PendingMessage.NonUploadablePendingMessage
+    message: PendingMessage.NonUploadablePendingMessage,
+    onLocationMessageClick: (Double, Double) -> Unit
 ) {
     when (val originalMessage = message.originalMessage) {
         is OriginalMessage.TextMessage -> TextMessageView(originalMessage)
+        is OriginalMessage.LocationMessage -> LocationMessageView(originalMessage, onLocationMessageClick)
     }
 }
 

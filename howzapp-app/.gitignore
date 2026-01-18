@@ -25,6 +25,7 @@ node_modules/
 signing.properties
 version.properties
 config.properties
+secrets.properties
 
 # Keystores (signing)
 *.jks

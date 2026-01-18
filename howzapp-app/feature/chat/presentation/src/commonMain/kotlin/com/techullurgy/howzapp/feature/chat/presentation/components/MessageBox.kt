@@ -23,6 +23,7 @@ internal fun MessageBox(
     content: MessageUi.Content,
     onImageMessageClick: (String) -> Unit,
     onVideoMessageClick: (String) -> Unit,
+    onLocationMessageClick: (Double, Double) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val direction = if (content.content.isCurrentUser) LayoutDirection.Rtl else LayoutDirection.Ltr
@@ -60,7 +61,8 @@ internal fun MessageBox(
             owner = content.content.messageOwner,
             timestamp = content.content.timestamp,
             onImageMessageClick = onImageMessageClick,
-            onVideoMessageClick = onVideoMessageClick
+            onVideoMessageClick = onVideoMessageClick,
+            onLocationMessageClick = onLocationMessageClick
         )
     }
 }

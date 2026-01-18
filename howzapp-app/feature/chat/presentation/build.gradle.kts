@@ -18,6 +18,8 @@ kotlin {
             implementation(projects.core.domain)
             implementation(projects.core.system)
             implementation(projects.feature.chat.domain)
+
+            implementation(projects.coreFeatures.maps.source)
         }
 
         commonTest.dependencies {

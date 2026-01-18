@@ -74,7 +74,8 @@ internal fun ConversationScreenImpl(
     onResumeVideoInPreview: () -> Unit,
     onStopVideoInPreview: () -> Unit,
     onImageMessageClick: (String) -> Unit,
-    onVideoMessageClick: (String) -> Unit
+    onVideoMessageClick: (String) -> Unit,
+    onLocationMessageClick: (Double, Double) -> Unit
 ) {
     Scaffold(
         contentColor = LocalContentColor.current,
@@ -165,7 +166,8 @@ internal fun ConversationScreenImpl(
                             MessageBox(
                                 it,
                                 onImageMessageClick = onImageMessageClick,
-                                onVideoMessageClick = onVideoMessageClick
+                                onVideoMessageClick = onVideoMessageClick,
+                                onLocationMessageClick = onLocationMessageClick
                             )
                         }
                     }

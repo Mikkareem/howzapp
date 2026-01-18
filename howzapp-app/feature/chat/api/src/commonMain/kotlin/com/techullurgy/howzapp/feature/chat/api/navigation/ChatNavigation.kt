@@ -53,6 +53,9 @@ fun EntryProviderScope<Any>.chatGraph(
                 backStack.add(
                     VideoPreviewRoute(id, url)
                 )
+            },
+            onLocationPreview = { latitude, longitude ->
+
             }
         )
     }
@@ -81,11 +84,12 @@ private fun ConversationListScreenRoot(
 private fun ConversationScreenRoot(
     route: ConversationRoute,
     onImagePreview: (String) -> Unit,
-    onVideoPreview: (String, String) -> Unit
+    onVideoPreview: (String, String) -> Unit,
+    onLocationPreview: (Double, Double) -> Unit
 ) {
     val key = ConversationKey(route.conversationId)
 
-    ConversationScreen(key, onImagePreview = onImagePreview, onVideoPreview = onVideoPreview)
+    ConversationScreen(key, onImagePreview = onImagePreview, onVideoPreview = onVideoPreview, onLocationPreview = onLocationPreview)
 }
 
 @Composable

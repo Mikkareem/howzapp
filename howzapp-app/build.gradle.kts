@@ -24,6 +24,12 @@ plugins {
     alias(applicationLibs.plugins.conventions.koin.compiler) apply false
 }
 
+buildscript {
+    dependencies {
+        classpath(libs.secrets.gradlePlugin)
+    }
+}
+
 subprojects {
     plugins.withId("com.google.devtools.ksp") {
         plugins.withId("org.jetbrains.compose") {

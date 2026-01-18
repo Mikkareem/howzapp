@@ -1,10 +1,12 @@
 plugins {
     alias(applicationLibs.plugins.conventions.android.application.compose)
+    alias(libs.plugins.secrets)
 //    alias(libs.plugins.baselineprofile)
 }
 
 dependencies {
     implementation(projects.app.shared)
+    implementation(projects.coreFeatures.maps.api)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.runtime)
@@ -27,3 +29,8 @@ dependencies {
 //        maxAgpVersion = false
 //    }
 //}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
+}

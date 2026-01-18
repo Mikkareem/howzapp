@@ -8,6 +8,7 @@ internal object MessageConstants {
     const val DISCRIMINATOR_VIDEO_MESSAGE = "VIDEO_MESSAGE"
     const val DISCRIMINATOR_AUDIO_MESSAGE = "AUDIO_MESSAGE"
     const val DISCRIMINATOR_DOCUMENT_MESSAGE = "DOCUMENT_MESSAGE"
+    const val DISCRIMINATOR_LOCATION_MESSAGE = "DOCUMENT_MESSAGE"
 }
 
 internal object UploadStatusConstants {

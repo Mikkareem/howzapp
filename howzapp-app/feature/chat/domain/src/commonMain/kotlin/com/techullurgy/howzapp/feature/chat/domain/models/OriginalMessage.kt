@@ -24,6 +24,11 @@ sealed interface OriginalMessage: Message {
         val text: String
     ): NonUploadableMessage
 
+    data class LocationMessage(
+        val latitude: Double,
+        val longitude: Double
+    ): NonUploadableMessage
+
     data class ImageMessage(
         val imageUrl: String,
         val optionalText: String? = null

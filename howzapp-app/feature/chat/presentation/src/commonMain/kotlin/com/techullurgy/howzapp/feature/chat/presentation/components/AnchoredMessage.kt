@@ -12,14 +12,10 @@ import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import kotlin.time.Instant
 
 @Composable
-internal fun MessageViewAnchored(
-    message: Message,
-    owner: MessageOwner,
-    timestamp: Instant,
+internal fun AnchoredMessage(
     arrowDirection: LayoutDirection,
     color: Color,
-    onImageMessageClick: (String) -> Unit,
-    onVideoMessageClick: (String) -> Unit,
+    content: @Composable () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -39,6 +35,6 @@ internal fun MessageViewAnchored(
                 drawPath(path, color)
             }
     ) {
-        MessageView(message, owner, timestamp, color, onImageMessageClick, onVideoMessageClick)
+        content()
     }
 }

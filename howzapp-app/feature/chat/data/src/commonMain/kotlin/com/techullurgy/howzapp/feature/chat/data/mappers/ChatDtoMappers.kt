@@ -9,6 +9,7 @@ import com.techullurgy.howzapp.core.dto.models.DirectChatDto
 import com.techullurgy.howzapp.core.dto.models.DocumentMessageDto
 import com.techullurgy.howzapp.core.dto.models.GroupChatDto
 import com.techullurgy.howzapp.core.dto.models.ImageMessageDto
+import com.techullurgy.howzapp.core.dto.models.LocationMessageDto
 import com.techullurgy.howzapp.core.dto.models.MessageDto
 import com.techullurgy.howzapp.core.dto.models.MessageStatusDto
 import com.techullurgy.howzapp.core.dto.models.ReceiptDto
@@ -77,6 +78,7 @@ private fun MessageDto.toDomain(): OriginalMessage {
         is DocumentMessageDto -> OriginalMessage.DocumentMessage(documentUrl = documentUrl, documentName = documentName)
         is ImageMessageDto -> OriginalMessage.ImageMessage(imageUrl = imageUrl)
         is TextMessageDto -> OriginalMessage.TextMessage(text = text)
+        is LocationMessageDto -> OriginalMessage.LocationMessage(latitude, longitude)
     }
 }
 
@@ -114,5 +116,6 @@ internal fun OriginalMessage.toDto(): MessageDto {
         is OriginalMessage.ImageMessage -> ImageMessageDto(imageUrl)
         is OriginalMessage.TextMessage -> TextMessageDto(text)
         is OriginalMessage.VideoMessage -> VideoMessageDto(videoUrl)
+        is OriginalMessage.LocationMessage -> LocationMessageDto(latitude, longitude)
     }
 }

@@ -276,6 +276,15 @@ private fun LastMessageView(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
+
+                is OriginalMessage.LocationMessage -> {
+                    // TODO: Location Icon
+                    Text(
+                        text = "Location",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
     }

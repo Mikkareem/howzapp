@@ -13,7 +13,7 @@ import com.techullurgy.howzapp.core.designsystem.theme.extended
 import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.presentation.components.MessageView
-import com.techullurgy.howzapp.feature.chat.presentation.components.MessageViewAnchored
+import com.techullurgy.howzapp.feature.chat.presentation.components.AnchoredMessage
 import kotlin.time.Instant
 
 @Composable
@@ -24,6 +24,7 @@ internal fun MessageViewLayout(
     timestamp: Instant,
     onImageMessageClick: (String) -> Unit,
     onVideoMessageClick: (String) -> Unit,
+    onLocationMessageClick: (Double, Double) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -37,15 +38,20 @@ internal fun MessageViewLayout(
         if(view is MessageViewUi.Anchored) {
             add(view.content)
             add {
-                MessageViewAnchored(
-                    message,
-                    owner,
-                    timestamp,
+                AnchoredMessage(
                     view.direction,
-                    backgroundColor,
-                    onImageMessageClick,
-                    onVideoMessageClick
-                )
+                    backgroundColor
+                ) {
+                    MessageView(
+                        message,
+                        owner,
+                        timestamp,
+                        backgroundColor,
+                        onImageMessageClick,
+                        onVideoMessageClick,
+                        onLocationMessageClick
+                    )
+                }
             }
         } else {
             add {
@@ -55,7 +61,8 @@ internal fun MessageViewLayout(
                     timestamp,
                     backgroundColor,
                     onImageMessageClick,
-                    onVideoMessageClick
+                    onVideoMessageClick,
+                    onLocationMessageClick
                 )
             }
         }

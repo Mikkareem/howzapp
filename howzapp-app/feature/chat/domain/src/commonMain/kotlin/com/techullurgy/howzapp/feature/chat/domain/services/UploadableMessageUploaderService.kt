@@ -9,7 +9,6 @@ import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
 import com.techullurgy.howzapp.feature.chat.domain.repositories.ChatLocalRepository
 import com.techullurgy.howzapp.feature.chat.domain.system.FileReader
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel

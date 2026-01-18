@@ -12,6 +12,7 @@ fun SerializableMessage.toDomain(): OriginalMessage {
         is SerializableMessage.DocumentMessage -> OriginalMessage.DocumentMessage(documentName, documentUrl, optionalText)
         is SerializableMessage.ImageMessage -> OriginalMessage.ImageMessage(imageUrl, optionalText)
         is SerializableMessage.VideoMessage -> OriginalMessage.VideoMessage(videoUrl, optionalText)
+        is SerializableMessage.LocationMessage -> OriginalMessage.LocationMessage(latitude, longitude)
     }
 }
 
@@ -22,6 +23,7 @@ fun OriginalMessage.toSerializable(): SerializableMessage {
         is OriginalMessage.DocumentMessage -> SerializableMessage.DocumentMessage(documentName, documentUrl, optionalText)
         is OriginalMessage.ImageMessage -> SerializableMessage.ImageMessage(imageUrl, optionalText)
         is OriginalMessage.VideoMessage -> SerializableMessage.VideoMessage(videoUrl, optionalText)
+        is OriginalMessage.LocationMessage -> SerializableMessage.LocationMessage(latitude, longitude)
     }
 }
 

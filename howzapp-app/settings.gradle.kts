@@ -47,7 +47,9 @@ include(":android-instrumented")
 
 include(":test-utilities")
 include(":app:shared")
-//
+
+include(":core-features:maps:api")
+include(":core-features:maps:source")
 include(":core:di")
 include(":core:dto")
 include(":core:system")

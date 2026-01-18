@@ -29,3 +29,7 @@ data class DocumentMessageDto(val documentUrl: String, val documentName: String)
 @Serializable
 @SerialName("contact_message")
 data class ContactMessageDto(val contactName: String, val contactId: String) : MessageDto
+
+@Serializable
+@SerialName("location_message")
+data class LocationMessageDto(val latitude: Double, val longitude: Double) : MessageDto

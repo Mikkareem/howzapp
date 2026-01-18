@@ -39,4 +39,11 @@ sealed interface SerializableMessage {
         val documentUrl: String,
         val optionalText: String? = null
     ): SerializableMessage
+
+    @Serializable
+    @SerialName(MessageConstants.DISCRIMINATOR_LOCATION_MESSAGE)
+    data class LocationMessage(
+        val latitude: Double,
+        val longitude: Double,
+    ): SerializableMessage
 }

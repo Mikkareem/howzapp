@@ -57,7 +57,8 @@ private fun ConversationScreenPreview(
             onResumeVideoInPreview = {},
             onStopVideoInPreview = {},
             onImageMessageClick = {},
-            onVideoMessageClick = {}
+            onVideoMessageClick = {},
+            onLocationMessageClick = {_, _ ->}
         )
     }
 }
