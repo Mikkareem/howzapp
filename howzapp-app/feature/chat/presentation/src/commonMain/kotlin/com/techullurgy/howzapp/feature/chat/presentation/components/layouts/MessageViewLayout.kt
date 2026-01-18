@@ -22,6 +22,8 @@ internal fun MessageViewLayout(
     message: Message,
     owner: MessageOwner,
     timestamp: Instant,
+    onImageMessageClick: (String) -> Unit,
+    onVideoMessageClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -35,11 +37,26 @@ internal fun MessageViewLayout(
         if(view is MessageViewUi.Anchored) {
             add(view.content)
             add {
-                MessageViewAnchored(message, owner, timestamp, view.direction, backgroundColor)
+                MessageViewAnchored(
+                    message,
+                    owner,
+                    timestamp,
+                    view.direction,
+                    backgroundColor,
+                    onImageMessageClick,
+                    onVideoMessageClick
+                )
             }
         } else {
             add {
-                MessageView(message, owner, timestamp, backgroundColor)
+                MessageView(
+                    message,
+                    owner,
+                    timestamp,
+                    backgroundColor,
+                    onImageMessageClick,
+                    onVideoMessageClick
+                )
             }
         }
     }.toList()

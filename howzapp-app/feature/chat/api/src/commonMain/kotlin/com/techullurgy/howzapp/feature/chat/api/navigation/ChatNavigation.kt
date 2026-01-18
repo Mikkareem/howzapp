@@ -6,6 +6,8 @@ import androidx.navigation3.runtime.EntryProviderScope
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.ConversationKey
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.ConversationScreen
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_list.ConversationListScreen
+import com.techullurgy.howzapp.feature.chat.presentation.screens.media_previews.ImagePreviewScreen
+import com.techullurgy.howzapp.feature.chat.presentation.screens.media_previews.VideoPreviewScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,6 +16,17 @@ data object ChatGraphRoute
 @Serializable
 internal data class ConversationRoute(
     val conversationId: String
+)
+
+@Serializable
+internal data class ImagePreviewRoute(
+    val imageUrl: String
+)
+
+@Serializable
+internal data class VideoPreviewRoute(
+    val videoListenId: String,
+    val videoUrl: String
 )
 
 fun EntryProviderScope<Any>.chatGraph(
@@ -29,7 +42,29 @@ fun EntryProviderScope<Any>.chatGraph(
         )
     }
     entry<ConversationRoute> {
-        ConversationScreenRoot(it)
+        ConversationScreenRoot(
+            route = it,
+            onImagePreview = { imageUrl ->
+                backStack.add(
+                    ImagePreviewRoute(imageUrl)
+                )
+            },
+            onVideoPreview = { id, url ->
+                backStack.add(
+                    VideoPreviewRoute(id, url)
+                )
+            }
+        )
+    }
+    entry<ImagePreviewRoute> {
+        ImagePreviewScreenRoot(
+            route = it
+        )
+    }
+    entry<VideoPreviewRoute> {
+        VideoPreviewScreenRoot(
+            route = it
+        )
     }
 }
 
@@ -44,9 +79,25 @@ private fun ConversationListScreenRoot(
 
 @Composable
 private fun ConversationScreenRoot(
-    route: ConversationRoute
+    route: ConversationRoute,
+    onImagePreview: (String) -> Unit,
+    onVideoPreview: (String, String) -> Unit
 ) {
     val key = ConversationKey(route.conversationId)
 
-    ConversationScreen(key)
+    ConversationScreen(key, onImagePreview = onImagePreview, onVideoPreview = onVideoPreview)
+}
+
+@Composable
+private fun ImagePreviewScreenRoot(
+    route: ImagePreviewRoute
+) {
+    ImagePreviewScreen(route.imageUrl)
+}
+
+@Composable
+private fun VideoPreviewScreenRoot(
+    route: VideoPreviewRoute
+) {
+    VideoPreviewScreen(route.videoListenId, route.videoUrl)
 }

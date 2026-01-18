@@ -25,11 +25,17 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 internal fun PendingMessageView(
-    message: PendingMessage
+    message: PendingMessage,
+    onImageMessageClick: (String) -> Unit,
+    onVideoMessageClick: (String) -> Unit
 ) {
     when (message) {
         is PendingMessage.NonUploadablePendingMessage -> NonUploadablePendingMessageView(message)
-        is PendingMessage.UploadablePendingMessage -> UploadablePendingMessageView(message)
+        is PendingMessage.UploadablePendingMessage -> UploadablePendingMessageView(
+            message,
+            onImageMessageClick,
+            onVideoMessageClick
+        )
     }
 }
 
@@ -44,7 +50,9 @@ private fun NonUploadablePendingMessageView(
 
 @Composable
 private fun UploadablePendingMessageView(
-    message: PendingMessage.UploadablePendingMessage
+    message: PendingMessage.UploadablePendingMessage,
+    onImageMessageClick: (String) -> Unit,
+    onVideoMessageClick: (String) -> Unit
 ) {
     Box(
         contentAlignment = Alignment.Center
@@ -59,8 +67,15 @@ private fun UploadablePendingMessageView(
             }
 
             is OriginalMessage.DocumentMessage -> DocumentMessageView(originalMessage)
-            is OriginalMessage.ImageMessage -> ImageMessageView(originalMessage)
-            is OriginalMessage.VideoMessage -> VideoMessageView(originalMessage)
+            is OriginalMessage.ImageMessage -> ImageMessageView(
+                originalMessage,
+                onImageMessageClick
+            )
+
+            is OriginalMessage.VideoMessage -> VideoMessageView(
+                originalMessage,
+                onVideoMessageClick
+            )
         }
 
         Box(

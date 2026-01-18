@@ -18,6 +18,8 @@ internal fun MessageViewAnchored(
     timestamp: Instant,
     arrowDirection: LayoutDirection,
     color: Color,
+    onImageMessageClick: (String) -> Unit,
+    onVideoMessageClick: (String) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -37,6 +39,6 @@ internal fun MessageViewAnchored(
                 drawPath(path, color)
             }
     ) {
-        MessageView(message, owner, timestamp, color)
+        MessageView(message, owner, timestamp, color, onImageMessageClick, onVideoMessageClick)
     }
 }

@@ -6,7 +6,9 @@
 
     <application
         android:name=".HowzappApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Howzapp${appLabel}"
         android:roundIcon="@mipmap/ic_launcher_round"

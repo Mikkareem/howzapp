@@ -7,7 +7,6 @@ import com.techullurgy.howzapp.core.system.media.ContentPlayer
 @Composable
 fun VideoPlayer(
     player: ContentPlayer?,
-    onPlay: (String) -> Unit,
     onResume: () -> Unit,
     onPause: () -> Unit,
     onStop: () -> Unit,
@@ -15,7 +14,6 @@ fun VideoPlayer(
 ) {
     PlatformVideoPlayer(
         player = player,
-        onPlay = onPlay,
         onPause = onPause,
         onResume = onResume,
         onStop = onStop,
@@ -26,7 +24,6 @@ fun VideoPlayer(
 @Composable
 internal expect fun PlatformVideoPlayer(
     player: ContentPlayer?,
-    onPlay: (String) -> Unit,
     onPause: () -> Unit,
     onResume: () -> Unit,
     onStop: () -> Unit,
