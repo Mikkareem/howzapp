@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.CommonExtension
 import com.google.devtools.ksp.gradle.KspExtension
 import com.techullurgy.howzapp.conventions.isAndroidEnabled
 import com.techullurgy.howzapp.conventions.isDesktopEnabled
@@ -33,14 +34,20 @@ class KoinAnnotationsConventionPlugin: Plugin<Project> {
                         add("kspDesktop",libs.findLibrary("koin-ksp-compiler").get())
                     }
                 }
+
+                // Trigger Common Metadata Generation from Native tasks
+                tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
+                    dependsOn("kspCommonMainKotlinMetadata")
+                }
+            } ?: run {
+                dependencies {
+                    "implementation"(project.dependencies.platform(libs.findLibrary("koin-bom").get()))
+                    "implementation"(libs.findLibrary("koin-core").get())
+                    "implementation"(libs.findLibrary("koin-annotations").get())
+                }
             }
 
             extensions.getByType<KspExtension>().arg("KOIN_CONFIG_CHECK", "true")
-
-            // Trigger Common Metadata Generation from Native tasks
-            tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
-                dependsOn("kspCommonMainKotlinMetadata")
-            }
         }
     }
 }

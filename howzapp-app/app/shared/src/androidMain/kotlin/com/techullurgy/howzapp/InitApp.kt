@@ -1,9 +1,8 @@
 package com.techullurgy.howzapp
 
-import android.app.Application
+import android.content.Context
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinApplication
-import org.koin.ksp.generated.startKoin
 
 @KoinApplication(
     configurations = ["default"]
@@ -20,12 +19,8 @@ object DebugApp
 )
 object DevelopmentApp
 
-class HowzappApplication: Application() {
-    override fun onCreate() {
-        super.onCreate()
-
-        DebugApp.startKoin {
-            androidContext(this@HowzappApplication)
-        }
-    }
+fun org.koin.core.KoinApplication.initApp(
+    applicationContext: Context
+) {
+    androidContext(applicationContext)
 }
