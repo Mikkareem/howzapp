@@ -39,13 +39,15 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
+include(":app:androidApp")
+
 //include(":android-benchmark")
 include(":android-baselineprofile")
 include(":android-instrumented")
 
 include(":test-utilities")
-include(":composeApp")
-
+include(":app:shared")
+//
 include(":core:di")
 include(":core:dto")
 include(":core:system")

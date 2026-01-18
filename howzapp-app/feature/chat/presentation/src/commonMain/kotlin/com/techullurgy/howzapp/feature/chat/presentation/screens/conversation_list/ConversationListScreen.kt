@@ -63,8 +63,8 @@ import howzapp.core.presentation.generated.resources.done_all
 import howzapp.core.presentation.generated.resources.pending
 import howzapp.core.presentation.generated.resources.sent
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes

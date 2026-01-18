@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.test)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.baselineprofile)
 }
 
@@ -44,13 +43,21 @@ android {
         // a physical device. An emulator's simulated environment can significantly differ from
         // real-world hardware, potentially skewing your results.
         testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "EMULATOR"
-
     }
 
-    targetProjectPath = ":composeApp"
+    targetProjectPath = ":app:androidApp"
     // Enable the benchmark to run separately from the app process
     experimentalProperties["android.experimental.self-instrumenting"] = true
 
+    testOptions.managedDevices {
+        localDevices {
+            create("pixel6") {
+                apiLevel = 35
+                device = "Pixel 6"
+                systemImageSource = "aosp"
+            }
+        }
+    }
 }
 
 // This is the configuration block for the Baseline Profile plugin.

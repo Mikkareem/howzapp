@@ -1,29 +1,25 @@
 package com.techullurgy.howzapp.conventions
 
-import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 
+context(extension: KotlinMultiplatformExtension)
 internal fun Project.configureKotlinMultiplatform() {
-    extensions.configure<LibraryExtension> {
-        namespace = this@configureKotlinMultiplatform.pathToPackageName()
-    }
-
-    if (isAndroidEnabled) {
-        configureAndroidTarget()
-    }
-    if (isIosEnabled) {
-        configureIosTargets(true)
-    }
-    if(isDesktopEnabled) {
-        configureDesktopTarget()
-    }
-
-    extensions.configure<KotlinMultiplatformExtension> {
-
+    with(extension) {
         if(isHierarchyEnabled) {
-            applyHierarchyTemplate()
+            applyDefaultHierarchyTemplate()
+        }
+
+        if (isAndroidEnabled) {
+            configureAndroidTarget()
+        }
+        if (isIosEnabled) {
+            configureIosTargets(true)
+        }
+        if(isDesktopEnabled) {
+            configureDesktopTarget()
         }
 
         compilerOptions {

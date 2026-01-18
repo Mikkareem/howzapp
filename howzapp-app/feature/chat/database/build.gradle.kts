@@ -11,7 +11,7 @@ kotlin {
             implementation(libs.kotlin.test)
         }
 
-        androidInstrumentedTest.dependencies {
+        androidDeviceTest.dependencies {
             implementation(libs.androidx.room.testing)
 
             implementation(libs.androidx.testExt.junit)
