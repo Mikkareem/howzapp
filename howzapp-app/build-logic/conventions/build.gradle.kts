@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `kotlin-dsl`
@@ -12,7 +13,9 @@ dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.android.tools.common)
     compileOnly(libs.kotlin.gradlePlugin)
-    compileOnly(libs.compose.gradlePlugin)
+    compileOnly(libs.compose.compiler.gradlePlugin)
+    compileOnly(libs.compose.multiplatform.gradlePlugin)
+    compileOnly(libs.kotlin.multiplatform.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
     compileOnly(libs.androidx.room.gradle.plugin)
     implementation(libs.buildkonfig.gradlePlugin)
@@ -27,6 +30,7 @@ java {
 
 kotlin {
     compilerOptions {
+        freeCompilerArgs.set(listOf("-Xcontext-parameters"))
         val javaTarget = applicationLibs.versions.javaVersion.get().toString()
         jvmTarget = JvmTarget.fromTarget(javaTarget)
     }
@@ -49,10 +53,6 @@ gradlePlugin {
             id = "$groupNamePrefix.conventions.android.application.compose"
             implementationClass = "AndroidApplicationComposeConventionPlugin"
         }
-        register("cmpApplication") {
-            id = "$groupNamePrefix.conventions.cmp.application"
-            implementationClass = "CmpApplicationConventionPlugin"
-        }
         register("kmpLibrary") {
             id = "$groupNamePrefix.conventions.kmp.library"
             implementationClass = "KmpLibraryConventionPlugin"
@@ -60,10 +60,6 @@ gradlePlugin {
         register("cmpLibrary") {
             id = "$groupNamePrefix.conventions.cmp.library"
             implementationClass = "CmpLibraryConventionPlugin"
-        }
-        register("cmpFeature") {
-            id = "$groupNamePrefix.conventions.cmp.feature"
-            implementationClass = "CmpFeatureConventionPlugin"
         }
         register("buildKonfig") {
             id = "$groupNamePrefix.conventions.buildkonfig"

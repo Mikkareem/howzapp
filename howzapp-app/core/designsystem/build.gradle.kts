@@ -10,8 +10,8 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.compose.components.resources)
+            implementation(libs.compose.ui.tooling.preview)
             implementation(libs.coil.compose)
 
             implementation(projects.core.presentation)

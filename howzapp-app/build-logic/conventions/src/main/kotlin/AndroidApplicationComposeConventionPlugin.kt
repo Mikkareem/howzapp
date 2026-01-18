@@ -1,21 +1,15 @@
-import com.android.build.api.dsl.ApplicationExtension
-import com.techullurgy.howzapp.conventions.configureAndroidCompose
-import com.techullurgy.howzapp.conventions.applicationId
+import com.techullurgy.howzapp.conventions.applicationLibs
+import com.techullurgy.howzapp.conventions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.getByType
 
 class AndroidApplicationComposeConventionPlugin: Plugin<Project> {
-
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("$applicationId.conventions.android.application")
-                apply("org.jetbrains.kotlin.plugin.compose")
+                apply(applicationLibs.findPlugin("conventions-android-application").get().get().pluginId)
+                apply(libs.findPlugin("composeCompiler").get().get().pluginId)
             }
-
-            val extension = extensions.getByType<ApplicationExtension>()
-            configureAndroidCompose(extension)
         }
     }
 }

@@ -31,7 +31,7 @@ import howzapp.core.presentation.generated.resources.location
 import howzapp.core.presentation.generated.resources.sticker
 import howzapp.core.presentation.generated.resources.video
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun InputTypeSelectionBox(

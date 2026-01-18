@@ -1,9 +1,7 @@
 plugins {
-    alias(applicationLibs.plugins.conventions.cmp.application)
+    alias(applicationLibs.plugins.conventions.cmp.library)
     alias(applicationLibs.plugins.conventions.koin.compiler)
     alias(libs.plugins.roborazzi)
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.baselineprofile)
 }
 
 kotlin {
@@ -13,13 +11,12 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.compose.runtime)
 
             implementation(libs.androidx.navigation3.runtime)
             implementation(libs.androidx.navigation3.ui)
@@ -36,11 +33,11 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
         }
 
-        androidInstrumentedTest.dependencies {
+        androidDeviceTest.dependencies {
             implementation(libs.mockk.android)
         }
 
-        androidUnitTest.dependencies {
+        androidHostTest.dependencies {
             implementation(libs.mockk.android)
             implementation(libs.robolectric)
             implementation(libs.roborazzi)
@@ -65,14 +62,5 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.androidx.profileinstaller)
-    baselineProfile(projects.androidBaselineprofile)
-    debugImplementation(compose.uiTooling)
-    androidTestImplementation(libs.androidx.compose.uitest.junit4.android)
-    testImplementation(libs.androidx.compose.uitest.junit4.android)
-    debugImplementation(libs.androidx.compose.uitest.manifest)
-}
-
-baselineProfile {
-    automaticGenerationDuringBuild = false
+    androidRuntimeClasspath(libs.compose.ui.tooling)
 }

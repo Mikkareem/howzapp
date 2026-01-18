@@ -1,6 +1,6 @@
 [versions]
 android-compileSdk = "36"
-android-minSdk = "24"
+android-minSdk = "26"
 android-targetSdk = "36"
 
 projectApplicationId = "com.techullurgy.howzapp"
@@ -11,10 +11,8 @@ javaVersion = "17"
 [plugins]
 conventions-android-application = { id = "com.techullurgy.howzapp.conventions.android.application" }
 conventions-android-application-compose = { id = "com.techullurgy.howzapp.conventions.android.application.compose" }
-conventions-cmp-application = { id = "com.techullurgy.howzapp.conventions.cmp.application" }
 conventions-kmp-library = { id = "com.techullurgy.howzapp.conventions.kmp.library" }
 conventions-cmp-library = { id = "com.techullurgy.howzapp.conventions.cmp.library" }
-conventions-cmp-feature = { id = "com.techullurgy.howzapp.conventions.cmp.feature" }
 conventions-buildkonfig = { id = "com.techullurgy.howzapp.conventions.buildkonfig" }
 conventions-room = { id = "com.techullurgy.howzapp.conventions.room" }
 conventions-koin-compiler = { id = "com.techullurgy.howzapp.conventions.koin.compiler" }

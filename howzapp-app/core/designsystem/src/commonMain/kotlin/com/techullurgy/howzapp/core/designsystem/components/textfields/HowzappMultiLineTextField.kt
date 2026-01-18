@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.components.buttons.HowzappButton
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.core.designsystem.theme.extended
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun HowzappMultiLineTextField(
