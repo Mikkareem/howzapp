@@ -1,40 +1,32 @@
-import com.android.build.api.dsl.LibraryExtension
-import com.techullurgy.howzapp.conventions.configureKotlinAndroid
 import com.techullurgy.howzapp.conventions.configureKotlinMultiplatform
 import com.techullurgy.howzapp.conventions.libs
-import com.techullurgy.howzapp.conventions.pathToResourcePrefix
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class KmpLibraryConventionPlugin: Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("com.android.library")
-                apply("org.jetbrains.kotlin.multiplatform")
-                apply("org.jetbrains.kotlin.plugin.serialization")
+                apply(libs.findPlugin("androidKmpLibrary").get().get().pluginId)
+                apply(libs.findPlugin("kotlinMultiplatform").get().get().pluginId)
             }
 
-            configureKotlinMultiplatform()
+            extensions.configure<KotlinMultiplatformExtension> {
+                configureKotlinMultiplatform()
 
-            extensions.configure<LibraryExtension> {
-                configureKotlinAndroid(this)
+                sourceSets.commonMain.dependencies {
+                    implementation(target.dependencies.platform(libs.findLibrary("koin-bom").get()))
+                    implementation(libs.findLibrary("koin-core").get())
+                    implementation(libs.findLibrary("kotlinx-serialization-json").get())
+                    implementation(libs.findLibrary("kotlinx-coroutines-core").get())
+                }
 
-                resourcePrefix = this@with.pathToResourcePrefix()
-
-                // Required to make debug build of app run in iOS simulator
-                experimentalProperties["android.experimental.kmp.enableAndroidResources"] = "true"
-            }
-
-            dependencies {
-                "commonMainImplementation"(dependencies.platform(libs.findLibrary("koin-bom").get()))
-                "commonMainImplementation"(libs.findLibrary("koin-core").get())
-                "commonMainImplementation"(libs.findLibrary("kotlinx-serialization-json").get())
-                "commonMainImplementation"(libs.findLibrary("kotlinx-coroutines-core").get())
-                "commonTestImplementation"(libs.findLibrary("kotlin-test").get())
-                "commonTestImplementation"(libs.findLibrary("assertk").get())
+                sourceSets.commonTest.dependencies {
+                    implementation(libs.findLibrary("kotlin-test").get())
+                    implementation(libs.findLibrary("assertk").get())
+                }
             }
         }
     }

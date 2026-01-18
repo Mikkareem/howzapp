@@ -9,7 +9,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(compose.components.resources)
+            implementation(libs.compose.components.resources)
 
             implementation(projects.core.domain)
             implementation(projects.core.designsystem)

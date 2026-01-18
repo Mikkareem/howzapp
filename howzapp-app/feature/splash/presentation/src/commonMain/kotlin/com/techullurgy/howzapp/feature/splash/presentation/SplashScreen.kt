@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.techullurgy.howzapp.core.designsystem.components.brand.HowzappBrandLogo
 import com.techullurgy.howzapp.core.presentation.util.ObserveAsEvents
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

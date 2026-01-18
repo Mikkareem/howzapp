@@ -4,6 +4,7 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.ApplicationProductFlavor
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.ProductFlavor
+import org.gradle.kotlin.dsl.invoke
 
 @Suppress("EnumEntryName")
 internal enum class FlavorDimension {
@@ -20,7 +21,7 @@ enum class HowzappFlavor(
     prod(FlavorDimension.contentType)
 }
 
-internal fun CommonExtension<*, *, *, *, *, *>.configureAndroidProductFlavors(
+internal fun CommonExtension.configureAndroidProductFlavors(
     configure: ProductFlavor.(HowzappFlavor) -> Unit = {}
 ) {
     apply {
@@ -38,9 +39,9 @@ internal fun CommonExtension<*, *, *, *, *, *>.configureAndroidProductFlavors(
                             applicationIdSuffix = flavor.applicationIdSuffix
                         }
                         if (flavor.appName != null) {
-                            manifestPlaceholders.put("appLabel", " (${flavor.appName})")
+                            manifestPlaceholders["appLabel"] = " (${flavor.appName})"
                         } else {
-                            manifestPlaceholders.put("appLabel", "")
+                            manifestPlaceholders["appLabel"] = ""
                         }
                     }
                 }

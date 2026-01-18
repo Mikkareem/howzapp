@@ -8,7 +8,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(compose.components.resources)
+            implementation(libs.compose.components.resources)
             implementation(libs.coil.compose)
             implementation(libs.coil.okhttp)
             implementation(libs.kotlinx.datetime)

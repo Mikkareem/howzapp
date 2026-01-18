@@ -3,6 +3,7 @@ import com.android.build.api.dsl.TestOptions
 import com.techullurgy.howzapp.conventions.applicationId
 import com.techullurgy.howzapp.conventions.applicationLibs
 import com.techullurgy.howzapp.conventions.configureKotlinAndroid
+import com.techullurgy.howzapp.conventions.libs
 import com.techullurgy.howzapp.conventions.versionCode
 import com.techullurgy.howzapp.conventions.versionName
 import org.gradle.api.Plugin
@@ -16,7 +17,7 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("com.android.application")
+                apply(libs.findPlugin("androidApplication").get().get().pluginId)
             }
 
             extensions.configure<ApplicationExtension> {
@@ -24,11 +25,16 @@ class AndroidApplicationConventionPlugin: Plugin<Project> {
 
                 defaultConfig {
                     applicationId = this@with.applicationId
-                    targetSdk = applicationLibs.findVersion("android-targetSdk").get().toString().toInt()
+
+                    targetSdk {
+                        version = release(applicationLibs.findVersion("android-targetSdk").get().toString().toInt())
+                    }
+
                     versionCode = this@with.versionCode
                     versionName = this@with.versionName
 
                     testInstrumentationRunner = "androidx.test.runner.AndroidJunitRunner"
+                    // testInstrumentationRunner = "com.techullurgy.howzapp.test.utilities.TestApplicationRunner"
                 }
 
                 signingConfigs {
