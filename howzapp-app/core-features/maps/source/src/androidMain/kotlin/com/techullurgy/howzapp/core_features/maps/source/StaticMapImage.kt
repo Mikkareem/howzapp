@@ -5,11 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
@@ -31,13 +33,19 @@ fun StaticMapImage(
 
     Box(modifier = modifier.fillMaxSize().background(Color.Yellow), contentAlignment = Alignment.Center) {
         when(state) {
-            AsyncImagePainter.State.Empty -> TODO()
-            is AsyncImagePainter.State.Error -> TODO()
+            AsyncImagePainter.State.Empty -> {
+                Text("Empty")
+            }
+
+            is AsyncImagePainter.State.Error -> {
+                Text("Error: ${(state as AsyncImagePainter.State.Error).result.throwable.message}")
+            }
             is AsyncImagePainter.State.Loading -> CircularProgressIndicator()
             is AsyncImagePainter.State.Success -> {
                 Image(
                     painter = painter,
                     contentDescription = null,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
             }

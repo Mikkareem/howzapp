@@ -302,5 +302,15 @@ private val chat = Chat(
             ),
             timestamp = Clock.System.now().minus(1.days).minus(1.minutes)
         ),
+        ChatMessage(
+            messageId = "m4_006",
+            chatId = "${participants[0].userId}__${participants[1].userId}",
+            content = OriginalMessage.LocationMessage(40.714728, -73.998672),
+            owner = MessageOwner.Me(
+                participants[0],
+                MessageStatus.SenderStatus.DELIVERED
+            ),
+            timestamp = Clock.System.now().minus(1.days).minus(1.minutes).minus(35.seconds)
+        )
     )
 )
