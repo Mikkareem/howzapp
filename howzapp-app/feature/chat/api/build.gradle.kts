@@ -11,7 +11,6 @@ kotlin {
             implementation(projects.feature.chat.domain)
             implementation(projects.feature.chat.data)
             implementation(projects.feature.chat.database)
-            implementation(projects.feature.chat.presentation)
 
             implementation(projects.core.dto)
         }

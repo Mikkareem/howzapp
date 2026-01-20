@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.feature.chat.domain.models.ChatParticipant
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
@@ -11,20 +14,17 @@ import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import com.techullurgy.howzapp.feature.chat.domain.models.OriginalMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.PendingMessage
 import com.techullurgy.howzapp.feature.chat.domain.models.UploadStatus
-import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
+import com.techullurgy.howzapp.feature.chat.presentation.models.MessageItem
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputUiState
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationUiState
-import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.MessageUi
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.MessageFeedItem
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
 
 
 @Preview
 @Composable
-private fun ConversationScreenPreview(
+private fun ConversationScreenRootPreview(
     @PreviewParameter(ConversationUiStatePreviewParameterProvider::class) previewState: PreviewProvider
 ) {
     HowzAppTheme(
@@ -33,7 +33,7 @@ private fun ConversationScreenPreview(
         val state by remember { mutableStateOf(previewState.state) }
         val inputState by remember { mutableStateOf(previewState.inputState) }
 
-        ConversationScreenImpl(
+        ConversationScreenRoot(
             state,
             inputState,
             onRecordStarted = {},
@@ -44,18 +44,6 @@ private fun ConversationScreenPreview(
             onAudioSelected = {},
             onVideoSelected = {},
             onDocumentSelected = { _, _ -> },
-            onPlayRecordedAudioInPreview = {},
-            onPauseRecordedAudioInPreview = {},
-            onResumeRecordedAudioInPreview = {},
-            onStopRecordedAudioInPreview = {},
-            onPlayAudioInPreview = {},
-            onPauseAudioInPreview = {},
-            onResumeAudioInPreview = {},
-            onStopAudioInPreview = {},
-            onPlayVideoInPreview = {},
-            onPauseVideoInPreview = {},
-            onResumeVideoInPreview = {},
-            onStopVideoInPreview = {},
             onImageMessageClick = {},
             onVideoMessageClick = {},
             onLocationMessageClick = {_, _ ->}
@@ -74,7 +62,7 @@ private class ConversationUiStatePreviewParameterProvider :
     override val values: Sequence<PreviewProvider>
         get() = sequence {
             buildList {
-                add(MessageUi.Badge("Today"))
+                add(MessageFeedItem.Badge("Today"))
 
                 addAll(
                     buildList {
@@ -82,7 +70,7 @@ private class ConversationUiStatePreviewParameterProvider :
                         repeat(10) {
                             val user = listOf(users[0], users[1]).random()
                             val minutes = mutableMinutes + 15.minutes
-                            MessageSheet(
+                            MessageItem(
                                 message = messages.random(),
                                 messageId = "m1_${lastIndex + 1}",
                                 sender = user,
@@ -90,7 +78,7 @@ private class ConversationUiStatePreviewParameterProvider :
                                 messageOwner = messageOwners[if (user.userId == users[0].userId) 0 else 4],
                                 timestamp = Clock.System.now().minus(minutes)
                             ).run {
-                                add(MessageUi.Content(this))
+                                add(MessageFeedItem.Content(this))
                             }
                             mutableMinutes = minutes
                         }
@@ -104,7 +92,7 @@ private class ConversationUiStatePreviewParameterProvider :
                             title = "Riyas",
                             subtitle = "Online",
                             profilePicture = "",
-                            messageUis = this
+                            messageFeedItems = this
                         ),
                         ConversationInputUiState()
                     )
@@ -117,7 +105,7 @@ private class ConversationUiStatePreviewParameterProvider :
                             title = "Riyas",
                             subtitle = "Online",
                             profilePicture = "",
-                            messageUis = this
+                            messageFeedItems = this
                         ),
                         ConversationInputUiState()
                     )

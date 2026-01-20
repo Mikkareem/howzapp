@@ -13,17 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.unit.dp
-import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
-import com.techullurgy.howzapp.core.designsystem.theme.extended
-import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.MessageUi
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.dp
+import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
+import com.techullurgy.howzapp.core.designsystem.theme.extended
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.MessageFeedItem
 
 @Composable
 internal fun MessageBadge(
-    badge: MessageUi.Badge,
+    badge: MessageFeedItem.Badge,
     modifier: Modifier = Modifier,
     isDividerPresent: Boolean = true
 ) {
@@ -82,7 +82,7 @@ private fun MessageBadgePreview(
     HowzAppTheme(state.isDarkMode) {
         Box(modifier = Modifier.padding(16.dp)) {
             MessageBadge(
-                badge = MessageUi.Badge(state.badge)
+                badge = MessageFeedItem.Badge(state.badge)
             )
         }
     }

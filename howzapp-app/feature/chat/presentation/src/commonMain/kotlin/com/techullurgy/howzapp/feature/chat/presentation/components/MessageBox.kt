@@ -14,13 +14,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.LayoutDirection
 import coil3.compose.AsyncImage
+import com.techullurgy.howzapp.feature.chat.presentation.components.layouts.MessageAnchorState
 import com.techullurgy.howzapp.feature.chat.presentation.components.layouts.MessageViewLayout
-import com.techullurgy.howzapp.feature.chat.presentation.components.layouts.MessageViewUi
-import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.MessageUi
+import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.MessageFeedItem
 
 @Composable
 internal fun MessageBox(
-    content: MessageUi.Content,
+    content: MessageFeedItem.Content,
     onImageMessageClick: (String) -> Unit,
     onVideoMessageClick: (String) -> Unit,
     onLocationMessageClick: (Double, Double) -> Unit,
@@ -37,7 +37,7 @@ internal fun MessageBox(
     ) {
 
         val view = if (content.content.isPictureShowable) {
-            MessageViewUi.Anchored(
+            MessageAnchorState.Anchored(
                 direction = direction
             ) {
                 Box(Modifier.clip(CircleShape).background(color = Color.Magenta)) {
@@ -50,7 +50,7 @@ internal fun MessageBox(
                 }
             }
         } else {
-            MessageViewUi.NonAnchored(
+            MessageAnchorState.NonAnchored(
                 direction = direction
             )
         }

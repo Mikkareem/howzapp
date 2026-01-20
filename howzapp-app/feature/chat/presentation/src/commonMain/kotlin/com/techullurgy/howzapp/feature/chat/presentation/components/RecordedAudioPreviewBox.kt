@@ -23,14 +23,10 @@ import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.vi
 
 @Composable
 internal fun RecordedAudioPreviewBox(
-    preview: InputMessagePreview.RecordedAudioPreview,
-    onPlayPreview: () -> Unit,
-    onPausePreview: () -> Unit,
-    onResumePreview: () -> Unit,
-    onStopPreview: () -> Unit
+    preview: InputMessagePreview.RecordedAudioPreview
 ) {
     DisposableEffect(preview) {
-        onDispose { onStopPreview() }
+        onDispose { preview.onStopRecordedAudio() }
     }
 
     val totalDuration = preview.duration
@@ -38,7 +34,8 @@ internal fun RecordedAudioPreviewBox(
 
     val percentagePlayed = durationPlayed.toFloat() / totalDuration.toFloat()
 
-    val playCallback = if (durationPlayed == 0) onPlayPreview else onResumePreview
+    val playCallback =
+        if (durationPlayed == 0) preview.onPlayRecordedAudio else preview.onResumeRecordedAudio
 
     Row(
         modifier = Modifier.fillMaxWidth().background(Color.Black).padding(16.dp),
@@ -52,7 +49,8 @@ internal fun RecordedAudioPreviewBox(
                     painter = Icons.pauseIcon,
                     contentDescription = "Pause",
                     tint = Color.White,
-                    modifier = Modifier.clip(CircleShape).clickable(onClick = onPausePreview)
+                    modifier = Modifier.clip(CircleShape)
+                        .clickable(onClick = preview.onPauseRecordedAudio)
                 )
             } else {
                 Icon(

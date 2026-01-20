@@ -333,7 +333,13 @@ internal class ConversationInputViewModel(
     private fun setAudioPreview(audioUrl: String) {
         _inputState.update {
             it.copy(
-                inputMessagePreview = InputMessagePreview.SelectedAudioPreview(audioUrl)
+                inputMessagePreview = InputMessagePreview.SelectedAudioPreview(
+                    audioUrl = audioUrl,
+                    onPlayAudio = { onAction(ConversationInputUiAction.OnPlayAudioPreview) },
+                    onPauseAudio = { onAction(ConversationInputUiAction.OnPauseAudioPreview) },
+                    onResumeAudio = { onAction(ConversationInputUiAction.OnResumeAudioPreview) },
+                    onStopAudio = { onAction(ConversationInputUiAction.OnStopAudioPreview) }
+                )
             )
         }
     }
@@ -341,7 +347,13 @@ internal class ConversationInputViewModel(
     private fun setVideoPreview(videoUrl: String) {
         _inputState.update {
             it.copy(
-                inputMessagePreview = InputMessagePreview.SelectedVideoPreview(videoUrl)
+                inputMessagePreview = InputMessagePreview.SelectedVideoPreview(
+                    videoUrl = videoUrl,
+                    onPlayVideo = { onAction(ConversationInputUiAction.OnPlayVideoPreview) },
+                    onPauseVideo = { onAction(ConversationInputUiAction.OnPauseVideoPreview) },
+                    onResumeVideo = { onAction(ConversationInputUiAction.OnResumeVideoPreview) },
+                    onStopVideo = { onAction(ConversationInputUiAction.OnStopVideoPreview) }
+                )
             )
         }
     }
@@ -376,6 +388,10 @@ internal class ConversationInputViewModel(
 
             is InputMessagePreview.SelectedImagePreview -> newImageMessage(currentInputMessage.imageUrl)
             is InputMessagePreview.SelectedVideoPreview -> newVideoMessage(currentInputMessage.videoUrl)
+            is InputMessagePreview.SelectedLocationPreview -> newLocationMessage(
+                currentInputMessage.latitude,
+                currentInputMessage.longitude
+            )
             null -> newTextMessage(_inputState.value.textState.text.toString())
         }
     }
@@ -403,6 +419,11 @@ internal class ConversationInputViewModel(
     private fun newTextMessage(text: String) {
         val textMessage = OriginalMessage.TextMessage(text)
         newPendingMessage(textMessage)
+    }
+
+    private fun newLocationMessage(latitude: Double, longitude: Double) {
+        val locationMessage = OriginalMessage.LocationMessage(latitude, longitude)
+        newPendingMessage(locationMessage)
     }
 
     private fun newPendingMessage(message: OriginalMessage) {
@@ -506,7 +527,11 @@ internal class ConversationInputViewModel(
             it.copy(
                 inputMessagePreview = InputMessagePreview.RecordedAudioPreview(
                     recordedPath = fileUrl,
-                    duration = duration.toInt()
+                    duration = duration.toInt(),
+                    onPlayRecordedAudio = { onAction(ConversationInputUiAction.OnPlayRecordedAudio) },
+                    onPauseRecordedAudio = { onAction(ConversationInputUiAction.OnPauseRecordedAudio) },
+                    onResumeRecordedAudio = { onAction(ConversationInputUiAction.OnResumeRecordedAudio) },
+                    onStopRecordedAudio = { onAction(ConversationInputUiAction.OnStopRecordedAudio) }
                 )
             )
         }
@@ -520,7 +545,11 @@ internal sealed interface InputMessagePreview {
         val recordedPath: String,
         val duration: Int,
         val isPlaying: Boolean = false,
-        val durationPlayed: Int = 0
+        val durationPlayed: Int = 0,
+        val onPlayRecordedAudio: () -> Unit,
+        val onPauseRecordedAudio: () -> Unit,
+        val onResumeRecordedAudio: () -> Unit,
+        val onStopRecordedAudio: () -> Unit
     ) : InputMessagePreview
 
     @Stable
@@ -532,7 +561,11 @@ internal sealed interface InputMessagePreview {
         val duration: Long = 0,
         val isLoading: Boolean = false,
         val isPlaying: Boolean = false,
-        val durationPlayed: Long = 0
+        val durationPlayed: Long = 0,
+        val onPlayVideo: () -> Unit,
+        val onPauseVideo: () -> Unit,
+        val onResumeVideo: () -> Unit,
+        val onStopVideo: () -> Unit
     ) : InputMessagePreview
 
     @Stable
@@ -540,11 +573,18 @@ internal sealed interface InputMessagePreview {
         val audioUrl: String,
         val duration: Int = 0,
         val isPlaying: Boolean = false,
-        val durationPlayed: Int = 0
+        val durationPlayed: Int = 0,
+        val onPlayAudio: () -> Unit,
+        val onPauseAudio: () -> Unit,
+        val onResumeAudio: () -> Unit,
+        val onStopAudio: () -> Unit
     ) : InputMessagePreview
 
     @Stable
     data class SelectedDocumentPreview(val documentName: String, val documentUrl: String) :
+        InputMessagePreview
+
+    data class SelectedLocationPreview(val latitude: Double, val longitude: Double) :
         InputMessagePreview
 }
 

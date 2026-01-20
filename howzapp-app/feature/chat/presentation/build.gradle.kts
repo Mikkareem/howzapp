@@ -17,6 +17,7 @@ kotlin {
             implementation(projects.core.presentation)
             implementation(projects.core.domain)
             implementation(projects.core.system)
+            implementation(projects.feature.chat.api)
             implementation(projects.feature.chat.domain)
 
             implementation(projects.coreFeatures.maps.source)

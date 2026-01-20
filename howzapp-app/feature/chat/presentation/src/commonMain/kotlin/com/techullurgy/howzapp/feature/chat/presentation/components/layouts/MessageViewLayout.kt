@@ -12,13 +12,13 @@ import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.theme.extended
 import com.techullurgy.howzapp.feature.chat.domain.models.Message
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
-import com.techullurgy.howzapp.feature.chat.presentation.components.MessageView
 import com.techullurgy.howzapp.feature.chat.presentation.components.AnchoredMessage
+import com.techullurgy.howzapp.feature.chat.presentation.components.MessageView
 import kotlin.time.Instant
 
 @Composable
 internal fun MessageViewLayout(
-    view: MessageViewUi,
+    view: MessageAnchorState,
     message: Message,
     owner: MessageOwner,
     timestamp: Instant,
@@ -35,36 +35,29 @@ internal fun MessageViewLayout(
         if (owner is MessageOwner.Me) MaterialTheme.colorScheme.extended.onAccentOrange else MaterialTheme.colorScheme.extended.onTileNeutral
 
     val contents = mutableListOf<@Composable () -> Unit>().apply {
-        if(view is MessageViewUi.Anchored) {
+        val messageView = @Composable {
+            MessageView(
+                message,
+                owner,
+                timestamp,
+                backgroundColor,
+                onImageMessageClick,
+                onVideoMessageClick,
+                onLocationMessageClick
+            )
+        }
+
+        if (view is MessageAnchorState.Anchored) {
             add(view.content)
             add {
                 AnchoredMessage(
-                    view.direction,
-                    backgroundColor
-                ) {
-                    MessageView(
-                        message,
-                        owner,
-                        timestamp,
-                        backgroundColor,
-                        onImageMessageClick,
-                        onVideoMessageClick,
-                        onLocationMessageClick
-                    )
-                }
-            }
-        } else {
-            add {
-                MessageView(
-                    message,
-                    owner,
-                    timestamp,
-                    backgroundColor,
-                    onImageMessageClick,
-                    onVideoMessageClick,
-                    onLocationMessageClick
+                    arrowDirection = view.direction,
+                    color = backgroundColor,
+                    content = messageView
                 )
             }
+        } else {
+            add(messageView)
         }
     }.toList()
 
@@ -78,7 +71,7 @@ internal fun MessageViewLayout(
             val anchoredPlaceableSize = 36.dp.roundToPx()
 
             val anchoredPlaceable = view
-                .takeIf { it is MessageViewUi.Anchored }
+                .takeIf { it is MessageAnchorState.Anchored }
                 ?.let {
                     measurables.first().first().measure(
                         Constraints.fixed(anchoredPlaceableSize, anchoredPlaceableSize)
@@ -88,7 +81,7 @@ internal fun MessageViewLayout(
             val anchorSize = 50
 
             val messagePlaceable = view
-                .takeIf { it is MessageViewUi.NonAnchored }
+                .takeIf { it is MessageAnchorState.NonAnchored }
                 ?.let {
                     measurables.first().first().measure(
                         constraints.copy(
@@ -131,15 +124,15 @@ internal fun MessageViewLayout(
 
 }
 
-internal sealed interface MessageViewUi {
+internal sealed interface MessageAnchorState {
     val direction: LayoutDirection
 
     data class Anchored(
         override val direction: LayoutDirection,
         val content: @Composable () -> Unit
-    ) : MessageViewUi
+    ) : MessageAnchorState
 
     data class NonAnchored(
         override val direction: LayoutDirection
-    ) : MessageViewUi
+    ) : MessageAnchorState
 }

@@ -18,6 +18,7 @@ import com.techullurgy.howzapp.core.designsystem.components.media.VideoPlayer
 import com.techullurgy.howzapp.core.system.media.ContentPlayer
 import com.techullurgy.howzapp.core.system.media.MediaHandler
 import com.techullurgy.howzapp.core.system.media.PlaybackState
+import com.techullurgy.howzapp.feature.chat.api.navigation.VideoPreviewScreen
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,10 +31,19 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.update
 import org.koin.android.annotation.KoinViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.Factory
 import org.koin.core.parameter.parametersOf
 
+@Factory(binds = [VideoPreviewScreen::class])
+internal class DefaultVideoPreviewScreen : VideoPreviewScreen {
+    @Composable
+    override fun invoke(listenId: String, url: String) {
+        VideoPreviewScreen(listenId = listenId, url = url)
+    }
+}
+
 @Composable
-fun VideoPreviewScreen(
+private fun VideoPreviewScreen(
     listenId: String,
     url: String,
 ) {

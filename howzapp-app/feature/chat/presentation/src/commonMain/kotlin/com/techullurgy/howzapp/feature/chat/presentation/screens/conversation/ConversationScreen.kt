@@ -4,19 +4,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.techullurgy.howzapp.feature.chat.api.navigation.ConversationKey
+import com.techullurgy.howzapp.feature.chat.api.navigation.ConversationScreen
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputUiAction
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputViewModel
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationUiAction
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationViewModel
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.Factory
 import org.koin.core.parameter.parametersOf
 
-data class ConversationKey(
-    val conversationId: String
-)
+@Factory(binds = [ConversationScreen::class])
+internal class DefaultConversationScreen : ConversationScreen {
+    @Composable
+    override operator fun invoke(
+        key: ConversationKey,
+        onImagePreview: (String) -> Unit,
+        onVideoPreview: (String, String) -> Unit,
+        onLocationPreview: (Double, Double) -> Unit
+    ) {
+        ConversationScreen(
+            key = key,
+            onImagePreview = onImagePreview,
+            onVideoPreview = onVideoPreview,
+            onLocationPreview = onLocationPreview
+        )
+    }
+}
 
 @Composable
-fun ConversationScreen(
+private fun ConversationScreen(
     key: ConversationKey,
     onImagePreview: (String) -> Unit,
     onVideoPreview: (String, String) -> Unit,
@@ -39,7 +56,7 @@ fun ConversationScreen(
     val conversationState by conversationViewModel.state.collectAsState()
     val conversationInputState by conversationInputViewModel.inputState.collectAsState()
 
-    ConversationScreenImpl(
+    ConversationScreenRoot(
         state = conversationState,
         inputState = conversationInputState,
         onRecordStarted = { conversationInputViewModel.onAction(ConversationInputUiAction.OnAudioRecordStarted) },
@@ -71,50 +88,6 @@ fun ConversationScreen(
             conversationInputViewModel.onAction(
                 ConversationInputUiAction.OnDocumentSelected(name, url)
             )
-        },
-        onPlayRecordedAudioInPreview = {
-            conversationInputViewModel.onAction(
-                ConversationInputUiAction.OnPlayRecordedAudio
-            )
-        },
-        onPauseRecordedAudioInPreview = {
-            conversationInputViewModel.onAction(
-                ConversationInputUiAction.OnPauseRecordedAudio
-            )
-        },
-        onResumeRecordedAudioInPreview = {
-            conversationInputViewModel.onAction(
-                ConversationInputUiAction.OnResumeRecordedAudio
-            )
-        },
-        onStopRecordedAudioInPreview = {
-            conversationInputViewModel.onAction(
-                ConversationInputUiAction.OnStopRecordedAudio
-            )
-        },
-        onPlayAudioInPreview = {
-            conversationInputViewModel.onAction(ConversationInputUiAction.OnPlayAudioPreview)
-        },
-        onPauseAudioInPreview = {
-            conversationInputViewModel.onAction(ConversationInputUiAction.OnPauseAudioPreview)
-        },
-        onResumeAudioInPreview = {
-            conversationInputViewModel.onAction(ConversationInputUiAction.OnResumeAudioPreview)
-        },
-        onStopAudioInPreview = {
-            conversationInputViewModel.onAction(ConversationInputUiAction.OnStopAudioPreview)
-        },
-        onPlayVideoInPreview = {
-            conversationInputViewModel.onAction(ConversationInputUiAction.OnPlayVideoPreview)
-        },
-        onPauseVideoInPreview = {
-            conversationInputViewModel.onAction(ConversationInputUiAction.OnPauseVideoPreview)
-        },
-        onResumeVideoInPreview = {
-            conversationInputViewModel.onAction(ConversationInputUiAction.OnResumeVideoPreview)
-        },
-        onStopVideoInPreview = {
-            conversationInputViewModel.onAction(ConversationInputUiAction.OnStopVideoPreview)
         },
         onImageMessageClick = onImagePreview,
         onVideoMessageClick = { onVideoPreview(key.conversationId, it) },

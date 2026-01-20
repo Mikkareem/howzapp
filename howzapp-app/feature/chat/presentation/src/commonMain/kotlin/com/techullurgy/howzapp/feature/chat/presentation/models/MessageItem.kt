@@ -6,7 +6,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.MessageOwner
 import com.techullurgy.howzapp.feature.chat.domain.models.MessageStatus
 import kotlin.time.Instant
 
-internal data class MessageSheet(
+internal data class MessageItem(
     val messageId: String,
     val sender: ChatParticipant,
     val isPictureShowable: Boolean,
@@ -22,7 +22,7 @@ internal data class MessageSheet(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is MessageSheet) return false
+        if (other !is MessageItem) return false
 
         if (messageId != other.messageId) return false
 

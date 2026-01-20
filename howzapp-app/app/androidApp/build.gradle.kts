@@ -6,7 +6,6 @@ plugins {
 
 dependencies {
     implementation(projects.app.shared)
-    implementation(projects.coreFeatures.maps.api)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.runtime)
@@ -14,6 +13,9 @@ dependencies {
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
+
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
 
 //    implementation(libs.androidx.profileinstaller)
 //    baselineProfile(projects.androidBaselineprofile)

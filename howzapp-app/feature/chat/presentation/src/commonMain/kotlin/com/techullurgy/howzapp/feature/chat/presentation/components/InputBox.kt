@@ -16,6 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.techullurgy.howzapp.core.designsystem.theme.HowzAppTheme
 import com.techullurgy.howzapp.core.system.media.AudioRecordTrack
@@ -23,9 +26,6 @@ import com.techullurgy.howzapp.feature.chat.presentation.components.layouts.Inpu
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputUiState
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.InputMessagePreview
 import com.techullurgy.howzapp.feature.chat.presentation.utils.toDurationUiString
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
 @Composable
 internal fun InputBox(
@@ -38,19 +38,7 @@ internal fun InputBox(
     onImageSelected: (String) -> Unit,
     onAudioSelected: (String) -> Unit,
     onVideoSelected: (String) -> Unit,
-    onDocumentSelected: (String, String) -> Unit,
-    onPlayRecordedAudioPreview: () -> Unit,
-    onPauseRecordedAudioPreview: () -> Unit,
-    onResumeRecordedAudioPreview: () -> Unit,
-    onStopRecordedAudioPreview: () -> Unit,
-    onPlayAudioPreview: () -> Unit,
-    onPauseAudioPreview: () -> Unit,
-    onResumeAudioPreview: () -> Unit,
-    onStopAudioPreview: () -> Unit,
-    onPlayVideoPreview: () -> Unit,
-    onPauseVideoPreview: () -> Unit,
-    onResumeVideoPreview: () -> Unit,
-    onStopVideoPreview: () -> Unit,
+    onDocumentSelected: (String, String) -> Unit
 ) {
     var shouldAdditionBoxOpen by remember { mutableStateOf(false) }
 
@@ -88,18 +76,6 @@ internal fun InputBox(
         preview = {
             PreviewBox(
                 preview = inputState.inputMessagePreview,
-                onPlayRecordedAudioPreview = onPlayRecordedAudioPreview,
-                onPauseRecordedAudioPreview = onPauseRecordedAudioPreview,
-                onResumeRecordedAudioPreview = onResumeRecordedAudioPreview,
-                onStopRecordedAudioPreview = onStopRecordedAudioPreview,
-                onPlayAudioPreview = onPlayAudioPreview,
-                onPauseAudioPreview = onPauseAudioPreview,
-                onResumeAudioPreview = onResumeAudioPreview,
-                onStopAudioPreview = onStopAudioPreview,
-                onPlayVideoPreview = onPlayVideoPreview,
-                onPauseVideoPreview = onPauseVideoPreview,
-                onResumeVideoPreview = onResumeVideoPreview,
-                onStopVideoPreview = onStopVideoPreview,
             )
         },
         overlay = {
@@ -134,19 +110,7 @@ private fun InputBoxPreview(
                 onImageSelected = {},
                 onAudioSelected = {},
                 onVideoSelected = {},
-                onDocumentSelected = {_, _ ->},
-                onPlayRecordedAudioPreview = {},
-                onPauseRecordedAudioPreview = {},
-                onResumeRecordedAudioPreview = {},
-                onStopRecordedAudioPreview = {},
-                onPlayAudioPreview = {},
-                onPauseAudioPreview = {},
-                onResumeAudioPreview = {},
-                onStopAudioPreview = {},
-                onPlayVideoPreview = {},
-                onPauseVideoPreview = {},
-                onResumeVideoPreview = {},
-                onStopVideoPreview = {}
+                onDocumentSelected = { _, _ -> }
             )
         }
     }

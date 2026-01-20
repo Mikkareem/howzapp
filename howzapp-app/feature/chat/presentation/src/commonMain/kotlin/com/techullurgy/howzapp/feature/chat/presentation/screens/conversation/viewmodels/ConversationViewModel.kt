@@ -9,7 +9,7 @@ import com.techullurgy.howzapp.feature.chat.domain.models.UserChatEventType
 import com.techullurgy.howzapp.feature.chat.domain.usecases.GetConversationByIdUsecase
 import com.techullurgy.howzapp.feature.chat.domain.usecases.GetUserChatEventsByChatIdUsecase
 import com.techullurgy.howzapp.feature.chat.domain.usecases.MarkAsReadForMessageUsecase
-import com.techullurgy.howzapp.feature.chat.presentation.models.MessageSheet
+import com.techullurgy.howzapp.feature.chat.presentation.models.MessageItem
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.ConversationKey
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,7 +40,7 @@ internal class ConversationViewModel(
             observeMessages()
         }
         .transform {
-            // TODO: Group and sort messages, and reassign messageSheets
+            // TODO: Group and sort messages, and reassign messageItems
 
             emit(it)
         }
@@ -68,9 +68,9 @@ internal class ConversationViewModel(
                 val profileUrl = getProfilePictureUrlForConversation(chat)
                 val subtitle = getSubtitleOfConversation(chat, chatEvent)
 
-                val msgSheets =
+                val msgItems =
                     chat.chatMessages.sortedBy { it.timestamp }.mapIndexed { index, msg ->
-                        MessageSheet(
+                        MessageItem(
                             messageId = msg.messageId,
                             sender = msg.owner.owner,
                             messageOwner = msg.owner,
@@ -88,25 +88,25 @@ internal class ConversationViewModel(
                     title = title,
                     subtitle = subtitle,
                     profilePicture = profileUrl,
-                    messageSheets = msgSheets
+                    messageItems = msgItems
                 )
             }
         }.onEach { content ->
             content?.let {
                 val msgUis = buildList {
-                    val unreadMessagesCount = it.messageSheets.count { it.isUnread }
-                    val messageSheets = it.messageSheets.sortedBy { it.timestamp }
+                    val unreadMessagesCount = it.messageItems.count { it.isUnread }
+                    val messageItems = it.messageItems.sortedBy { it.timestamp }
 
                     val groupBy =
-                        messageSheets.groupBy { s -> s.timestamp.toLocalDateTime(TimeZone.UTC).date }
+                        messageItems.groupBy { s -> s.timestamp.toLocalDateTime(TimeZone.UTC).date }
 
                     var unreadAdded = false
 
                     groupBy.forEach { group ->
-                        add(MessageUi.Badge(group.key.toString()))
+                        add(MessageFeedItem.Badge(group.key.toString()))
 
                         group.value.forEach { sheet ->
-                            add(MessageUi.Content(sheet))
+                            add(MessageFeedItem.Content(sheet))
                         }
 
                         if (!unreadAdded) {
@@ -115,7 +115,7 @@ internal class ConversationViewModel(
                                 val desiredIndex = lastIndex - (group.value.lastIndex - unreadIndex)
                                 add(
                                     desiredIndex,
-                                    MessageUi.Badge("$unreadMessagesCount unread messages")
+                                    MessageFeedItem.Badge("$unreadMessagesCount unread messages")
                                 )
                                 unreadAdded = true
                             }
@@ -127,7 +127,7 @@ internal class ConversationViewModel(
                     title = it.title,
                     subtitle = it.subtitle,
                     profilePicture = it.profilePicture,
-                    messageUis = msgUis
+                    messageFeedItems = msgUis
                 )
             }
         }.launchIn(viewModelScope)
@@ -142,8 +142,8 @@ internal class ConversationViewModel(
     private fun sendReadReceiptsIfAny() {
         viewModelScope.launch {
             withContext(NonCancellable) {
-                _state.value.messageUis
-                    .filterIsInstance<MessageUi.Content>()
+                _state.value.messageFeedItems
+                    .filterIsInstance<MessageFeedItem.Content>()
                     .filter { it.content.isUnread }
                     .forEach {
                         launch {
@@ -207,21 +207,21 @@ internal data class ConversationUiState(
     val title: String = "",
     val subtitle: String = "",
     val profilePicture: String? = null,
-    val messageUis: List<MessageUi> = emptyList()
+    val messageFeedItems: List<MessageFeedItem> = emptyList()
 )
 
 internal sealed interface ConversationUiAction {
     data object SendReadReceiptsIfAny : ConversationUiAction
 }
 
-internal sealed interface MessageUi {
-    data class Badge(val badge: String) : MessageUi
-    data class Content(val content: MessageSheet) : MessageUi
+internal sealed interface MessageFeedItem {
+    data class Badge(val badge: String) : MessageFeedItem
+    data class Content(val content: MessageItem) : MessageFeedItem
 }
 
 private data class ChatContent(
     val title: String,
     val subtitle: String,
     val profilePicture: String?,
-    val messageSheets: List<MessageSheet>
+    val messageItems: List<MessageItem>
 )

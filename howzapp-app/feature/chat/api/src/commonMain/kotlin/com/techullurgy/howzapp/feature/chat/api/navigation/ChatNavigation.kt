@@ -3,12 +3,8 @@ package com.techullurgy.howzapp.feature.chat.api.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.EntryProviderScope
-import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.ConversationKey
-import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.ConversationScreen
-import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_list.ConversationListScreen
-import com.techullurgy.howzapp.feature.chat.presentation.screens.media_previews.ImagePreviewScreen
-import com.techullurgy.howzapp.feature.chat.presentation.screens.media_previews.VideoPreviewScreen
 import kotlinx.serialization.Serializable
+import org.koin.mp.KoinPlatform
 
 @Serializable
 data object ChatGraphRoute
@@ -75,7 +71,7 @@ fun EntryProviderScope<Any>.chatGraph(
 private fun ConversationListScreenRoot(
     onConversationClick: (String) -> Unit
 ) {
-    ConversationListScreen(
+    KoinPlatform.getKoin().get<ConversationListScreen>().invoke(
         onConversationClick = onConversationClick
     )
 }
@@ -89,19 +85,24 @@ private fun ConversationScreenRoot(
 ) {
     val key = ConversationKey(route.conversationId)
 
-    ConversationScreen(key, onImagePreview = onImagePreview, onVideoPreview = onVideoPreview, onLocationPreview = onLocationPreview)
+    KoinPlatform.getKoin().get<ConversationScreen>().invoke(
+        key = key,
+        onImagePreview = onImagePreview,
+        onVideoPreview = onVideoPreview,
+        onLocationPreview = onLocationPreview
+    )
 }
 
 @Composable
 private fun ImagePreviewScreenRoot(
     route: ImagePreviewRoute
 ) {
-    ImagePreviewScreen(route.imageUrl)
+    KoinPlatform.getKoin().get<ImagePreviewScreen>().invoke(route.imageUrl)
 }
 
 @Composable
 private fun VideoPreviewScreenRoot(
     route: VideoPreviewRoute
 ) {
-    VideoPreviewScreen(route.videoListenId, route.videoUrl)
+    KoinPlatform.getKoin().get<VideoPreviewScreen>().invoke(route.videoListenId, route.videoUrl)
 }

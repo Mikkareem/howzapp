@@ -15,7 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
-import com.techullurgy.howzapp.core_features.api.ui.LocalGoogleMapsApiKey
+import com.techullurgy.howzapp.maps.BuildKonfig
 import io.ktor.http.Parameters
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
@@ -26,7 +26,7 @@ fun StaticMapImage(
     longitude: Double,
     modifier: Modifier = Modifier
 ) {
-    val apiKey = LocalGoogleMapsApiKey.current
+    val apiKey = BuildKonfig.MAPS_API_KEY
     val mapUrl = buildStaticMapUrlFromLatLng(latitude, longitude, apiKey)
     val painter = rememberAsyncImagePainter(model = mapUrl)
     val state by painter.state.collectAsStateWithLifecycle()
@@ -66,10 +66,12 @@ private fun buildStaticMapUrlFromLatLng(
         host = "maps.googleapis.com",
         pathSegments = listOf("maps", "api", "staticmap"),
         parameters = Parameters.build {
-            append("center", "$latitude,$longitude")
+            val latLngString = "$latitude,$longitude"
+            append("center", latLngString)
             append("zoom", zoomLevel.toString())
             append("size", "${requiredWidth}x$requiredHeight")
             append("key", apiKey)
+            append("markers", "color:red|label:S|$latLngString")
         }
     ).build().toString()
 }

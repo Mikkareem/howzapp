@@ -13,19 +13,7 @@ import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.vi
 
 @Composable
 internal fun PreviewBox(
-    preview: InputMessagePreview?,
-    onPlayRecordedAudioPreview: () -> Unit,
-    onPauseRecordedAudioPreview: () -> Unit,
-    onResumeRecordedAudioPreview: () -> Unit,
-    onStopRecordedAudioPreview: () -> Unit,
-    onPlayAudioPreview: () -> Unit,
-    onPauseAudioPreview: () -> Unit,
-    onResumeAudioPreview: () -> Unit,
-    onStopAudioPreview: () -> Unit,
-    onPlayVideoPreview: () -> Unit,
-    onPauseVideoPreview: () -> Unit,
-    onResumeVideoPreview: () -> Unit,
-    onStopVideoPreview: () -> Unit
+    preview: InputMessagePreview?
 ) {
     AnimatedVisibility(
         visible = preview != null,
@@ -38,19 +26,14 @@ internal fun PreviewBox(
         ) {
             when (it) {
                 is InputMessagePreview.RecordedAudioPreview -> {
-                    RecordedAudioPreviewBox(
-                        preview = it,
-                        onPlayPreview = onPlayRecordedAudioPreview,
-                        onPausePreview = onPauseRecordedAudioPreview,
-                        onResumePreview = onResumeRecordedAudioPreview,
-                        onStopPreview = onStopRecordedAudioPreview
-                    )
+                    RecordedAudioPreviewBox(preview = it)
                 }
 
                 is InputMessagePreview.SelectedAudioPreview -> TODO()
                 is InputMessagePreview.SelectedDocumentPreview -> TODO()
                 is InputMessagePreview.SelectedImagePreview -> TODO()
                 is InputMessagePreview.SelectedVideoPreview -> TODO()
+                is InputMessagePreview.SelectedLocationPreview -> TODO()
             }
         }
     }
