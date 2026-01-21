@@ -3,12 +3,12 @@ package com.techullurgy.howzapp.feature.auth.presentation.login
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.techullurgy.howzapp.core.domain.auth.SessionStorage
 import com.techullurgy.howzapp.core.domain.util.DataError
 import com.techullurgy.howzapp.core.domain.util.onFailure
 import com.techullurgy.howzapp.core.domain.util.onSuccess
 import com.techullurgy.howzapp.core.presentation.util.UiText
 import com.techullurgy.howzapp.core.presentation.util.toUiText
+import com.techullurgy.howzapp.feature.auth.api.data.SessionStorage
 import com.techullurgy.howzapp.feature.auth.domain.services.AuthService
 import com.techullurgy.howzapp.feature.auth.presentation.utils.EmailValidator
 import howzapp.core.presentation.generated.resources.Res

@@ -3,8 +3,8 @@ package com.techullurgy.howzapp.feature.chat.api.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.EntryProviderScope
+import com.techullurgy.howzapp.core.utils.inject
 import kotlinx.serialization.Serializable
-import org.koin.mp.KoinPlatform
 
 @Serializable
 data object ChatGraphRoute
@@ -71,7 +71,7 @@ fun EntryProviderScope<Any>.chatGraph(
 private fun ConversationListScreenRoot(
     onConversationClick: (String) -> Unit
 ) {
-    KoinPlatform.getKoin().get<IConversationListScreen>().invoke(
+    inject<IConversationListScreen>().invoke(
         onConversationClick = onConversationClick
     )
 }
@@ -85,7 +85,7 @@ private fun ConversationScreenRoot(
 ) {
     val key = ConversationKey(route.conversationId)
 
-    KoinPlatform.getKoin().get<IConversationScreen>().invoke(
+    inject<IConversationScreen>().invoke(
         key = key,
         onImagePreview = onImagePreview,
         onVideoPreview = onVideoPreview,
@@ -97,12 +97,12 @@ private fun ConversationScreenRoot(
 private fun ImagePreviewScreenRoot(
     route: ImagePreviewRoute
 ) {
-    KoinPlatform.getKoin().get<IImagePreviewScreen>().invoke(route.imageUrl)
+    inject<IImagePreviewScreen>().invoke(route.imageUrl)
 }
 
 @Composable
 private fun VideoPreviewScreenRoot(
     route: VideoPreviewRoute
 ) {
-    KoinPlatform.getKoin().get<IVideoPreviewScreen>().invoke(route.videoListenId, route.videoUrl)
+    inject<IVideoPreviewScreen>().invoke(route.videoListenId, route.videoUrl)
 }

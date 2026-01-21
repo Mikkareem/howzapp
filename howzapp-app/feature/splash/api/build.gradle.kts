@@ -9,7 +9,7 @@ kotlin {
             implementation(libs.androidx.navigation3.runtime)
 
             implementation(projects.feature.splash.domain)
-            implementation(projects.feature.splash.presentation)
+            implementation(projects.core.utils)
         }
     }
 }

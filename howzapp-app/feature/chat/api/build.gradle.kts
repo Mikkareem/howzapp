@@ -13,6 +13,7 @@ kotlin {
             implementation(projects.feature.chat.database)
 
             implementation(projects.core.dto)
+            implementation(projects.core.utils)
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.techullurgy.howzapp.feature.splash.api.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
-import com.techullurgy.howzapp.feature.splash.presentation.SplashScreen
+import com.techullurgy.howzapp.core.utils.inject
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,7 +12,7 @@ fun EntryProviderScope<Any>.splashRoute(
     onFailure: () -> Unit,
 ) {
     entry<SplashRoute> {
-        SplashScreen(
+        inject<ISplashScreen>().invoke(
             onSuccess = onSuccess,
             onFailure = onFailure
         )

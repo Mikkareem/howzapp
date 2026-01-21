@@ -9,6 +9,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.koin.compose.viewmodel)
 
+            implementation(projects.feature.splash.api)
             implementation(projects.feature.splash.domain)
             implementation(projects.core.designsystem)
             implementation(projects.core.presentation)

@@ -1,4 +1,4 @@
-package com.techullurgy.howzapp.core.domain.auth
+package com.techullurgy.howzapp.feature.auth.models
 
 import kotlinx.serialization.Serializable
 

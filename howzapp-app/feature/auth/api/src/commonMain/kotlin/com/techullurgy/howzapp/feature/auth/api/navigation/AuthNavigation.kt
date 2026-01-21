@@ -3,8 +3,8 @@ package com.techullurgy.howzapp.feature.auth.api.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation3.runtime.EntryProviderScope
+import com.techullurgy.howzapp.core.utils.inject
 import kotlinx.serialization.Serializable
-import org.koin.mp.KoinPlatform
 
 @Serializable
 data object LoginRoute
@@ -48,7 +48,7 @@ private fun LoginScreenRoot(
     onForgotPasswordClick: () -> Unit,
     onCreateAccountClick: () -> Unit
 ) {
-    KoinPlatform.getKoin().get<ILoginScreen>().invoke(
+    inject<ILoginScreen>().invoke(
         onLoginSuccess = onLoginSuccess,
         onForgotPasswordClick = onForgotPasswordClick,
         onCreateAccountClick = onCreateAccountClick
@@ -60,7 +60,7 @@ private fun RegisterScreenRoot(
     onRegisterSuccess: (String) -> Unit,
     onLoginClick: () -> Unit
 ) {
-    KoinPlatform.getKoin().get<IRegisterScreen>().invoke(
+    inject<IRegisterScreen>().invoke(
         onRegisterSuccess = onRegisterSuccess,
         onLoginClick = onLoginClick
     )

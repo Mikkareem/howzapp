@@ -50,6 +50,7 @@ include(":app:shared")
 
 include(":core-features:maps:api")
 include(":core-features:maps:source")
+
 include(":core:di")
 include(":core:dto")
 include(":core:system")
@@ -58,6 +59,7 @@ include(":core:domain")
 include(":core:data")
 include(":core:designsystem")
 include(":core:presentation")
+include(":core:utils")
 
 include(":feature:chat:api")
 include(":feature:chat:domain")
