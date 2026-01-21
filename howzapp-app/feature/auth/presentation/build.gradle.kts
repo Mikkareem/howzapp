@@ -14,9 +14,14 @@ kotlin {
             implementation(projects.core.domain)
             implementation(projects.core.designsystem)
             implementation(projects.core.presentation)
+            implementation(projects.feature.auth.api)
             implementation(projects.feature.auth.domain)
         }
     }
+}
+
+dependencies {
+    androidRuntimeClasspath(libs.compose.ui.tooling)
 }
 
 //tasks.configureEach {

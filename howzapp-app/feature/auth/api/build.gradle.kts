@@ -8,7 +8,6 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.androidx.navigation3.runtime)
 
-            implementation(projects.feature.auth.presentation)
             implementation(projects.feature.auth.domain)
             implementation(projects.feature.auth.data)
         }

@@ -12,6 +12,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_NO
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.techullurgy.howzapp.core.designsystem.components.brand.HowzappBrandLogo
@@ -26,6 +29,7 @@ import com.techullurgy.howzapp.core.presentation.util.ObserveAsEvents
 import com.techullurgy.howzapp.core.presentation.util.TestTag
 import com.techullurgy.howzapp.core.presentation.util.loginEmailInput
 import com.techullurgy.howzapp.core.presentation.util.loginPasswordInput
+import com.techullurgy.howzapp.feature.auth.api.navigation.ILoginScreen
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.create_account
 import howzapp.core.presentation.generated.resources.email
@@ -35,11 +39,27 @@ import howzapp.core.presentation.generated.resources.login
 import howzapp.core.presentation.generated.resources.password
 import howzapp.core.presentation.generated.resources.welcome_back
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.annotation.Factory
+
+@Factory(binds = [ILoginScreen::class])
+internal class DefaultILoginScreen : ILoginScreen {
+    @Composable
+    override fun invoke(
+        onLoginSuccess: () -> Unit,
+        onForgotPasswordClick: () -> Unit,
+        onCreateAccountClick: () -> Unit
+    ) {
+        LoginScreen(
+            onLoginSuccess = onLoginSuccess,
+            onForgotPasswordClick = onForgotPasswordClick,
+            onCreateAccountClick = onCreateAccountClick
+        )
+    }
+}
 
 @Composable
-fun LoginScreen(
+private fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     onCreateAccountClick: () -> Unit
@@ -53,7 +73,7 @@ fun LoginScreen(
         }
     }
 
-    LoginScreen(
+    LoginScreenRoot(
         state = state,
         onAction = { action ->
             when(action) {
@@ -67,7 +87,7 @@ fun LoginScreen(
 }
 
 @Composable
-private fun LoginScreen(
+private fun LoginScreenRoot(
     state: LoginState,
     onAction: (LoginAction) -> Unit,
 ) {
@@ -141,22 +161,12 @@ private fun LoginScreen(
     }
 }
 
-@Preview
+@Preview(name = "dark", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "light", uiMode = UI_MODE_NIGHT_NO)
 @Composable
-private fun LightThemePreview() {
+private fun LoginScreenPreview() {
     HowzAppTheme {
-        LoginScreen(
-            state = LoginState(canLogin = true),
-            onAction = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun DarkThemePreview() {
-    HowzAppTheme(darkTheme = true) {
-        LoginScreen(
+        LoginScreenRoot(
             state = LoginState(canLogin = true),
             onAction = {}
         )

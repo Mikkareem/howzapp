@@ -19,6 +19,7 @@ import com.techullurgy.howzapp.core.designsystem.components.layouts.HowzappSnack
 import com.techullurgy.howzapp.core.designsystem.components.textfields.HowzappPasswordTextField
 import com.techullurgy.howzapp.core.designsystem.components.textfields.HowzappTextField
 import com.techullurgy.howzapp.core.presentation.util.ObserveAsEvents
+import com.techullurgy.howzapp.feature.auth.api.navigation.IRegisterScreen
 import howzapp.core.presentation.generated.resources.Res
 import howzapp.core.presentation.generated.resources.email
 import howzapp.core.presentation.generated.resources.email_placeholder
@@ -33,8 +34,21 @@ import howzapp.core.presentation.generated.resources.welcome_to_chirp
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
+internal class DefaultIRegisterScreen : IRegisterScreen {
+    @Composable
+    override fun invoke(
+        onRegisterSuccess: (String) -> Unit,
+        onLoginClick: () -> Unit
+    ) {
+        RegisterScreen(
+            onRegisterSuccess = onRegisterSuccess,
+            onLoginClick = onLoginClick
+        )
+    }
+}
+
 @Composable
-fun RegisterScreen(
+private fun RegisterScreen(
     onRegisterSuccess: (String) -> Unit,
     onLoginClick: () -> Unit
 ) {
@@ -50,7 +64,7 @@ fun RegisterScreen(
         }
     }
 
-    RegisterScreen(
+    RegisterScreenRoot(
         state = state,
         onAction = { action ->
             when(action) {
@@ -64,7 +78,7 @@ fun RegisterScreen(
 }
 
 @Composable
-private fun RegisterScreen(
+private fun RegisterScreenRoot(
     state: RegisterState,
     onAction: (RegisterAction) -> Unit,
     snackbarHostState: SnackbarHostState
