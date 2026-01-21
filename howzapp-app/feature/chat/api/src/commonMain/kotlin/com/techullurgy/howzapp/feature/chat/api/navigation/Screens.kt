@@ -6,7 +6,7 @@ data class ConversationKey(
     val conversationId: String
 )
 
-interface ConversationScreen {
+interface IConversationScreen {
     @Composable
     operator fun invoke(
         key: ConversationKey,
@@ -16,21 +16,21 @@ interface ConversationScreen {
     )
 }
 
-interface ConversationListScreen {
+interface IConversationListScreen {
     @Composable
     operator fun invoke(
         onConversationClick: (String) -> Unit
     )
 }
 
-interface ImagePreviewScreen {
+interface IImagePreviewScreen {
     @Composable
     operator fun invoke(
         url: String
     )
 }
 
-interface VideoPreviewScreen {
+interface IVideoPreviewScreen {
     @Composable
     operator fun invoke(
         listenId: String,

@@ -5,7 +5,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.techullurgy.howzapp.feature.chat.api.navigation.ConversationKey
-import com.techullurgy.howzapp.feature.chat.api.navigation.ConversationScreen
+import com.techullurgy.howzapp.feature.chat.api.navigation.IConversationScreen
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputUiAction
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationInputViewModel
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation.viewmodels.ConversationUiAction
@@ -14,8 +14,8 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.Factory
 import org.koin.core.parameter.parametersOf
 
-@Factory(binds = [ConversationScreen::class])
-internal class DefaultConversationScreen : ConversationScreen {
+@Factory(binds = [IConversationScreen::class])
+internal class DefaultIConversationScreen : IConversationScreen {
     @Composable
     override operator fun invoke(
         key: ConversationKey,

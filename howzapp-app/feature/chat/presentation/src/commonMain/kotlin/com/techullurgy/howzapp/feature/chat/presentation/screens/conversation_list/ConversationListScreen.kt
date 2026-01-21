@@ -3,13 +3,13 @@ package com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_l
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.techullurgy.howzapp.feature.chat.api.navigation.ConversationListScreen
+import com.techullurgy.howzapp.feature.chat.api.navigation.IConversationListScreen
 import com.techullurgy.howzapp.feature.chat.presentation.screens.conversation_list.viewmodels.ConversationListViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.Factory
 
-@Factory(binds = [ConversationListScreen::class])
-internal class DefaultConversationListScreen : ConversationListScreen {
+@Factory(binds = [IConversationListScreen::class])
+internal class DefaultIConversationListScreen : IConversationListScreen {
     @Composable
     override fun invoke(onConversationClick: (String) -> Unit) {
         ConversationListScreen(

@@ -10,11 +10,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import coil3.compose.AsyncImage
-import com.techullurgy.howzapp.feature.chat.api.navigation.ImagePreviewScreen
+import com.techullurgy.howzapp.feature.chat.api.navigation.IImagePreviewScreen
 import org.koin.core.annotation.Factory
 
-@Factory(binds = [ImagePreviewScreen::class])
-internal class DefaultImagePreviewScreen : ImagePreviewScreen {
+@Factory(binds = [IImagePreviewScreen::class])
+internal class DefaultIImagePreviewScreen : IImagePreviewScreen {
     @Composable
     override fun invoke(url: String) {
         ImagePreviewScreen(url = url)

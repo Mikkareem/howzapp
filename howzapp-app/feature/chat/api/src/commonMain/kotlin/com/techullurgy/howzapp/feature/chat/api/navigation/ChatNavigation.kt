@@ -71,7 +71,7 @@ fun EntryProviderScope<Any>.chatGraph(
 private fun ConversationListScreenRoot(
     onConversationClick: (String) -> Unit
 ) {
-    KoinPlatform.getKoin().get<ConversationListScreen>().invoke(
+    KoinPlatform.getKoin().get<IConversationListScreen>().invoke(
         onConversationClick = onConversationClick
     )
 }
@@ -85,7 +85,7 @@ private fun ConversationScreenRoot(
 ) {
     val key = ConversationKey(route.conversationId)
 
-    KoinPlatform.getKoin().get<ConversationScreen>().invoke(
+    KoinPlatform.getKoin().get<IConversationScreen>().invoke(
         key = key,
         onImagePreview = onImagePreview,
         onVideoPreview = onVideoPreview,
@@ -97,12 +97,12 @@ private fun ConversationScreenRoot(
 private fun ImagePreviewScreenRoot(
     route: ImagePreviewRoute
 ) {
-    KoinPlatform.getKoin().get<ImagePreviewScreen>().invoke(route.imageUrl)
+    KoinPlatform.getKoin().get<IImagePreviewScreen>().invoke(route.imageUrl)
 }
 
 @Composable
 private fun VideoPreviewScreenRoot(
     route: VideoPreviewRoute
 ) {
-    KoinPlatform.getKoin().get<VideoPreviewScreen>().invoke(route.videoListenId, route.videoUrl)
+    KoinPlatform.getKoin().get<IVideoPreviewScreen>().invoke(route.videoListenId, route.videoUrl)
 }
