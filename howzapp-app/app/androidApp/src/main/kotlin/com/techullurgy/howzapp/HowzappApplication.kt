@@ -1,6 +1,7 @@
 package com.techullurgy.howzapp
 
 import android.app.Application
+import org.koin.android.ext.koin.androidContext
 import org.koin.ksp.generated.startKoin
 
 class HowzappApplication: Application() {
@@ -8,7 +9,7 @@ class HowzappApplication: Application() {
         super.onCreate()
 
         DebugApp.startKoin {
-            initApp(this@HowzappApplication)
+            androidContext(this@HowzappApplication)
         }
     }
 }

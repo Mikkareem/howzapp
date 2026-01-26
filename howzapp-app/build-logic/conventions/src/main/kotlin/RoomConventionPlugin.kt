@@ -1,6 +1,6 @@
 import androidx.room.gradle.RoomExtension
 import com.techullurgy.howzapp.conventions.isAndroidEnabled
-import com.techullurgy.howzapp.conventions.isDesktopEnabled
+import com.techullurgy.howzapp.conventions.isJvmEnabled
 import com.techullurgy.howzapp.conventions.isIosEnabled
 import com.techullurgy.howzapp.conventions.libs
 import org.gradle.api.Plugin
@@ -24,7 +24,6 @@ class RoomConventionPlugin: Plugin<Project> {
                 "commonMainApi"(libs.findLibrary("androidx-room-runtime").get())
                 "commonMainApi"(libs.findLibrary("sqlite-bundled").get())
 
-                add("kspCommonMainMetadata", libs.findLibrary("androidx-room-compiler").get())
                 if(isAndroidEnabled) {
                     add("kspAndroid", libs.findLibrary("androidx-room-compiler").get())
                 }
@@ -33,8 +32,8 @@ class RoomConventionPlugin: Plugin<Project> {
                     add("kspIosArm64",libs.findLibrary("androidx-room-compiler").get())
                     add("kspIosX64",libs.findLibrary("androidx-room-compiler").get())
                 }
-                if(isDesktopEnabled) {
-                    add("kspDesktop",libs.findLibrary("androidx-room-compiler").get())
+                if (isJvmEnabled) {
+                    add("kspJvm", libs.findLibrary("androidx-room-compiler").get())
                 }
             }
         }

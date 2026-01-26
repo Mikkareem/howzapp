@@ -6,7 +6,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 internal fun Project.configureDesktopTarget() {
     extensions.configure<KotlinMultiplatformExtension> {
-        jvm("desktop") {
+//        jvm("desktop") {
+        jvm {
             compilations.all {
                 compileTaskProvider.configure {
                     compilerOptions {

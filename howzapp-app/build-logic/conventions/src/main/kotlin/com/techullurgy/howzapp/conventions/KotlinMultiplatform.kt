@@ -1,9 +1,7 @@
 package com.techullurgy.howzapp.conventions
 
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 
 context(extension: KotlinMultiplatformExtension)
 internal fun Project.configureKotlinMultiplatform() {
@@ -18,7 +16,7 @@ internal fun Project.configureKotlinMultiplatform() {
         if (isIosEnabled) {
             configureIosTargets(true)
         }
-        if(isDesktopEnabled) {
+        if (isJvmEnabled) {
             configureDesktopTarget()
         }
 

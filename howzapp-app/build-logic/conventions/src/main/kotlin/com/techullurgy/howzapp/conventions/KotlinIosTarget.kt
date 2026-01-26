@@ -9,9 +9,9 @@ context(extension: KotlinMultiplatformExtension)
 internal fun Project.configureIosTargets(isLibrary: Boolean = false) {
     with(extension) {
         listOf(
-            iosX64(),
+//            iosX64(),
             iosArm64(),
-            iosSimulatorArm64()
+//            iosSimulatorArm64()
         ).forEach { iosTarget ->
             iosTarget.binaries.framework {
                 baseName = if(!isLibrary) "ComposeApp" else this@configureIosTargets.pathToFrameworkName()

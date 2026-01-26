@@ -1,14 +1,13 @@
-import com.android.build.api.dsl.CommonExtension
-import com.google.devtools.ksp.gradle.KspExtension
+import com.google.devtools.ksp.gradle.KspAATask
 import com.techullurgy.howzapp.conventions.isAndroidEnabled
-import com.techullurgy.howzapp.conventions.isDesktopEnabled
+import com.techullurgy.howzapp.conventions.isIosEnabled
+import com.techullurgy.howzapp.conventions.isJvmEnabled
 import com.techullurgy.howzapp.conventions.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.findByType
-import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class KoinAnnotationsConventionPlugin: Plugin<Project> {
@@ -30,14 +29,25 @@ class KoinAnnotationsConventionPlugin: Plugin<Project> {
                     if(isAndroidEnabled) {
                         add("kspAndroid",libs.findLibrary("koin-ksp-compiler").get())
                     }
-                    if(isDesktopEnabled) {
-                        add("kspDesktop",libs.findLibrary("koin-ksp-compiler").get())
+                    if (isIosEnabled) {
+                        add("kspIosSimulatorArm64", libs.findLibrary("koin-ksp-compiler").get())
+                        add("kspIosArm64", libs.findLibrary("koin-ksp-compiler").get())
+                        add("kspIosX64", libs.findLibrary("koin-ksp-compiler").get())
+                    }
+                    if (isJvmEnabled) {
+                        add("kspJvm", libs.findLibrary("koin-ksp-compiler").get())
                     }
                 }
 
-                // Trigger Common Metadata Generation from Native tasks
-                tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
-                    dependsOn("kspCommonMainKotlinMetadata")
+                // Generate CommonMain Metadata for Koin
+                tasks.withType<KspAATask>().configureEach {
+                    if (name != "kspCommonMainKotlinMetadata") {
+                        dependsOn("kspCommonMainKotlinMetadata")
+                    }
+                }
+
+                sourceSets.commonMain.configure {
+                    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
                 }
             } ?: run {
                 dependencies {
@@ -47,7 +57,7 @@ class KoinAnnotationsConventionPlugin: Plugin<Project> {
                 }
             }
 
-            extensions.getByType<KspExtension>().arg("KOIN_CONFIG_CHECK", "true")
+//            extensions.getByType<KspExtension>().arg("KOIN_CONFIG_CHECK", "true")
         }
     }
 }

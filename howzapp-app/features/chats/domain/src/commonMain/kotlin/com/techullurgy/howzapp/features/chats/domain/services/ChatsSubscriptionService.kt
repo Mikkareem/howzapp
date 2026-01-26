@@ -1,0 +1,42 @@
+package com.techullurgy.howzapp.features.chats.domain.services
+
+import com.techullurgy.howzapp.common.models.ConnectionState
+import com.techullurgy.howzapp.features.chats.domain.repositories.ChatLocalRepository
+import com.techullurgy.howzapp.features.chats.domain.websockets.ChatWebsocketConnector
+import com.techullurgy.howzapp.features.chats.domain.websockets.events.ChatEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import org.koin.core.annotation.Single
+
+@Single(createdAtStart = true)
+internal class ChatsSubscriptionService(
+    private val connector: ChatWebsocketConnector,
+    chatLocalRepository: ChatLocalRepository,
+    appScope: CoroutineScope,
+//    private val logger: HowzappLogger
+) {
+    init {
+        combine(
+            connector.connectionState.map { it == ConnectionState.CONNECTED },
+            chatLocalRepository.observeAllChats()
+        ) { isConnected, chats ->
+            if (isConnected) {
+                chats.ifEmpty { null }
+            } else null
+        }
+            .distinctUntilChanged()
+            .filterNotNull()
+            .onEach { chats ->
+//                logger.info("Subscribing chats")
+                connector.sendEvent(
+                    ChatEvent.OutgoingEvent.ChatsSubscriptionEvent(chats = chats)
+                )
+            }
+            .launchIn(appScope)
+    }
+}

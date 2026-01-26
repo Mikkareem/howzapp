@@ -1,0 +1,74 @@
+package com.techullurgy.howzapp.features.chats.database.entities
+
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import androidx.room.Relation
+import com.techullurgy.howzapp.features.chats.database.models.SerializablePendingMessage
+import com.techullurgy.howzapp.features.chats.database.models.SerializableUploadStatus
+
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = ChatEntity::class,
+            parentColumns = ["chatId"],
+            childColumns = ["chatId"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = ChatParticipantEntity::class,
+            parentColumns = ["userId"],
+            childColumns = ["senderId"],
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index("chatId"),
+        Index("senderId")
+    ]
+)
+data class PendingMessageEntity(
+    @PrimaryKey val pendingId: String,
+    val chatId: String,
+    val senderId: String,
+    val message: SerializablePendingMessage,
+    val isReady: Boolean,
+    val timestamp: Long,
+)
+
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = PendingMessageEntity::class,
+            parentColumns = ["pendingId"],
+            childColumns = ["pendingId"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
+        )
+    ]
+)
+data class UploadablePendingMessageEntity(
+    @PrimaryKey val pendingId: String,
+    val uploadStatus: SerializableUploadStatus
+)
+
+data class PendingMessageRelation(
+    @Embedded val pending: PendingMessageEntity,
+
+    @Relation(
+        parentColumn = "senderId",
+        entityColumn = "userId",
+        entity = ChatParticipantEntity::class
+    )
+    val sender: ChatParticipantRelation,
+
+    @Relation(
+        parentColumn = "pendingId",
+        entityColumn = "pendingId"
+    )
+    val uploadable: UploadablePendingMessageEntity?
+)

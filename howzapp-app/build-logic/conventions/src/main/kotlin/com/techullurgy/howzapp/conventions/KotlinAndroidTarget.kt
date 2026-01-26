@@ -23,7 +23,6 @@ internal fun Project.configureAndroidTarget() {
         }
 
         withDeviceTest {
-
         }
     }
 }

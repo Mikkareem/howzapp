@@ -15,7 +15,7 @@ val Project.applicationLibs: VersionCatalog
 
 val Project.isAndroidEnabled: Boolean get() = true
 val Project.isIosEnabled: Boolean get() = false
-val Project.isDesktopEnabled: Boolean get() = true
+val Project.isJvmEnabled: Boolean get() = true
 val Project.isHierarchyEnabled: Boolean get() = false
 
 val Project.applicationId: String get() = applicationLibs.findVersion("projectApplicationId").get().toString()

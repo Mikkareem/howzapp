@@ -12,10 +12,11 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
 
     implementation(platform(libs.koin.bom))
-    implementation(libs.koin.core)
+    implementation(libs.koin.android)
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)
+
 
 //    implementation(libs.androidx.profileinstaller)
 //    baselineProfile(projects.androidBaselineprofile)

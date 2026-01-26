@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.android.test) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.baselineprofile) apply false
+    alias(libs.plugins.composeStabilityAnalyzer) apply false
 
     alias(applicationLibs.plugins.conventions.android.application) apply false
     alias(applicationLibs.plugins.conventions.android.application.compose) apply false

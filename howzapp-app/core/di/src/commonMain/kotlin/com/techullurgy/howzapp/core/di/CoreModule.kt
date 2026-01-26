@@ -1,12 +1,15 @@
 package com.techullurgy.howzapp.core.di
 
-import com.techullurgy.howzapp.core.data.di.CoreDataModule
-import com.techullurgy.howzapp.core.system.di.CoreSystemModule
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Configuration
+import com.techullurgy.howzapp.core.data.impl.di.CoreDataModule
+import com.techullurgy.howzapp.core.datastore.di.CoreDataStoreModule
+import com.techullurgy.howzapp.core.network.di.CoreNetworkModule
 import org.koin.core.annotation.Module
 
-@Module(includes = [CoreDataModule::class, CoreSystemModule::class])
-@Configuration
-@ComponentScan("com.techullurgy.howzapp.core")
+@Module(
+    includes = [
+        CoreDataModule::class,
+        CoreDataStoreModule::class,
+        CoreNetworkModule::class
+    ]
+)
 class CoreModule
