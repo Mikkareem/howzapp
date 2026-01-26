@@ -23,7 +23,13 @@ class CmpLibraryConventionPlugin: Plugin<Project> {
             extensions.configure<KotlinMultiplatformExtension>() {
                 sourceSets.commonMain.dependencies {
                     implementation(libs.findLibrary("compose-runtime").get())
+
+                    implementation(libs.findLibrary("compose-ui-tooling-preview").get())
                 }
+            }
+
+            dependencies {
+                "androidRuntimeClasspath"(libs.findLibrary("compose-ui-tooling").get())
             }
         }
     }
